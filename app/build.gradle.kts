@@ -103,12 +103,6 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.7.2")
     implementation ("androidx.compose.foundation:foundation-layout:1.6.0-alpha05")
 
-    //Admob
-    implementation ("com.google.android.gms:play-services-ads:22.3.0")
-    //For Permission
-    implementation ("androidx.activity:activity-ktx")
-    implementation ("com.google.accompanist:accompanist-permissions:0.31.5-beta")
-
     //Location
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.accompanist:accompanist-pager:0.31.5-beta")

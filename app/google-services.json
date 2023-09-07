@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "793619273824",
+    "project_id": "zerotech-0",
+    "storage_bucket": "zerotech-0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793619273824:android:b5771948937386aab38b05",
+        "android_client_info": {
+          "package_name": "com.yakasoftware.zerotech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793619273824-4nehtgeh274097i2lis2t66k1eop3odu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLA5Wgc_utYwMrYYwqC_UitLe84aYGenQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793619273824-4nehtgeh274097i2lis2t66k1eop3odu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
