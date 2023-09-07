@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.yakasoftware.zerotech"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.yakasoftware.zerotech"
         minSdk = 28
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -51,7 +51,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -66,4 +66,61 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    //Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12")
+    implementation("androidx.compose.material:material-icons-core:1.5.1")
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Coroutine Lifecycle Scopes
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
+    //Firebase
+    implementation (platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
+    implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.7.1")
+    implementation ("com.google.firebase:firebase-storage-ktx:20.2.1")
+    implementation ("com.google.firebase:firebase-appcheck:17.0.1")
+    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.1")
+    implementation ("com.google.firebase:firebase-messaging:23.2.1")
+    //Hilt
+    implementation ("com.google.dagger:hilt-android:2.47")
+    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
+
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12")
+    implementation ("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling:1.5.1")
+    implementation ("androidx.compose.foundation:foundation:1.5.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation ("androidx.navigation:navigation-compose:2.7.2")
+    implementation ("androidx.compose.foundation:foundation-layout:1.6.0-alpha05")
+
+    //Admob
+    implementation ("com.google.android.gms:play-services-ads:22.3.0")
+    //For Permission
+    implementation ("androidx.activity:activity-ktx")
+    implementation ("com.google.accompanist:accompanist-permissions:0.31.5-beta")
+
+    //Location
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.accompanist:accompanist-pager:0.31.5-beta")
+
+    //ALgolia
+    implementation ("com.algolia:instantsearch-compose:3.3.0")
+    implementation ("io.ktor:ktor-client-okhttp:2.3.2")
+
+    //For Premium
+    implementation ("com.android.billingclient:billing:6.0.1")
+    //Accompanist for WindowInsets
+    implementation ("com.google.accompanist:accompanist-insets:0.31.5-beta")
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.16.0")
+
 }
