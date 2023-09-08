@@ -3,17 +3,24 @@ package com.yakasoftware.zerotech
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
 import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
+import com.yakasoftware.zerotech.views.BasketScreen
+import com.yakasoftware.zerotech.views.LoginScreen
 import com.yakasoftware.zerotech.views.MainScreen
 import com.yakasoftware.zerotech.views.NoInternetScreen
+import com.yakasoftware.zerotech.views.ProfileScreen
+import com.yakasoftware.zerotech.views.RegisterScreen
 import com.yakasoftware.zerotech.views.SplashScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         setContent {
             ZeroTechTheme {
                 val navController = rememberNavController()
@@ -28,6 +35,18 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("no_internet_screen") {
                         NoInternetScreen(navController = navController)
+                    }
+                    composable("register_screen") {
+                        RegisterScreen(navController = navController)
+                    }
+                    composable("login_screen"){
+                        LoginScreen(navController = navController)
+                    }
+                    composable("profile_screen") {
+                        ProfileScreen(navController = navController)
+                    }
+                    composable("basket_screen") {
+                        BasketScreen(navController = navController)
                     }
                 }
             }

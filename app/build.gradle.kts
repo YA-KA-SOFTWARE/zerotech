@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -83,13 +84,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
     //Firebase
     implementation (platform("com.google.firebase:firebase-bom:32.2.0"))
-    implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
     implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.google.firebase:firebase-auth-ktx")
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation ("com.google.firebase:firebase-firestore-ktx:24.7.1")
     implementation ("com.google.firebase:firebase-storage-ktx:20.2.1")
     implementation ("com.google.firebase:firebase-appcheck:17.0.1")
-    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.1")
     implementation ("com.google.firebase:firebase-messaging:23.2.1")
     //Hilt
     implementation ("com.google.dagger:hilt-android:2.47")
