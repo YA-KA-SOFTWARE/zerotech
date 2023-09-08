@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "splash_screen") {
+
                     composable("splash_screen") {
                         SplashScreen(navController = navController)
                     }
@@ -29,7 +30,6 @@ class MainActivity : ComponentActivity() {
                         NoInternetScreen(navController = navController)
                     }
                 }
-
             }
         }
     }
