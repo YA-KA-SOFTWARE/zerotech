@@ -13,18 +13,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.imageResource
@@ -95,10 +99,19 @@ fun LoginScreen(navController: NavHostController) {
                                     modifier = Modifier.size(150.dp)
                                 )
                             }
-                            Row {
-                                OutlinedTextField(value = userEmail.value, onValueChange = {
-                                    userEmail.value = it
-                                } )
+                            Spacer(modifier = Modifier.padding(top = 35.dp))
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                                    OutlinedTextField(value = userEmail.value, onValueChange = {
+                                        userEmail.value = it
+                                    }, label = { Text(text = "Email", color = MaterialTheme.colorScheme.secondary)},
+                                      colors = TextFieldDefaults.outlinedTextFieldColors(
+                                          focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                          focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                          unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                          unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                          cursorColor = MaterialTheme.colorScheme.secondary
+                                      ), shape = RoundedCornerShape(10.dp)
+                                    )
                             }
                         }
 
