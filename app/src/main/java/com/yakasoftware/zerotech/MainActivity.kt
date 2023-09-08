@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
 import com.yakasoftware.zerotech.views.MainScreen
+import com.yakasoftware.zerotech.views.NoInternetScreen
 import com.yakasoftware.zerotech.views.SplashScreen
 
 class MainActivity : ComponentActivity() {
@@ -23,6 +24,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("main_screen"){
                         MainScreen(navController = navController)
+                    }
+                    composable("no_internet_screen") {
+                        NoInternetScreen(navController = navController)
                     }
                 }
 

@@ -1,11 +1,13 @@
 package com.yakasoftware.zerotech.views
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.animation.core.animateTo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,33 +24,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.R
 
 @Composable
@@ -58,8 +51,13 @@ fun MainScreen(navController: NavHostController) {
     }
     val sidebarWidth by animateDpAsState(
         targetValue = if (isMenuVisible.value) (LocalConfiguration.current.screenWidthDp * 0.50f).dp else 0.dp,
-        animationSpec = tween(durationMillis = 500), label = ""
+        animationSpec = if (isMenuVisible.value) tween(durationMillis = 500) else spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "Yan menü animasyonu"
     )
+
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -138,16 +136,20 @@ fun MainScreen(navController: NavHostController) {
                                 modifier = Modifier.size(80.dp)
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Menü Kapama",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clickable {
-                                        isMenuVisible.value = false
-                                    }
-                            )
+                            Button(onClick = {
+                                if (isMenuVisible.value) {
+                                    isMenuVisible.value = false
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Menü Kapama",
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                )
+                            }
+
                         }
                     }
                 }

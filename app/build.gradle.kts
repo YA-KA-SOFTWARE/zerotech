@@ -67,6 +67,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     //Compose
+    implementation ("androidx.compose.animation:animation:1.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.navigation:navigation-compose:2.7.2")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12")
@@ -105,11 +106,11 @@ dependencies {
 
     //Location
     implementation ("com.google.android.gms:play-services-location:21.0.1")
-    implementation ("com.google.accompanist:accompanist-pager:0.31.5-beta")
+    implementation ("com.google.accompanist:accompanist-pager:0.33.0-alpha")
 
     //ALgolia
     implementation ("com.algolia:instantsearch-compose:3.3.0")
-    implementation ("io.ktor:ktor-client-okhttp:2.3.2")
+    implementation ("io.ktor:ktor-client-okhttp:2.3.3")
 
     //For Premium
     implementation ("com.android.billingclient:billing:6.0.1")
