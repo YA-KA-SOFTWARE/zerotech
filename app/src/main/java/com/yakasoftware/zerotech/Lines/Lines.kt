@@ -8,5 +8,5 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SimpleLine() {
-    Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 0.5.dp)
+    Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 0.3.dp)
 }
