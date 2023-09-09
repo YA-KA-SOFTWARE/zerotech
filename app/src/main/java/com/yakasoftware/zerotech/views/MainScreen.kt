@@ -96,7 +96,7 @@ fun MainScreen(navController: NavHostController) {
                 Button(onClick = {
                     if (currentUser == null) {
                         val popBackStackDestinationId = navController.previousBackStackEntry?.destination?.route
-                        navController.navigate("login_screen") {
+                        navController.navigate("register_screen") {
                             // "login_screen" sayfasına geçerken geriye gitme işlemini yapılandırın
                             if (popBackStackDestinationId == "main_screen") {
                                 // Eğer önceki sayfa "main_screen" ise geriye gitme işlemini devre dışı bırak
