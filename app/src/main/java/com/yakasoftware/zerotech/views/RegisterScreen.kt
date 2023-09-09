@@ -395,7 +395,6 @@ fun RegisterScreen(navController: NavHostController) {
                                                                                                                           "Email doğrulandı oturum açabilirsiniz!",
                                                                                                                             Toast.LENGTH_SHORT
                                                                                                                         ).show()
-                                                                                                                        navController.navigate("login_screen")
                                                                                                                         //veritabanına kayıt kısmı
                                                                                                                     }
                                                                                                                 }
@@ -455,7 +454,7 @@ fun RegisterScreen(navController: NavHostController) {
                                 }) {
                                     Text(text = "Kayıt Ol", color = MaterialTheme.colorScheme.secondary,
                                         fontSize = 20.sp,
-                                        letterSpacing = 2.sp)
+                                        letterSpacing = 1.sp)
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                             }

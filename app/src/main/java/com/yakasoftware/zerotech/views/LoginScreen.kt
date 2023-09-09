@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,9 +43,11 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.R
@@ -107,7 +110,7 @@ fun LoginScreen(navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()) {
                     Box(modifier = Modifier
-                        .fillMaxSize(0.9f)
+                        .fillMaxSize(0.8f)
                         .background(MaterialTheme.colorScheme.primary)
                         .border(
                             width = 0.5.dp, // Kenarlık kalınlığı
@@ -208,10 +211,57 @@ fun LoginScreen(navController: NavHostController) {
                             }
                             // Giriş Yap Butonu
                             Row(Modifier.fillMaxWidth()) {
-                                Button(onClick = { /*TODO*/ }) {
-                                    
+                                Spacer(modifier = Modifier.weight(1f))
+
+                                Button(onClick = {
+                                    if (userEmail.value.isNotEmpty() && password.value.isNotEmpty()) {
+                                        if (userEmail.value.endsWith(".com")) {
+                                            FirebaseAuth.getInstance().signInWithEmailAndPassword(userEmail.value,password.value)
+                                                .addOnCompleteListener { task ->
+                                                    if (task.isSuccessful) {
+                                                        val user = FirebaseAuth.getInstance().currentUser
+                                                        if (user != null && user.isEmailVerified) {
+                                                            navController.navigate("main_screen")
+                                                            Toast.makeText(context,"Başarıyla giriş yapıldı.",Toast.LENGTH_SHORT).show()
+                                                        }else {
+                                                            Toast.makeText(context,"Eposta adresinizi doğrulayın.",Toast.LENGTH_SHORT).show()
+                                                        }
+
+                                                    }else {
+                                                        Toast.makeText(context,"Hesap bulunamadı",Toast.LENGTH_SHORT).show()
+                                                    }
+
+                                                }
+
+                                        }else {
+                                            Toast.makeText(context,"Geçerli bir email adresi girin.",Toast.LENGTH_SHORT).show()
+                                        }
+                                    }else {
+                                        Toast.makeText(context,"Giriş yapmak için gerekli alanları doldurun.",Toast.LENGTH_SHORT).show()
+                                    }
+                                }) {
+                                    Text(text = "Giriş Yap", color = MaterialTheme.colorScheme.secondary, letterSpacing = 1.sp, fontSize = 20.sp)
                                 }
+                                Spacer(modifier = Modifier.weight(1f))
+
                             }
+                            Spacer(modifier = Modifier.padding(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(modifier = Modifier.weight(1f))
+                                Text(
+                                    text = "Üye Ol",
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    textDecoration = TextDecoration.Underline,
+                                    modifier = Modifier.clickable {
+                                        navController.navigate("register_screen")
+                                    }
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+
                         }
 
                     }
