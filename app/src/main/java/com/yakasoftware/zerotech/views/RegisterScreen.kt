@@ -58,6 +58,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.R
+import com.yakasoftware.zerotech.classes.UserDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -288,6 +289,7 @@ fun RegisterScreen(navController: NavHostController) {
                                             color = MaterialTheme.colorScheme.secondary
                                         )
                                     },
+                                    placeholder = { Text(text = "(5xx)-xxx-xxxx")},
                                     colors = TextFieldDefaults.outlinedTextFieldColors(
                                         focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                         focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -396,6 +398,13 @@ fun RegisterScreen(navController: NavHostController) {
                                                                                                                             Toast.LENGTH_SHORT
                                                                                                                         ).show()
                                                                                                                         //veritabanına kayıt kısmı
+                                                                                                                        val userdata = UserDatabase.FirestoreDatabase()
+
+                                                                                                                        userdata.addUserData("name",name.value)
+
+                                                                                                                        userdata.addUserData("surname",surName.value)
+
+                                                                                                                        userdata.addUserData("phoneNumber",phoneNumber.value)
                                                                                                                     }
                                                                                                                 }
                                                                                                                 else {
