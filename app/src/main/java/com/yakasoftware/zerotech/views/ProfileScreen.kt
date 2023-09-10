@@ -56,15 +56,18 @@ fun ProfileScreen(navController: NavHostController) {
     val phoneNumber = remember {
         mutableStateOf("")
     }
-    db.collection("users").document(email.toString())
-        .get()
-        .addOnSuccessListener {
-            val data = it.data
-            name.value = data?.get("name") as String ?: " "
-            surname.value = data?.get("surname") as  String ?: ""
-            phoneNumber.value = data?.get("phoneNumber") as String ?: ""
+    if (currentUser != null) {
+        db.collection("users").document(email.toString())
+            .get()
+            .addOnSuccessListener {
+                val data = it.data
+                name.value = data?.get("name") as String ?: " "
+                surname.value = data?.get("surname") as  String ?: ""
+                phoneNumber.value = data?.get("phoneNumber") as String ?: ""
 
-        }
+            }
+
+    }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
 
@@ -124,8 +127,7 @@ fun ProfileScreen(navController: NavHostController) {
                     navController.navigate("main_screen"){
                         popUpTo("main_screen") { inclusive = true }
                         launchSingleTop = true }
-                    authCoroutineScope.launch {
-                        delay(200)
+                    if (currentUser != null) {
                         auth.signOut()
                     }
                         Toast.makeText(context,"Başarıyla çıkış yapıdı.",Toast.LENGTH_SHORT).show()
