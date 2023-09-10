@@ -300,7 +300,10 @@ fun MainScreen(navController: NavHostController) {
                                         Box(modifier = Modifier.fillMaxWidth()) {
                                             Image(
                                                 painter = bluetoothPainter,
-                                                contentDescription = "Bluetooth Hoparlör"
+                                                contentDescription = "Bluetooth Hoparlör",
+                                                Modifier.border(
+                                                    width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
+                                                )
                                             )
                                         }
                                     }

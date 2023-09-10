@@ -1,5 +1,6 @@
 package com.yakasoftware.zerotech.views
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,17 +14,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,14 +35,17 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 data class UserData(val name: String , val userName: String, val phoneNumber: String)
 @Composable
 fun ProfileScreen(navController: NavHostController) {
+    val context = LocalContext.current
     val db = Firebase.firestore
     val auth = Firebase.auth
-    val currentUser = auth.currentUser!!
-    val email = currentUser.email!!
+    val currentUser = auth.currentUser
+    val email = currentUser?.email
 
     val name = remember {
         mutableStateOf("")
@@ -49,7 +56,7 @@ fun ProfileScreen(navController: NavHostController) {
     val phoneNumber = remember {
         mutableStateOf("")
     }
-    db.collection("users").document(email)
+    db.collection("users").document(email.toString())
         .get()
         .addOnSuccessListener {
             val data = it.data
@@ -71,7 +78,7 @@ fun ProfileScreen(navController: NavHostController) {
 
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier
-                .clip(RoundedCornerShape(0,0,10,10))
+                .clip(RoundedCornerShape(0, 0, 10, 10))
                 .fillMaxWidth()
                 .height(200.dp)
                 .background(gradientBrush)) {
@@ -111,6 +118,21 @@ fun ProfileScreen(navController: NavHostController) {
                         Spacer(modifier = Modifier.weight(1f))
                     }
                 }
+            }
+                val authCoroutineScope = rememberCoroutineScope()
+                Button(onClick = {
+                    navController.navigate("main_screen"){
+                        popUpTo("main_screen") { inclusive = true }
+                        launchSingleTop = true }
+                    authCoroutineScope.launch {
+                        delay(200)
+                        auth.signOut()
+                    }
+                        Toast.makeText(context,"Başarıyla çıkış yapıdı.",Toast.LENGTH_SHORT).show()
+
+                }) {
+
+                Text(text = "Çıkış Yap", color = MaterialTheme.colorScheme.tertiary)
             }
 
         }

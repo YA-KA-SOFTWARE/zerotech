@@ -228,7 +228,10 @@ fun LoginScreen(navController: NavHostController) {
                                                     if (task.isSuccessful) {
                                                         val user = FirebaseAuth.getInstance().currentUser
                                                         if (user != null && user.isEmailVerified) {
-                                                            navController.navigate("main_screen")
+                                                            navController.navigate("main_screen"){
+                                                                popUpTo("main_screen") { inclusive = true }
+                                                                launchSingleTop = true
+                                                            }
                                                             Toast.makeText(context,"Başarıyla giriş yapıldı.",Toast.LENGTH_SHORT).show()
                                                         }else {
                                                             Toast.makeText(context,"Eposta adresinizi doğrulayın.",Toast.LENGTH_SHORT).show()
