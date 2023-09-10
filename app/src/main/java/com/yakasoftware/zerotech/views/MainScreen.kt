@@ -111,11 +111,6 @@ fun MainScreen(navController: NavHostController) {
 
     val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
     Surface(modifier = Modifier.fillMaxSize()
-        .clickable {
-                   if (isMenuVisible.value) {
-                       isMenuVisible.value = false
-                   }
-        }
         , color = MaterialTheme.colorScheme.primary) {
         Column(modifier = Modifier
             .fillMaxSize()
