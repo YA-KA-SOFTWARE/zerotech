@@ -4,8 +4,10 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,11 +30,14 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +54,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -55,6 +64,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
     val isMenuVisible = remember {
@@ -97,6 +107,47 @@ fun MainScreen(navController: NavHostController) {
 
             }
     }
+    val pagerLoading = remember {
+        mutableStateOf(true)
+    }
+    LaunchedEffect(Unit) {
+        delay(750)
+        pagerLoading.value = false
+    }
+    val airMax = remember {
+        mutableStateOf("")
+    }
+    val offers = remember {
+        mutableStateOf("")
+    }
+    val bluetooth = remember {
+        mutableStateOf("")
+    }
+    val watchs = remember {
+        mutableStateOf("")
+    }
+
+    db.collection("products").document("catalog")
+        .get()
+        .addOnSuccessListener {
+            val data = it.data
+            airMax.value = data?.get("airmax") as String
+            offers.value = data["offers"] as String
+            bluetooth.value = data["bluetooth"] as String
+            watchs.value = data["watchs"] as String
+
+
+
+        }
+        .addOnFailureListener {
+            println(it)
+        }
+
+    val airMaxPainter = rememberAsyncImagePainter(model = airMax.value)
+    val offersPainter = rememberAsyncImagePainter(model = offers.value)
+    val bluetoothPainter = rememberAsyncImagePainter(model = bluetooth.value)
+    val watchsPainter = rememberAsyncImagePainter(model = watchs.value)
+
 
     val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
     Surface(modifier = Modifier.fillMaxSize()
@@ -193,6 +244,85 @@ fun MainScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.padding(end = 4.dp))
 
             }
+            val pagerState = rememberPagerState(pageCount = { 4 })
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(30.dp))
+                ) {
+
+                    if (pagerLoading.value) {
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                        }
+                    }else {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { page ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        when (page) {
+                                            0 -> MaterialTheme.colorScheme.primary
+                                            1 -> MaterialTheme.colorScheme.primary
+                                            2 -> MaterialTheme.colorScheme.primary
+                                            3 -> MaterialTheme.colorScheme.primary
+                                            else -> MaterialTheme.colorScheme.primary
+                                        }
+                                    )
+                            ) {
+                                // Her sayfanın içeriği burada olacak
+                                when (page) {
+                                    0 -> {
+                                        // İlk sayfa içeriği
+                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                            Image(
+                                                painter = offersPainter,
+                                                contentDescription = "Kampanya"
+                                            )
+                                        }
+
+                                    }
+                                    1 -> {
+                                        // İkinci sayfa içeriği
+                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                            Image(
+                                                painter = airMaxPainter,
+                                                contentDescription = "Airmax"
+                                            )
+                                        }
+                                    }
+                                    2 -> {
+                                        // Üçüncü sayfa içeriği
+                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                            Image(
+                                                painter = bluetoothPainter,
+                                                contentDescription = "Bluetooth Hoparlör"
+                                            )
+                                        }
+                                    }
+                                    3 -> {
+                                        // Dördüncü sayfa içeriği
+                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                            Image(
+                                                painter = watchsPainter,
+                                                contentDescription = "Saat"
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+            }
+
+
+
+
         }
         //SideBar
 
@@ -203,7 +333,8 @@ fun MainScreen(navController: NavHostController) {
                     .fillMaxSize()
             ) {
                 Box(
-                    modifier = Modifier.clip(RoundedCornerShape(0,10,10,0))
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(0, 10, 10, 0))
                         .fillMaxHeight()
                         .width(sidebarWidth)
                         .background(MaterialTheme.colorScheme.primary)
@@ -218,8 +349,8 @@ fun MainScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable(
-                                   enabled = false
-                                ){
+                                    enabled = false
+                                ) {
 
                                 },
 
