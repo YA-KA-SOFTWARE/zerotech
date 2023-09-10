@@ -92,7 +92,7 @@ fun MainScreen(navController: NavHostController) {
     val name = remember {
         mutableStateOf("")
     }
-    val email = currentUser!!.email
+    val email = currentUser?.email
 
     if (auth.currentUser != null) {
         db.collection("users").document(email!!)
