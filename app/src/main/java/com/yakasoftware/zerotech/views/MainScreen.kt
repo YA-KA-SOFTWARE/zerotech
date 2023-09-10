@@ -12,6 +12,7 @@ import androidx.compose.animation.core.animateTo
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,6 +70,8 @@ fun MainScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
+    val coroutineScope = rememberCoroutineScope()
+    var interactionSource = remember { MutableInteractionSource() }
     val barVisible = remember {
         mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
     }
@@ -107,7 +110,13 @@ fun MainScreen(navController: NavHostController) {
     }
 
     val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+    Surface(modifier = Modifier.fillMaxSize()
+        .clickable {
+                   if (isMenuVisible.value) {
+                       isMenuVisible.value = false
+                   }
+        }
+        , color = MaterialTheme.colorScheme.primary) {
         Column(modifier = Modifier
             .fillMaxSize()
             .blur(radius = if (barVisible.value) 5.dp else 0.dp)) {
@@ -136,23 +145,28 @@ fun MainScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(onClick = {
-                    if (currentUser == null) {
-                        val popBackStackDestinationId = navController.previousBackStackEntry?.destination?.route
-                        navController.navigate("login_screen") {
-                            // "login_screen" sayfasına geçerken geriye gitme işlemini yapılandırın
-                            if (popBackStackDestinationId == "main_screen") {
-                                // Eğer önceki sayfa "main_screen" ise geriye gitme işlemini devre dışı bırak
-                                popUpTo("login_screen") {
-                                    saveState = false
-                                    inclusive = false
+                    if (!isMenuVisible.value) {
+                        if (currentUser == null) {
+                            val popBackStackDestinationId = navController.previousBackStackEntry?.destination?.route
+                            navController.navigate("login_screen") {
+                                // "login_screen" sayfasına geçerken geriye gitme işlemini yapılandırın
+                                if (popBackStackDestinationId == "main_screen") {
+                                    // Eğer önceki sayfa "main_screen" ise geriye gitme işlemini devre dışı bırak
+                                    popUpTo("login_screen") {
+                                        saveState = false
+                                        inclusive = false
+                                    }
                                 }
                             }
+                        }else {
+                            navController.navigate("profile_screen")
                         }
-                    }else {
-                        navController.navigate("profile_screen")
                     }
 
-                }) {
+
+                }, enabled = !isMenuVisible.value, colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = MaterialTheme.colorScheme.primary
+                )) {
                     //Profil ve Hesap Açma
                     val fontSizeInDp = 26.dp
                     if (currentUser == null) {
@@ -165,7 +179,8 @@ fun MainScreen(navController: NavHostController) {
                         )
                     }else {
                         Box(
-                            modifier = Modifier.clip(CircleShape)
+                            modifier = Modifier
+                                .clip(CircleShape)
                                 .size(40.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -184,6 +199,9 @@ fun MainScreen(navController: NavHostController) {
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
+                            if (!isMenuVisible.value) {
+                                navController.navigate("basket_screen")
+                            }
                             //Sepet işlemleri
                         }
                 )
@@ -194,7 +212,6 @@ fun MainScreen(navController: NavHostController) {
         }
         //SideBar
 
-        val coroutineScope = rememberCoroutineScope()
 
         if (isMenuVisible.value) {
             Column(
@@ -216,7 +233,12 @@ fun MainScreen(navController: NavHostController) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { null },
+                                .clickable(
+                                   enabled = false
+                                ){
+
+                                },
+
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = Modifier.padding(start = 40.dp))
@@ -236,7 +258,9 @@ fun MainScreen(navController: NavHostController) {
                                         isMenuVisible.value = false
                                     }
                                 }
-                            }) {
+                            }, colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(31,31,31,255)
+                            )) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
                                     contentDescription = "Menü Kapama",
