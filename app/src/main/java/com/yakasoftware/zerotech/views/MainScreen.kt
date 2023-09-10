@@ -1,6 +1,7 @@
 package com.yakasoftware.zerotech.views
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -8,7 +9,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.animation.core.animateTo
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +39,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -50,18 +55,30 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.yakasoftware.zerotech.R
+import kotlinx.coroutines.delay
+
 
 @Composable
 fun MainScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
+    val barVisible = remember {
+        mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
+    }
     val sidebarWidth by animateDpAsState(
-        targetValue = if (isMenuVisible.value) (LocalConfiguration.current.screenWidthDp * 0.50f).dp else 0.dp,
-        animationSpec = if (isMenuVisible.value) tween(durationMillis = 500) else spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
+        targetValue = if (barVisible.value) (LocalConfiguration.current.screenWidthDp * 0.50f).dp else 0.dp,
+        animationSpec =  if (barVisible.value) {
+            tween(
+                durationMillis = 200,
+                easing = LinearOutSlowInEasing // Bu yavaşça kapanmasını sağlar
+            )
+        } else {
+            tween(
+                durationMillis = 200,
+                easing = LinearOutSlowInEasing // Yavaşça açılması için burada da kullanabilirsiniz
+            )
+        },
         label = "Yan menü animasyonu"
     )
 
@@ -69,13 +86,17 @@ fun MainScreen(navController: NavHostController) {
     val currentUser = auth.currentUser
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().blur(radius = if(barVisible.value) 5.dp else 0.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {
                     if (!isMenuVisible.value) {
                         isMenuVisible.value = true
+                        barVisible.value = true
+                    }
+                    if(!barVisible.value){
+                        isMenuVisible.value = false
                     }
                 }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
                         Icon(
@@ -151,9 +172,11 @@ fun MainScreen(navController: NavHostController) {
                         .animateContentSize()
                 ) {
                     //SideBar İçeriği
-                    Column(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(31, 31, 31, 255))) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().clickable { null},
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = Modifier.padding(start = 40.dp))
@@ -165,7 +188,7 @@ fun MainScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.weight(1f))
                             Button(onClick = {
                                 if (isMenuVisible.value) {
-                                    isMenuVisible.value = false
+                                    barVisible.value = false
                                 }
                             }) {
                                 Icon(

@@ -3,6 +3,10 @@ package com.yakasoftware.zerotech
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,7 +29,17 @@ class MainActivity : ComponentActivity() {
             ZeroTechTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "splash_screen") {
+
+                NavHost(navController = navController,
+                    startDestination = "splash_screen",
+                    enterTransition = {
+                        // you can change whatever you want animation
+                        EnterTransition.None
+                    },
+                    exitTransition = {
+                        // you can change whatever you want animation
+                        ExitTransition.None
+                    }) {
 
                     composable("splash_screen") {
                         SplashScreen(navController = navController)
