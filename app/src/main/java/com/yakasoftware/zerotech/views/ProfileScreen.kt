@@ -76,7 +76,7 @@ fun ProfileScreen(navController: NavHostController) {
 
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(0,0,10,10))
                 .fillMaxWidth()
                 .height(200.dp)
                 .background(gradientBrush)) {

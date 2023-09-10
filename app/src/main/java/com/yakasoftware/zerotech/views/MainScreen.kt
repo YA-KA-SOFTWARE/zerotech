@@ -214,7 +214,7 @@ fun MainScreen(navController: NavHostController) {
                     .fillMaxSize()
             ) {
                 Box(
-                    modifier = Modifier
+                    modifier = Modifier.clip(RoundedCornerShape(0,10,10,0))
                         .fillMaxHeight()
                         .width(sidebarWidth)
                         .background(MaterialTheme.colorScheme.primary)
