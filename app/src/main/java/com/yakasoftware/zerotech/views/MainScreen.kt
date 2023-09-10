@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -60,6 +61,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -116,9 +118,6 @@ fun MainScreen(navController: NavHostController) {
                     if (!isMenuVisible.value) {
                         isMenuVisible.value = true
                         barVisible.value = true
-                    }
-                    if(!barVisible.value){
-                        isMenuVisible.value = false
                     }
                 }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
                         Icon(
@@ -194,6 +193,9 @@ fun MainScreen(navController: NavHostController) {
             }
         }
         //SideBar
+
+        val coroutineScope = rememberCoroutineScope()
+
         if (isMenuVisible.value) {
             Column(
                 modifier = Modifier
@@ -225,8 +227,14 @@ fun MainScreen(navController: NavHostController) {
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Button(onClick = {
-                                if (isMenuVisible.value) {
-                                    barVisible.value = false
+                                coroutineScope.launch {
+                                    if (isMenuVisible.value) {
+                                        barVisible.value = false
+                                        delay(250) // Delay for 1000 milliseconds (1 second)
+                                    }
+                                    if (!barVisible.value) {
+                                        isMenuVisible.value = false
+                                    }
                                 }
                             }) {
                                 Icon(
