@@ -144,7 +144,7 @@ fun RegisterScreen(navController: NavHostController) {
                         .border(
                             width = 0.5.dp, // Kenarlık kalınlığı
                             color = MaterialTheme.colorScheme.secondary, // Kenarlık rengi
-                            shape = RectangleShape // Kenarlık şekli (isteğe bağlı)
+                            shape = RoundedCornerShape(20.dp)
                         ), contentAlignment = Alignment.Center) {
 
                         Column(modifier = Modifier.fillMaxSize()) {
