@@ -151,7 +151,7 @@ fun RegisterScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.padding(top = 25.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                                 OutlinedTextField(value = name.value, onValueChange = {
-                                    name.value = it
+                                    name.value = it.trim()
                                 }, label = { Text(text = "İsim", color = MaterialTheme.colorScheme.secondary)},
                                     keyboardOptions = KeyboardOptions.Default.copy(
                                         imeAction = ImeAction.Done
@@ -168,7 +168,7 @@ fun RegisterScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.padding(4.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                                 OutlinedTextField(value = surName.value, onValueChange = {
-                                    surName.value = it
+                                    surName.value = it.trim()
                                 }, label = { Text(text = "Soyisim", color = MaterialTheme.colorScheme.secondary)},
                                     keyboardOptions = KeyboardOptions.Default.copy(
                                         imeAction = ImeAction.Done
@@ -185,7 +185,7 @@ fun RegisterScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.padding(4.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                                 OutlinedTextField(value = userEmail.value, onValueChange = {
-                                    userEmail.value = it
+                                    userEmail.value = it.trim()
                                 }, label = { Text(text = "Email", color = MaterialTheme.colorScheme.secondary)},
                                     keyboardOptions = KeyboardOptions.Default.copy(
                                         imeAction = ImeAction.Done
@@ -212,6 +212,7 @@ fun RegisterScreen(navController: NavHostController) {
                                     },
                                     label = { Text(text = "Şifre", color = MaterialTheme.colorScheme.secondary) },
                                     keyboardOptions = KeyboardOptions.Default.copy(
+                                        keyboardType = KeyboardType.Password, // Şifre klavyesi kullan
                                         imeAction = ImeAction.Done
                                     ),
                                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -250,6 +251,7 @@ fun RegisterScreen(navController: NavHostController) {
                                     },
                                     label = { Text(text = "Şifre Tekrar", color = MaterialTheme.colorScheme.secondary) },
                                     keyboardOptions = KeyboardOptions.Default.copy(
+                                        keyboardType = KeyboardType.Password, // Şifre klavyesi kullan
                                         imeAction = ImeAction.Done
                                     ),
                                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -281,7 +283,7 @@ fun RegisterScreen(navController: NavHostController) {
                                 OutlinedTextField(
                                     value = phoneNumber.value,
                                     onValueChange = {
-                                        phoneNumber.value = it
+                                        phoneNumber.value = it.trim()
                                     },
                                     label = {
                                         Text(

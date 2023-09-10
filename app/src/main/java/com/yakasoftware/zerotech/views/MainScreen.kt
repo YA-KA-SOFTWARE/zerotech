@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -33,6 +34,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,10 +42,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -84,9 +88,27 @@ fun MainScreen(navController: NavHostController) {
 
     val auth = Firebase.auth
     val currentUser = auth.currentUser
+    val db = Firebase.firestore
+    val name = remember {
+        mutableStateOf("")
+    }
+    val email = currentUser!!.email
 
+    if (auth.currentUser != null) {
+        db.collection("users").document(email!!)
+            .get()
+            .addOnSuccessListener {
+                val data = it.data
+                name.value = data?.get("name") as String ?: " "
+
+            }
+    }
+
+    val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-        Column(modifier = Modifier.fillMaxSize().blur(radius = if(barVisible.value) 5.dp else 0.dp)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .blur(radius = if (barVisible.value) 5.dp else 0.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -133,13 +155,27 @@ fun MainScreen(navController: NavHostController) {
 
                 }) {
                     //Profil ve Hesap Açma
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "Profil ve Hesap",
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier
-                            .size(32.dp)
-                    )
+                    val fontSizeInDp = 26.dp
+                    if (currentUser == null) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Profil ve Hesap",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(32.dp)
+                        )
+                    }else {
+                        Box(
+                            modifier = Modifier.clip(CircleShape)
+                                .size(40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = firstLetter.toString(), color = MaterialTheme.colorScheme.secondary,
+                                fontSize = with(LocalDensity.current) { fontSizeInDp.toSp() }
+                            )
+
+                        }
+                    }
                 }
                 //Sepetim
                 Icon(
@@ -176,7 +212,9 @@ fun MainScreen(navController: NavHostController) {
                         .fillMaxSize()
                         .background(Color(31, 31, 31, 255))) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().clickable { null},
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { null },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = Modifier.padding(start = 40.dp))
