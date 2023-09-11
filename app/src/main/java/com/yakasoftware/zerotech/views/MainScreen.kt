@@ -1,5 +1,7 @@
 package com.yakasoftware.zerotech.views
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -60,6 +62,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -78,6 +81,7 @@ import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -86,6 +90,7 @@ fun MainScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val barVisible = remember {
         mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
@@ -585,7 +590,35 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
+                        Row(modifier = Modifier.fillMaxWidth()
+                            .clickable {
+                                if (isMenuVisible.value && barVisible.value) {
+                                    val phoneNumber = "+905010996541"
+                                    val message = "Merhaba uygulama üzerinden ulaşıyorum."
+                                    val url = "https://wa.me/$phoneNumber?text=${URLEncoder.encode(message, "UTF-8")}"
+                                    val intent = Intent(Intent.ACTION_VIEW)
+                                    intent.data = Uri.parse(url)
+                                    intent.setPackage("com.whatsapp")
+                                    context.startActivity(
+                                        // on below line we are opening the intent.
+                                        Intent(
+                                            // on below line we are calling
+                                            // uri to parse the data
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(
+                                                // on below line we are passing uri,
+                                                // message and whats app phone number.
+                                                java.lang.String.format(
+                                                    "https://api.whatsapp.com/send?phone=%s&text=%s",
+                                                    phoneNumber,
+                                                    message
+                                                )
+                                            )
+                                        )
+                                    )
+                                }
+
+                            },
                             horizontalArrangement = Arrangement.Center) {
                             Spacer(modifier = Modifier.weight(1f))
                             Text(text = "Canlı Destek", color = MaterialTheme.colorScheme.secondary,
@@ -606,10 +639,27 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
+                        Row(modifier = Modifier.fillMaxWidth()
+                            .clickable {
+                                       if (isMenuVisible.value && barVisible.value) {
+                                           val instagramUri = Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
+                                           val intent = Intent(Intent.ACTION_VIEW, instagramUri)
+
+                                           intent.setPackage("com.instagram.android")
+
+                                           try {
+                                               context.startActivity(intent)
+                                           } catch (e: Exception) {
+                                               context.startActivity(
+                                                   Intent(Intent.ACTION_VIEW,
+                                                       Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA=="))
+                                               )
+                                           }
+                                       }
+                            },
                             horizontalArrangement = Arrangement.Center) {
                             Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Canlı Destek", color = MaterialTheme.colorScheme.secondary,
+                            Text(text = "Tüm Ürünler", color = MaterialTheme.colorScheme.secondary,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
                             Spacer(modifier = Modifier.weight(1f))
