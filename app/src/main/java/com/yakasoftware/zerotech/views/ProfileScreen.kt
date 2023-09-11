@@ -2,6 +2,7 @@ package com.yakasoftware.zerotech.views
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DoubleArrow
+import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.ShoppingBasket
+import androidx.compose.material.icons.filled.Watch
+import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +39,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +48,8 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yakasoftware.zerotech.Lines.SimpleLine
+import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -122,21 +137,222 @@ fun ProfileScreen(navController: NavHostController) {
                     }
                 }
             }
-                val authCoroutineScope = rememberCoroutineScope()
-                Button(onClick = {
-                    navController.navigate("main_screen"){
-                        popUpTo("main_screen") { inclusive = true }
-                        launchSingleTop = true }
-                    if (currentUser != null) {
-                        auth.signOut()
-                    }
-                        Toast.makeText(context,"Başarıyla çıkış yapıdı.",Toast.LENGTH_SHORT).show()
-
-                }) {
-
-                Text(text = "Çıkış Yap", color = MaterialTheme.colorScheme.tertiary)
+            val sideBarFontSize = 24.dp
+            Spacer(modifier = Modifier.padding(top = 28.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Text(text = "Profil İşlemleri", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Profil İşlemleri",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
             }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Row(modifier = Modifier.fillMaxWidth(0.750f)) {
+                    SimpleLine()
+                }
+            }
+            Spacer(modifier = Modifier.padding(top = 28.dp))
 
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(bottom = 12.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("adress_screen")
+                }) {
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    painter = painterResource(R.drawable.adresslogo),
+                    contentDescription = "Adres Defteri",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+                Spacer(modifier = Modifier.padding(start = 12.dp))
+                Text(text = "Adres Defteri", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.DoubleArrow,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(end = 16.dp))
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("orders_screen")
+                }) {
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    painter = painterResource(R.drawable.orderstr),
+                    contentDescription = "Siparişlerim",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+                Spacer(modifier = Modifier.padding(start = 12.dp))
+                Text(text = "Siparişlerim", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.DoubleArrow,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(end = 16.dp))
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                  navController.navigate("favorite_screen")
+                }) {
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    painter = painterResource(R.drawable.likestr),
+                    contentDescription = "favorilerim",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+                Spacer(modifier = Modifier.padding(start = 12.dp))
+                Text(text = "Favorilerim", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.DoubleArrow,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(end = 16.dp))
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("basket_screen")
+                }) {
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    imageVector = Icons.Default.ShoppingBasket,
+                    contentDescription = "Sepetim",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(start = 12.dp))
+                Text(text = "Sepetim", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.DoubleArrow,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(end = 16.dp))
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                   navController.navigate("account_detail_screen")
+                }) {
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(start = 12.dp))
+                Text(text = "Hesap Bilgileri", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.DoubleArrow,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(end = 16.dp))
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center) {
+                    Row(modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .fillMaxWidth(0.6f)
+                        .background(Color.Red)
+                        .clickable {
+                            navController.navigate("main_screen"){
+                                popUpTo("main_screen") { inclusive = true }
+                                launchSingleTop = true }
+                            if (currentUser != null) {
+                                auth.signOut()
+                            }
+                            Toast.makeText(context,"Başarıyla çıkış yapıdı.",Toast.LENGTH_SHORT).show()
+                        }
+                        , verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Çıkış Yap", color = MaterialTheme.colorScheme.primary,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = "Çıkış Yap",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(28.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+
+                    }
+
+                }
+
+            }
         }
 
         }

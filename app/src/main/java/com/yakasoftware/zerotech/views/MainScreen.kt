@@ -108,12 +108,12 @@ fun MainScreen(navController: NavHostController) {
         targetValue = if (barVisible.value) (LocalConfiguration.current.screenWidthDp * 0.50f).dp else 0.dp,
         animationSpec =  if (barVisible.value) {
             tween(
-                durationMillis = 200,
+                durationMillis = 500,
                 easing = LinearOutSlowInEasing // Bu yavaşça kapanmasını sağlar
             )
         } else {
             tween(
-                durationMillis = 200,
+                durationMillis = 500,
                 easing = LinearOutSlowInEasing // Yavaşça açılması için burada da kullanabilirsiniz
             )
         },
@@ -407,7 +407,7 @@ fun MainScreen(navController: NavHostController) {
 
         }
         //SideBar
-val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
+        val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 
         if (isMenuVisible.value) {
             Column(

@@ -5,18 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
+import com.yakasoftware.zerotech.views.AccountDetailScreen
+import com.yakasoftware.zerotech.views.AdressScreen
 import com.yakasoftware.zerotech.views.BasketScreen
+import com.yakasoftware.zerotech.views.FavoriteScreen
 import com.yakasoftware.zerotech.views.LoginScreen
 import com.yakasoftware.zerotech.views.MainScreen
 import com.yakasoftware.zerotech.views.NoInternetScreen
+import com.yakasoftware.zerotech.views.OrdersScrenn
 import com.yakasoftware.zerotech.views.ProfileScreen
 import com.yakasoftware.zerotech.views.RegisterScreen
 import com.yakasoftware.zerotech.views.SplashScreen
@@ -61,6 +62,18 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("basket_screen") {
                         BasketScreen(navController = navController)
+                    }
+                    composable("adress_screen") {
+                        AdressScreen(navController = navController)
+                    }
+                    composable("favorite_screen"){
+                        FavoriteScreen(navController = navController)
+                    }
+                    composable("orders_screen"){
+                        OrdersScrenn(navController = navController)
+                    }
+                    composable("account_detail_screen"){
+                        AccountDetailScreen(navController = navController)
                     }
                 }
             }
