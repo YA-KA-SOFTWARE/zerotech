@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,9 +27,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ProductionQuantityLimits
+import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Speaker
+import androidx.compose.material.icons.filled.Watch
+import androidx.compose.material.icons.filled.WaterfallChart
+import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,7 +62,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -59,6 +73,7 @@ import coil.compose.rememberImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yakasoftware.zerotech.Lines.SimpleLineWhite
 import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -164,16 +179,16 @@ fun MainScreen(navController: NavHostController) {
                         barVisible.value = true
                     }
                 }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menü Açma",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier
-                                .size(32.dp)
-                        )
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menü Açma",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                    )
                 }
                 Image(
-                    bitmap = ImageBitmap.imageResource(id = R.drawable.zerotechlogotransparentr),
+                    bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
                     contentDescription = "Logo",
                     modifier = Modifier.size(90.dp)
                 )
@@ -246,80 +261,81 @@ fun MainScreen(navController: NavHostController) {
             }
             val pagerState = rememberPagerState(pageCount = { 4 })
             Spacer(modifier = Modifier.padding(top = 8.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(30.dp))
-                ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .clip(RoundedCornerShape(30.dp))
+            ) {
 
-                    if (pagerLoading.value) {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
-                        }
-                    }else {
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { page ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        when (page) {
-                                            0 -> MaterialTheme.colorScheme.primary
-                                            1 -> MaterialTheme.colorScheme.primary
-                                            2 -> MaterialTheme.colorScheme.primary
-                                            3 -> MaterialTheme.colorScheme.primary
-                                            else -> MaterialTheme.colorScheme.primary
-                                        }
-                                    )
-                            ) {
-                                // Her sayfanın içeriği burada olacak
-                                when (page) {
-                                    0 -> {
-                                        // İlk sayfa içeriği
-                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                            Image(
-                                                painter = offersPainter,
-                                                contentDescription = "Kampanya"
-                                            )
-                                        }
+                if (pagerLoading.value) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                    }
+                }else {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { page ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    when (page) {
+                                        0 -> MaterialTheme.colorScheme.primary
+                                        1 -> MaterialTheme.colorScheme.primary
+                                        2 -> MaterialTheme.colorScheme.primary
+                                        3 -> MaterialTheme.colorScheme.primary
+                                        else -> MaterialTheme.colorScheme.primary
+                                    }
+                                )
+                        ) {
+                            // Her sayfanın içeriği burada olacak
+                            when (page) {
+                                0 -> {
+                                    // İlk sayfa içeriği
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        Image(
+                                            painter = offersPainter,
+                                            contentDescription = "Kampanya"
+                                        )
+                                    }
 
+                                }
+                                1 -> {
+                                    // İkinci sayfa içeriği
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        Image(
+                                            painter = airMaxPainter,
+                                            contentDescription = "Airmax"
+                                        )
                                     }
-                                    1 -> {
-                                        // İkinci sayfa içeriği
-                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                            Image(
-                                                painter = airMaxPainter,
-                                                contentDescription = "Airmax"
+                                }
+                                2 -> {
+                                    // Üçüncü sayfa içeriği
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        Image(
+                                            painter = bluetoothPainter,
+                                            contentDescription = "Bluetooth Hoparlör",
+                                            Modifier.border(
+                                                width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
                                             )
-                                        }
+                                        )
                                     }
-                                    2 -> {
-                                        // Üçüncü sayfa içeriği
-                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                            Image(
-                                                painter = bluetoothPainter,
-                                                contentDescription = "Bluetooth Hoparlör",
-                                                Modifier.border(
-                                                    width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
-                                                )
-                                            )
-                                        }
-                                    }
-                                    3 -> {
-                                        // Dördüncü sayfa içeriği
-                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                            Image(
-                                                painter = watchsPainter,
-                                                contentDescription = "Saat"
-                                            )
-                                        }
+                                }
+                                3 -> {
+                                    // Dördüncü sayfa içeriği
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        Image(
+                                            painter = watchsPainter,
+                                            contentDescription = "Saat"
+                                        )
                                     }
                                 }
                             }
                         }
                     }
+                }
 
             }
 
@@ -348,6 +364,7 @@ fun MainScreen(navController: NavHostController) {
                     Column(modifier = Modifier
                         .fillMaxSize()
                         .background(Color(31, 31, 31, 255))) {
+                        val sideBarFontSize = 20.dp
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -361,7 +378,7 @@ fun MainScreen(navController: NavHostController) {
                         ) {
                             Spacer(modifier = Modifier.padding(start = 40.dp))
                             Image(
-                                bitmap = ImageBitmap.imageResource(id = R.drawable.zerotechlogotransparentr),
+                                bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
                                 contentDescription = "Logo",
                                 modifier = Modifier.size(80.dp)
                             )
@@ -389,6 +406,207 @@ fun MainScreen(navController: NavHostController) {
                             }
 
                         }
+                        Spacer(modifier = Modifier.padding(top = 20.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Text(text = "Ürünler", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.padding(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.Shop,
+                                contentDescription = "Ürünler",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Row(modifier = Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLineWhite()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 18.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(bottom = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Akıllı Saat", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(R.drawable.saatlogotr), // Simgenizin adını buraya ekleyin
+                                contentDescription = "Akıllı Saat",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Kulaklık", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.Default.Headphones,
+                                contentDescription = "Kulaklık",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Kordon", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.Default.Watch,
+                                contentDescription = "Kordon",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Hoparlör", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.Default.Speaker,
+                                contentDescription = "Hoparlör",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Kampanyalar", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.Default.Campaign,
+                                contentDescription = "Kampanylar",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 40.dp))
+
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Text(text = "İletişim", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.padding(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.ContactPhone,
+                                contentDescription = "iletişim",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Row(modifier = Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLineWhite()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 18.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Canlı Destek", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.Default.Whatsapp,
+                                contentDescription = "Whatsapp",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Canlı Destek", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(R.drawable.instagramlogo), // Simgenizin adını buraya ekleyin
+                                contentDescription = "instagram",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+
                     }
                 }
             }

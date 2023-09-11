@@ -93,7 +93,6 @@ fun RegisterScreen(navController: NavHostController) {
     val passwordAgain = remember {
         mutableStateOf("")
     }
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     val passwordVisibility = remember { mutableStateOf(false) }
     val passwordVisibilityAgain = remember { mutableStateOf(false) }
@@ -117,7 +116,7 @@ fun RegisterScreen(navController: NavHostController) {
                     verticalAlignment = Alignment.CenterVertically) {
                     Spacer(modifier = Modifier.weight(1f))
                     Image(
-                        bitmap = ImageBitmap.imageResource(id = R.drawable.zerotechlogotransparentr),
+                        bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
                         contentDescription = "Logo",
                         modifier = Modifier.size(90.dp)
                     )

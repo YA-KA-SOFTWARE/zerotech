@@ -10,3 +10,8 @@ import androidx.compose.ui.unit.dp
 fun SimpleLine() {
     Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 0.3.dp)
 }
+
+@Composable
+fun SimpleLineWhite() {
+    Divider(color = Color.White, thickness = 0.3.dp)
+}

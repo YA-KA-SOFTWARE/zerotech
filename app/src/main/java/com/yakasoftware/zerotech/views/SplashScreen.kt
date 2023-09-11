@@ -66,7 +66,7 @@ fun SplashScreen(waitTime: Long = 1500L,navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally)
         {
             Image(
-                bitmap = ImageBitmap.imageResource(id = R.drawable.zerotechlogotransparentr),
+                bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
                 contentDescription = "Geçici Gözüken Logo",
                 alpha = alpha.value // Alfa değeri Animatable'ın değerine göre ayarlanır.
             )

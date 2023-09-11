@@ -91,7 +91,7 @@ fun LoginScreen(navController: NavHostController) {
                     verticalAlignment = Alignment.CenterVertically) {
                     Spacer(modifier = Modifier.weight(1f))
                     Image(
-                        bitmap = ImageBitmap.imageResource(id = R.drawable.zerotechlogotransparentr),
+                        bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
                         contentDescription = "Logo",
                         modifier = Modifier.size(90.dp)
                     )
