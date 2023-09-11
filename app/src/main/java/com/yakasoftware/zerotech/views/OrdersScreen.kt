@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,7 +39,7 @@ import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.R
 
 @Composable
-fun OrdersScrenn(navController: NavHostController) {
+fun OrdersScreen(navController: NavHostController) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
         val context = LocalContext.current
         val db = Firebase.firestore

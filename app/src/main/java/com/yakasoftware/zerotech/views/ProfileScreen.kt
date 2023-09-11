@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DoubleArrow
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material.icons.filled.Watch
@@ -295,7 +296,7 @@ fun ProfileScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.padding(start = 8.dp))
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = "Ok işareti",
+                    contentDescription = "Hesap Bilgileri",
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
                         .size(26.dp)
@@ -317,6 +318,38 @@ fun ProfileScreen(navController: NavHostController) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 SimpleLine()
             }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("reset_password_screen")
+                }) {
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "Şifreyi Değiştir",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(start = 12.dp))
+                Text(text = "Şifreyi Değiştir", color = MaterialTheme.colorScheme.secondary,
+                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.DoubleArrow,
+                    contentDescription = "Ok işareti",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+                Spacer(modifier = Modifier.padding(end = 16.dp))
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                SimpleLine()
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
             Spacer(modifier = Modifier.padding(top = 32.dp))
             Row(modifier = Modifier
                 .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

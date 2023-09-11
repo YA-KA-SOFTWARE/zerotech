@@ -17,9 +17,10 @@ import com.yakasoftware.zerotech.views.FavoriteScreen
 import com.yakasoftware.zerotech.views.LoginScreen
 import com.yakasoftware.zerotech.views.MainScreen
 import com.yakasoftware.zerotech.views.NoInternetScreen
-import com.yakasoftware.zerotech.views.OrdersScrenn
+import com.yakasoftware.zerotech.views.OrdersScreen
 import com.yakasoftware.zerotech.views.ProfileScreen
 import com.yakasoftware.zerotech.views.RegisterScreen
+import com.yakasoftware.zerotech.views.ResetPasswordScreen
 import com.yakasoftware.zerotech.views.SplashScreen
 
 class MainActivity : ComponentActivity() {
@@ -70,10 +71,13 @@ class MainActivity : ComponentActivity() {
                         FavoriteScreen(navController = navController)
                     }
                     composable("orders_screen"){
-                        OrdersScrenn(navController = navController)
+                        OrdersScreen(navController = navController)
                     }
                     composable("account_detail_screen"){
                         AccountDetailScreen(navController = navController)
+                    }
+                    composable("reset_password_screen"){
+                        ResetPasswordScreen(navController = navController)
                     }
                 }
             }

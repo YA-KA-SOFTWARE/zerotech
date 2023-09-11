@@ -360,7 +360,7 @@ fun RegisterScreen(navController: NavHostController) {
                                         && surName.value.isNotEmpty() && phoneNumber.value.isNotEmpty() && isChecked) {
                                         if (userEmail.value.endsWith(".com")) {
                                             if (password.value == passwordAgain.value) {
-                                                if (password.value.length >= 6 && passwordAgain.value.length >= 6) {
+                                                if (password.value.length >= 7 && passwordAgain.value.length >= 7) {
                                                     if (phoneNumber.value.length == 10) {
                                                         //Telefon Numarası Kontrolü
                                                         db.collection("users").whereEqualTo("phoneNumber",phoneNumber.value)
