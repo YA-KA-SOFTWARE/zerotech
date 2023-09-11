@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +67,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -73,6 +75,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -141,11 +144,11 @@ fun MainScreen(navController: NavHostController) {
         delay(750)
         pagerLoading.value = false
     }
-    
+
     val searchBar = remember {
         mutableStateOf("")
     }
-    
+
     val airMax = remember {
         mutableStateOf("")
     }
@@ -278,26 +281,26 @@ fun MainScreen(navController: NavHostController) {
             }
             Box(modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center) {
-                    OutlinedTextField(value = searchBar.value , onValueChange = {
-                        searchBar.value = it
-                    }, modifier = Modifier.fillMaxWidth(0.9f), label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        cursorColor = MaterialTheme.colorScheme.secondary
+                OutlinedTextField(value = searchBar.value , onValueChange = {
+                    searchBar.value = it
+                }, modifier = Modifier.fillMaxWidth(0.9f), label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                    focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                    cursorColor = MaterialTheme.colorScheme.secondary
+                ),
+                    shape = RoundedCornerShape(16.dp),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Search // "Search" işlemini yakala
                     ),
-                        shape = RoundedCornerShape(16.dp),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Search // "Search" işlemini yakala
-                        ),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Arama",
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
-                        })
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Arama",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    })
             }
             Spacer(modifier = Modifier.padding(top = 12.dp))
             val pagerState = rememberPagerState(pageCount = { 4 })
@@ -404,12 +407,31 @@ fun MainScreen(navController: NavHostController) {
 
         }
         //SideBar
-
+val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 
         if (isMenuVisible.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.Transparent)
+                    .pointerInput(Unit) {
+                        detectTapGestures { offset ->
+                            if (offset.x >= 0 && offset.x <= screenHalf.value) {
+                                // Box içine tıklandığında herhangi bir işlem yapma
+                            } else {
+                                // Box dışına tıklanırsa menüyü kapat
+                                coroutineScope.launch {
+                                    if (isMenuVisible.value) {
+                                        barVisible.value = false
+                                        delay(250) // Delay for 1000 milliseconds (1 second)
+                                    }
+                                    if (!barVisible.value) {
+                                        isMenuVisible.value = false
+                                    }
+                                }
+                            }
+                        }
+                    }
             ) {
                 Box(
                     modifier = Modifier
