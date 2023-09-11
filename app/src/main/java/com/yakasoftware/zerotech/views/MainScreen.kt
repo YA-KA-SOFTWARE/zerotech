@@ -75,6 +75,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLineWhite
 import com.yakasoftware.zerotech.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -332,6 +333,14 @@ fun MainScreen(navController: NavHostController) {
                                         )
                                     }
                                 }
+                            }
+                        }
+                    }
+                    LaunchedEffect(Unit) {
+                        while (true) {
+                            delay(5000L)
+                            coroutineScope.launch(Dispatchers.Main) {
+                                pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
                             }
                         }
                     }
