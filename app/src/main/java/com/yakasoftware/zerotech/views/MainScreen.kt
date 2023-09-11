@@ -298,7 +298,10 @@ fun MainScreen(navController: NavHostController) {
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         Image(
                                             painter = offersPainter,
-                                            contentDescription = "Kampanya"
+                                            contentDescription = "Kampanya",
+                                            Modifier.border(
+                                                width = 2.dp, color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(30.dp)
+                                            )
                                         )
                                     }
 
@@ -308,7 +311,10 @@ fun MainScreen(navController: NavHostController) {
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         Image(
                                             painter = airMaxPainter,
-                                            contentDescription = "Airmax"
+                                            contentDescription = "Airmax",
+                                            Modifier.border(
+                                                width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
+                                            )
                                         )
                                     }
                                 }
@@ -329,7 +335,12 @@ fun MainScreen(navController: NavHostController) {
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         Image(
                                             painter = watchsPainter,
-                                            contentDescription = "Saat"
+                                            contentDescription = "Saat",
+                                            Modifier.border(
+                                                width = 2.dp,
+                                                color = MaterialTheme.colorScheme.secondary,
+                                                shape = RoundedCornerShape(30.dp)
+                                            )
                                         )
                                     }
                                 }
