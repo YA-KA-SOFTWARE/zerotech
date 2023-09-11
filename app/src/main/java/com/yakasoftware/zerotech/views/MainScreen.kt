@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -303,108 +304,108 @@ fun MainScreen(navController: NavHostController) {
                     })
             }
             Spacer(modifier = Modifier.padding(top = 12.dp))
-            val pagerState = rememberPagerState(pageCount = { 4 })
-            Spacer(modifier = Modifier.padding(top = 8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(30.dp))
-            ) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    val pagerState = rememberPagerState(pageCount = { 4 })
+                    Spacer(modifier = Modifier.padding(top = 8.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .clip(RoundedCornerShape(30.dp))
+                    ) {
 
-                if (pagerLoading.value) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
-                    }
-                }else {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { page ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
+                        if (pagerLoading.value) {
+                            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                            }
+                        }else {
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxWidth()
+                            ) { page ->
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            when (page) {
+                                                0 -> MaterialTheme.colorScheme.primary
+                                                1 -> MaterialTheme.colorScheme.primary
+                                                2 -> MaterialTheme.colorScheme.primary
+                                                3 -> MaterialTheme.colorScheme.primary
+                                                else -> MaterialTheme.colorScheme.primary
+                                            }
+                                        )
+                                ) {
+                                    // Her sayfanın içeriği burada olacak
                                     when (page) {
-                                        0 -> MaterialTheme.colorScheme.primary
-                                        1 -> MaterialTheme.colorScheme.primary
-                                        2 -> MaterialTheme.colorScheme.primary
-                                        3 -> MaterialTheme.colorScheme.primary
-                                        else -> MaterialTheme.colorScheme.primary
-                                    }
-                                )
-                        ) {
-                            // Her sayfanın içeriği burada olacak
-                            when (page) {
-                                0 -> {
-                                    // İlk sayfa içeriği
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        Image(
-                                            painter = offersPainter,
-                                            contentDescription = "Kampanya",
-                                            Modifier.border(
-                                                width = 2.dp, color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(30.dp)
-                                            )
-                                        )
-                                    }
+                                        0 -> {
+                                            // İlk sayfa içeriği
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                Image(
+                                                    painter = offersPainter,
+                                                    contentDescription = "Kampanya",
+                                                    Modifier.border(
+                                                        width = 2.dp, color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(30.dp)
+                                                    )
+                                                )
+                                            }
 
-                                }
-                                1 -> {
-                                    // İkinci sayfa içeriği
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        Image(
-                                            painter = airMaxPainter,
-                                            contentDescription = "Airmax",
-                                            Modifier.border(
-                                                width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
-                                            )
-                                        )
+                                        }
+                                        1 -> {
+                                            // İkinci sayfa içeriği
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                Image(
+                                                    painter = airMaxPainter,
+                                                    contentDescription = "Airmax",
+                                                    Modifier.border(
+                                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        2 -> {
+                                            // Üçüncü sayfa içeriği
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                Image(
+                                                    painter = bluetoothPainter,
+                                                    contentDescription = "Bluetooth Hoparlör",
+                                                    Modifier.border(
+                                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        3 -> {
+                                            // Dördüncü sayfa içeriği
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                Image(
+                                                    painter = watchsPainter,
+                                                    contentDescription = "Saat",
+                                                    Modifier.border(
+                                                        width = 2.dp,
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        shape = RoundedCornerShape(30.dp)
+                                                    )
+                                                )
+                                            }
+                                        }
                                     }
                                 }
-                                2 -> {
-                                    // Üçüncü sayfa içeriği
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        Image(
-                                            painter = bluetoothPainter,
-                                            contentDescription = "Bluetooth Hoparlör",
-                                            Modifier.border(
-                                                width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
-                                            )
-                                        )
-                                    }
-                                }
-                                3 -> {
-                                    // Dördüncü sayfa içeriği
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        Image(
-                                            painter = watchsPainter,
-                                            contentDescription = "Saat",
-                                            Modifier.border(
-                                                width = 2.dp,
-                                                color = MaterialTheme.colorScheme.secondary,
-                                                shape = RoundedCornerShape(30.dp)
-                                            )
-                                        )
+                            }
+                            LaunchedEffect(Unit) {
+                                while (true) {
+                                    delay(5000L)
+                                    coroutineScope.launch(Dispatchers.Main) {
+                                        pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
                                     }
                                 }
                             }
                         }
-                    }
-                    LaunchedEffect(Unit) {
-                        while (true) {
-                            delay(5000L)
-                            coroutineScope.launch(Dispatchers.Main) {
-                                pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
-                            }
-                        }
+
                     }
                 }
-
             }
-
-
-
-
         }
         //SideBar
         val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp

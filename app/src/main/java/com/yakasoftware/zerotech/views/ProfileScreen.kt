@@ -370,6 +370,7 @@ fun ProfileScreen(navController: NavHostController) {
                         , verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Çıkış Yap", color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
                             fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
                         Spacer(modifier = Modifier.padding(start = 12.dp))
                         Icon(
