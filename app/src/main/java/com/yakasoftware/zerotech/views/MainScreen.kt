@@ -27,6 +27,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Campaign
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.ContactPhone
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ProductionQuantityLimits
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Speaker
@@ -44,11 +46,14 @@ import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,6 +72,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -84,7 +90,7 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
     val isMenuVisible = remember {
@@ -135,6 +141,11 @@ fun MainScreen(navController: NavHostController) {
         delay(750)
         pagerLoading.value = false
     }
+    
+    val searchBar = remember {
+        mutableStateOf("")
+    }
+    
     val airMax = remember {
         mutableStateOf("")
     }
@@ -265,6 +276,30 @@ fun MainScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.padding(end = 4.dp))
 
             }
+            Box(modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center) {
+                    OutlinedTextField(value = searchBar.value , onValueChange = {
+                        searchBar.value = it
+                    }, modifier = Modifier.fillMaxWidth(0.9f), label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        cursorColor = MaterialTheme.colorScheme.secondary
+                    ),
+                        shape = RoundedCornerShape(16.dp),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Search // "Search" işlemini yakala
+                        ),
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Arama",
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        })
+            }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
             val pagerState = rememberPagerState(pageCount = { 4 })
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Box(
@@ -590,12 +625,18 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
                                 if (isMenuVisible.value && barVisible.value) {
                                     val phoneNumber = "+905010996541"
                                     val message = "Merhaba uygulama üzerinden ulaşıyorum."
-                                    val url = "https://wa.me/$phoneNumber?text=${URLEncoder.encode(message, "UTF-8")}"
+                                    val url = "https://wa.me/$phoneNumber?text=${
+                                        URLEncoder.encode(
+                                            message,
+                                            "UTF-8"
+                                        )
+                                    }"
                                     val intent = Intent(Intent.ACTION_VIEW)
                                     intent.data = Uri.parse(url)
                                     intent.setPackage("com.whatsapp")
@@ -639,23 +680,27 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
-                                       if (isMenuVisible.value && barVisible.value) {
-                                           val instagramUri = Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
-                                           val intent = Intent(Intent.ACTION_VIEW, instagramUri)
+                                if (isMenuVisible.value && barVisible.value) {
+                                    val instagramUri =
+                                        Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
+                                    val intent = Intent(Intent.ACTION_VIEW, instagramUri)
 
-                                           intent.setPackage("com.instagram.android")
+                                    intent.setPackage("com.instagram.android")
 
-                                           try {
-                                               context.startActivity(intent)
-                                           } catch (e: Exception) {
-                                               context.startActivity(
-                                                   Intent(Intent.ACTION_VIEW,
-                                                       Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA=="))
-                                               )
-                                           }
-                                       }
+                                    try {
+                                        context.startActivity(intent)
+                                    } catch (e: Exception) {
+                                        context.startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
+                                            )
+                                        )
+                                    }
+                                }
                             },
                             horizontalArrangement = Arrangement.Center) {
                             Spacer(modifier = Modifier.weight(1f))
