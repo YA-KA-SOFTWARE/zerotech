@@ -252,7 +252,10 @@ fun AccountDetailScreen(navController: NavHostController) {
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
-                } else {
+                }
+
+                //Hesap Bilgilerini Düzenleme
+                else {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -260,12 +263,21 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "İsim: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(top = 20.dp)
                         )
-                        TextField(
+                        OutlinedTextField(
                             value = isim.value,
                             onValueChange = { isim.value = it },
                             label = { Text("İsim") },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                cursorColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = RoundedCornerShape(16.dp)
                         )
                     }
                     Row(
@@ -275,12 +287,22 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "Soyisim: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(top = 20.dp)
+
                         )
-                        TextField(
+                        OutlinedTextField(
                             value = soyisim.value,
                             onValueChange = { soyisim.value = it },
                             label = { Text("Soyisim") },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                cursorColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = RoundedCornerShape(16.dp)
                         )
                     }
                     Row(
@@ -290,12 +312,21 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "Numara: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(top = 20.dp)
                         )
-                        TextField(
+                        OutlinedTextField(
                             value = numara.value,
                             onValueChange = { numara.value = it },
                             label = { Text("Numara") },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                cursorColor = MaterialTheme.colorScheme.secondary
+                             ),
+                            shape = RoundedCornerShape(16.dp)
                         )
                     }
                     Row(
@@ -305,12 +336,22 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "Mail: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(top = 20.dp)
                         )
-                        TextField(
+                        OutlinedTextField(
                             value = mail.value,
                             onValueChange = { mail.value = it },
                             label = { Text("Mail") },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                cursorColor = MaterialTheme.colorScheme.secondary
+                            ),
+
+                            shape = RoundedCornerShape(16.dp)
                         )
                     }
                 }
