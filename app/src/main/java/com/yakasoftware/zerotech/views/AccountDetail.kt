@@ -24,6 +24,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults.shape
@@ -53,10 +55,8 @@ import androidx.compose.ui.input.pointer.PointerInputModifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -64,9 +64,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.yakasoftware.zerotech.R
+
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -86,7 +85,7 @@ fun AccountDetailScreen(navController: NavHostController) {
         mutableStateOf("")
     }
     if (currentUser != null) {
-        db.collection("users").document(email.toString())
+        db.collection("users").document(email!!)
             .get()
             .addOnSuccessListener {
                 val data = it.data
@@ -187,7 +186,7 @@ fun AccountDetailScreen(navController: NavHostController) {
                 }
             }
 
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(24.dp))
 
             val isim = remember {
                 mutableStateOf("")
@@ -205,55 +204,110 @@ fun AccountDetailScreen(navController: NavHostController) {
                 mutableStateOf(false)
             }
 
-
-
             Column(modifier = Modifier.fillMaxWidth()) {
                 if (!duzenlemeButonu.value) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "İsim: " + isim.value,
-                            fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLine()
                     }
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.padding(bottom = 10.dp))
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxWidth()
                     ) {
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Icon(
+                            painter = painterResource(R.drawable.namestr), // Simgenizin adını buraya ekleyin
+                            contentDescription = "İsim Simgesi",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
                         Text(
-                            text = "Soyisim: " + soyisim.value,
-                            fontSize = 25.sp,
+                            text = "İsim: ${name.value} ",
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
                             color = MaterialTheme.colorScheme.secondary
                         )
+                        Spacer(modifier = Modifier.weight(1f))
+
                     }
-                    Spacer(modifier = Modifier.padding(20.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Numara: " + numara.value,
-                            fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLine()
                     }
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxWidth()
                     ) {
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Icon(
+                            painter = painterResource(R.drawable.namestr), // Simgenizin adını buraya ekleyin
+                            contentDescription = "Soyisim Simgesi",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
                         Text(
-                            text = "Mail: " + mail.value,
-                            fontSize = 25.sp,
+                            text = "Soyisim: ${surname.value} ",
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
                             color = MaterialTheme.colorScheme.secondary
                         )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLine()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Icon(
+                            imageVector = Icons.Default.Phone, // Simgenizin adını buraya ekleyin
+                            contentDescription = "Telefon Simgesi",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "Numara: ${phoneNumber.value}" ,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp()},
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLine()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        val mailFontSize = 20.dp
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Icon(
+                            imageVector = Icons.Default.Mail, // Simgenizin adını buraya ekleyin
+                            contentDescription = "Mail Simgesi",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "Mail: ${email!!}" ,
+                            fontSize = with(LocalDensity.current) { mailFontSize.toSp()},
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLine()
                     }
                 }
-
                 //Hesap Bilgilerini Düzenleme
                 else {
                     Row(
@@ -269,7 +323,10 @@ fun AccountDetailScreen(navController: NavHostController) {
                         OutlinedTextField(
                             value = isim.value,
                             onValueChange = { isim.value = it },
-                            label = { Text("İsim") },
+                            label = { Text("İsim") }
+                            , placeholder = {
+                                            Text(text = name.value, color = Color.Gray)
+                            },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -294,7 +351,10 @@ fun AccountDetailScreen(navController: NavHostController) {
                         OutlinedTextField(
                             value = soyisim.value,
                             onValueChange = { soyisim.value = it },
-                            label = { Text("Soyisim") },
+                            label = { Text("Soyisim") }
+                            , placeholder = {
+                                            Text(text = surname.value, color = Color.Gray)
+                            },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -319,6 +379,9 @@ fun AccountDetailScreen(navController: NavHostController) {
                             value = numara.value,
                             onValueChange = { numara.value = it },
                             label = { Text("Numara") },
+                            placeholder = {
+                                Text(text = phoneNumber.value, color = Color.Gray)
+                            },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -343,6 +406,9 @@ fun AccountDetailScreen(navController: NavHostController) {
                             value = mail.value,
                             onValueChange = { mail.value = it },
                             label = { Text("Mail") },
+                            placeholder = {
+                                Text(text = email!!, color = Color.Gray)
+                            },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -357,7 +423,7 @@ fun AccountDetailScreen(navController: NavHostController) {
                 }
             }
 
-            Spacer(modifier = Modifier.padding(20.dp))
+            Spacer(modifier = Modifier.padding(top = 26.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -365,28 +431,93 @@ fun AccountDetailScreen(navController: NavHostController) {
             ) {
                 OutlinedButton(
                     onClick = {
-                        duzenlemeButonu.value = true
+                        duzenlemeButonu.value = !duzenlemeButonu.value
                     }
 
                 ) {
-                    Text(
-                        text = "Düzenle",
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 25.sp
-                    )
+                    if (!duzenlemeButonu.value) {
+                        Text(
+                            text = "Düzenle",
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 24.sp
+                        )
+                    }else {
+                        Text(
+                            text = "Vazgeç",
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 24.sp
+                        )
+                    }
+
                 }
 
-                OutlinedButton(
-                    onClick = {
-                        duzenlemeButonu.value = false
-                    },
-                ) {
-                    Text(
-                        text = "Kaydet",
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 25.sp
-                    )
+                if (duzenlemeButonu.value) {
+                    OutlinedButton(
+                        onClick = {
+                            duzenlemeButonu.value = false
+                            if (isim.value.isNotEmpty()) {
+                                db.collection("users").document(email!!)
+                                    .update("name",isim.value)
+                                navController.navigate("profile_screen"){
+                                    popUpTo("profile_screen"){
+                                        inclusive = true
+                                    }
+                                    Toast.makeText(context,"İsim başarıyla değiştirildi.",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            if (soyisim.value.isNotEmpty()) {
+                                db.collection("users").document(email!!)
+                                    .update("surname",soyisim.value)
+                                navController.navigate("profile_screen"){
+                                    popUpTo("profile_screen"){
+                                        inclusive = true
+                                    }
+                                    Toast.makeText(context,"Soyisim başarıyla değiştirildi.",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            if (numara.value.isNotEmpty() && 9< numara.value.length && numara.value.length < 11) {
+                                db.collection("users").document(email!!)
+                                    .update("phoneNumber",numara.value)
+                                navController.navigate("profile_screen"){
+                                    popUpTo("profile_screen"){
+                                        inclusive = true
+                                    }
+                                    Toast.makeText(context,"Numara başarıyla değiştirildi.",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            if (mail.value.isNotEmpty() && mail.value.endsWith(".com")) {
+                                currentUser!!.updateEmail(mail.value)
+                                    .addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            navController.navigate("login_screen"){
+                                                popUpTo("login_screen"){
+                                                    inclusive = true
+                                                }
+                                            }
+                                            Toast.makeText(context,"Mail adresi güncellendi.",Toast.LENGTH_SHORT).show()
+                                            currentUser.sendEmailVerification()
+                                                .addOnCompleteListener { verificationTask ->
+                                                    if (verificationTask.isSuccessful) {
+                                                        Toast.makeText(context,"Yeni mail adresinizi doğrulayın",Toast.LENGTH_SHORT).show()
+                                                    } else {
+                                                        Toast.makeText(context,"Doğrulama maili gönderilemedi bizle iletişime geçin.",Toast.LENGTH_SHORT).show()
+                                                    }
+                                                }
+                                        }else {
+                                            Toast.makeText(context,"Mail güncellenemedi bizle iletişime geçin..",Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                            }
+                        },
+                    ) {
+                        Text(
+                            text = "Kaydet",
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 24.sp
+                        )
+                    }
                 }
+
             }
         }
     }

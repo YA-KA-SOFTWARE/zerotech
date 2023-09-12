@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -355,7 +356,7 @@ fun RegisterScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.padding(8.dp))
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 Spacer(modifier = Modifier.weight(1f))
-                                Button(onClick = {
+                                OutlinedButton(onClick = {
                                     if (userEmail.value.isNotEmpty() && password.value.isNotEmpty() && passwordAgain.value.isNotEmpty() && name.value.isNotEmpty()
                                         && surName.value.isNotEmpty() && phoneNumber.value.isNotEmpty() && isChecked) {
                                         if (userEmail.value.endsWith(".com")) {

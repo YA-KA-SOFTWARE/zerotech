@@ -26,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -220,7 +221,7 @@ fun LoginScreen(navController: NavHostController) {
                             Row(Modifier.fillMaxWidth()) {
                                 Spacer(modifier = Modifier.weight(1f))
 
-                                Button(onClick = {
+                                OutlinedButton(onClick = {
                                     if (userEmail.value.isNotEmpty() && password.value.isNotEmpty()) {
                                         if (userEmail.value.endsWith(".com")) {
                                             FirebaseAuth.getInstance().signInWithEmailAndPassword(userEmail.value,password.value)
