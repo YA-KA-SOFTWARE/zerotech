@@ -1,5 +1,6 @@
 package com.yakasoftware.zerotech.views
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,9 +32,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -182,124 +186,169 @@ fun AccountDetailScreen(navController: NavHostController) {
                     SimpleLine()
                 }
             }
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            val isEditing = remember { mutableStateOf(false) }
-            var text = remember { mutableStateOf("Kullanıcı Adı") }
-            var editText = remember { mutableStateOf(TextFieldValue(text.value)) }
-            val editIcon = if (!isEditing.value) Icons.Default.Edit else Icons.Default.Save
-            val clickEnabled = if (!isEditing.value) false else true
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                OutlinedTextField(
-                    value = editText.value,
-                    onValueChange = {
-                        if (isEditing.value)
-                            editText.value = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .clickable(enabled = clickEnabled) {
-                        },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        cursorColor = MaterialTheme.colorScheme.secondary
-                    ),
-
-                    shape = RoundedCornerShape(16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search // "Search" işlemini yakala
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = editIcon,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.clickable { isEditing.value = !isEditing.value }
-                        )
-                    })
-
-            }
             Spacer(modifier = Modifier.padding(16.dp))
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                OutlinedTextField(
-                    value = editText.value,
-                    onValueChange = {
-                        if (isEditing.value)
-                            editText.value = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .clickable(enabled = clickEnabled) {
-                        },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        cursorColor = MaterialTheme.colorScheme.secondary
-                    ),
 
-                    shape = RoundedCornerShape(16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search // "Search" işlemini yakala
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = editIcon,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.clickable { isEditing.value = !isEditing.value }
-                        )
-                    })
-
+            val isim = remember {
+                mutableStateOf("")
             }
-            Spacer(modifier = Modifier.padding(16.dp))
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                OutlinedTextField(
-                    value = editText.value,
-                    onValueChange = {
-                        if (isEditing.value)
-                            editText.value = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .clickable(enabled = clickEnabled) {
-                        },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        cursorColor = MaterialTheme.colorScheme.secondary
-                    ),
-
-                    shape = RoundedCornerShape(16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search // "Search" işlemini yakala
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = editIcon,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.clickable { isEditing.value = !isEditing.value }
-                        )
-                    })
-
+            val soyisim = remember {
+                mutableStateOf("")
+            }
+            val numara = remember {
+                mutableStateOf("")
+            }
+            val mail = remember {
+                mutableStateOf("")
+            }
+            val duzenlemeButonu = remember {
+                mutableStateOf(false)
             }
 
+
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                if (!duzenlemeButonu.value) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "İsim: " + isim.value,
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Soyisim: " + soyisim.value,
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Numara: " + numara.value,
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Mail: " + mail.value,
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "İsim: ",
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        TextField(
+                            value = isim.value,
+                            onValueChange = { isim.value = it },
+                            label = { Text("İsim") },
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Soyisim: ",
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        TextField(
+                            value = soyisim.value,
+                            onValueChange = { soyisim.value = it },
+                            label = { Text("Soyisim") },
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Numara: ",
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        TextField(
+                            value = numara.value,
+                            onValueChange = { numara.value = it },
+                            label = { Text("Numara") },
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Mail: ",
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        TextField(
+                            value = mail.value,
+                            onValueChange = { mail.value = it },
+                            label = { Text("Mail") },
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.padding(20.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp), horizontalArrangement = Arrangement.Center
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        duzenlemeButonu.value = true
+                    }
+
+                ) {
+                    Text(
+                        text = "Düzenle",
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontSize = 25.sp
+                    )
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        duzenlemeButonu.value = false
+                    },
+                ) {
+                    Text(
+                        text = "Kaydet",
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontSize = 25.sp
+                    )
+                }
+            }
         }
     }
 }
+
+
