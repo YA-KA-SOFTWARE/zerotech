@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -59,6 +60,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -290,8 +292,46 @@ fun SpeakerScreen(navController: NavHostController) {
                    Spacer(modifier = Modifier.weight(1f))
                }
            }
-            Spacer(modifier = Modifier.padding(60.dp))
-            Image(painter = painterAggiyRed, contentDescription = "Ürün 1" )
+            Spacer(modifier = Modifier.padding(20.dp))
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Box(modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .size(200.dp)
+                                .background(Color(31, 31, 31, 255))
+                                ,
+                                contentAlignment = Alignment.Center) {
+                                Column(modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally) {
+                                    val fontSizeProducts = 16.dp
+                                    Row(modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End) {
+                                        Text(text = "%45", color = MaterialTheme.colorScheme.secondary
+                                        , fontWeight = FontWeight.Bold, fontSize = with(LocalDensity.current) { fontSizeProducts.toSp() })
+                                        Spacer(modifier = Modifier.padding(end = 6.dp))
+                                    }
+                                    Spacer(modifier = Modifier.padding(bottom = 8.dp))
+                                    Image(painter = painterAggiyRed, contentDescription = "Ürün 1",
+                                        modifier = Modifier
+                                            .fillMaxSize(0.8f)
+                                            .clip(RoundedCornerShape(20.dp))
+                                            .border(
+                                                width = 2.dp,
+                                                color = MaterialTheme.colorScheme.secondary,
+                                                shape = RoundedCornerShape(20.dp)
+                                            ),
+                                        contentScale = ContentScale.Crop)
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
 
         }
 
