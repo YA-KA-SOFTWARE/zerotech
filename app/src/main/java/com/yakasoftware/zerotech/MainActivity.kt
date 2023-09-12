@@ -21,6 +21,7 @@ import com.yakasoftware.zerotech.views.OrdersScreen
 import com.yakasoftware.zerotech.views.ProfileScreen
 import com.yakasoftware.zerotech.views.RegisterScreen
 import com.yakasoftware.zerotech.views.ResetPasswordScreen
+import com.yakasoftware.zerotech.views.SpeakerScreen
 import com.yakasoftware.zerotech.views.SplashScreen
 
 class MainActivity : ComponentActivity() {
@@ -78,6 +79,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("reset_password_screen"){
                         ResetPasswordScreen(navController = navController)
+                    }
+                    composable("speaker_screen"){
+                        SpeakerScreen(navController = navController)
                     }
                 }
             }
