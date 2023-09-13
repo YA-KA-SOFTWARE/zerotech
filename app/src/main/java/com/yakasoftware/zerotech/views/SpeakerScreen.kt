@@ -301,8 +301,7 @@ fun SpeakerScreen(navController: NavHostController) {
                             Box(modifier = Modifier
                                 .clip(RoundedCornerShape(20.dp))
                                 .size(200.dp)
-                                .background(Color(31, 31, 31, 255))
-                                ,
+                                .background(Color(31, 31, 31, 255)),
                                 contentAlignment = Alignment.Center) {
                                 Column(modifier = Modifier.fillMaxSize(),
                                     verticalArrangement = Arrangement.Center,

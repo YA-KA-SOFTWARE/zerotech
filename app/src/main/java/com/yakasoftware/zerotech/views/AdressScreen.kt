@@ -1,20 +1,25 @@
 package com.yakasoftware.zerotech.views
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -74,8 +79,9 @@ fun AdressScreen(navController: NavHostController) {
             val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
             val gradientBrush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFFFF8500),  // Tema Reni
-                    Color(0xFFFF6100)   // Tema Rengi Koyu Hali
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.onSecondary
+
                 )
             )
 
@@ -165,6 +171,19 @@ fun AdressScreen(navController: NavHostController) {
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Box(modifier = Modifier
+                        .fillMaxWidth(0.500f)
+                        .height(200.dp)
+                        .clip(CircleShape)
+                        .background(Color.DarkGray)
+                        .border(BorderStroke(10.dp, MaterialTheme.colorScheme.secondary),CircleShape) ){
+                    }
+                }
             }
         }
     }

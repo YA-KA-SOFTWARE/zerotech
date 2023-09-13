@@ -90,8 +90,8 @@ fun ProfileScreen(navController: NavHostController) {
         val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
         val gradientBrush = Brush.verticalGradient(
             colors = listOf(
-                Color(0xFFFF8500),  // Tema Reni
-                Color(0xFFFF6100)   // Tema Rengi Koyu Hali
+                MaterialTheme.colorScheme.secondary,
+                MaterialTheme.colorScheme.onSecondary
             )
         )
 
@@ -116,7 +116,7 @@ fun ProfileScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(60.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.secondary)
+                                .background(MaterialTheme.colorScheme.onSecondary)
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
@@ -357,7 +357,7 @@ fun ProfileScreen(navController: NavHostController) {
                     Row(modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .fillMaxWidth(0.6f)
-                        .background(Color.Red)
+                        .background(Color(202, 47, 47, 255))
                         .clickable {
                             navController.navigate("main_screen"){
                                 popUpTo("main_screen") { inclusive = true }

@@ -74,8 +74,8 @@ fun BasketScreen(navController: NavHostController) {
             val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
             val gradientBrush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFFFF8500),  // Tema Reni
-                    Color(0xFFFF6100)   // Tema Rengi Koyu Hali
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.onSecondary
                 )
             )
 

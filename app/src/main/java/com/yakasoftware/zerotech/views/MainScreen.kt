@@ -446,7 +446,7 @@ fun MainScreen(navController: NavHostController) {
                     //SideBar İçeriği
                     Column(modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(31, 31, 31, 255))) {
+                        .background(MaterialTheme.colorScheme.onPrimary)){
                         val sideBarFontSize = 20.dp
                         Row(
                             modifier = Modifier
@@ -477,7 +477,7 @@ fun MainScreen(navController: NavHostController) {
                                     }
                                 }
                             }, colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(31,31,31,255)
+                                containerColor = MaterialTheme.colorScheme.onPrimary
                             )) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
