@@ -37,17 +37,14 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContactPhone
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.ProductionQuantityLimits
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material.icons.filled.Watch
-import androidx.compose.material.icons.filled.WaterfallChart
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -78,11 +75,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -134,7 +129,7 @@ fun MainScreen(navController: NavHostController) {
             .get()
             .addOnSuccessListener {
                 val data = it.data
-                name.value = data?.get("name") as String ?: " "
+                name.value = data?.get("name") as String
 
             }
     }

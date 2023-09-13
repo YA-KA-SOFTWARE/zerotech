@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -62,9 +60,9 @@ fun BasketScreen(navController: NavHostController) {
                 .get()
                 .addOnSuccessListener {
                     val data = it.data
-                    name.value = data?.get("name") as String ?: " "
-                    surname.value = data?.get("surname") as String ?: ""
-                    phoneNumber.value = data?.get("phoneNumber") as String ?: ""
+                    name.value = data?.get("name") as String
+                    surname.value = data["surname"] as String
+                    phoneNumber.value = data["phoneNumber"] as String
 
                 }
 

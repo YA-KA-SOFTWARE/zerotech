@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +50,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,7 +63,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -84,6 +86,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
+
+data class SpeakerDataBig(
+    val photo1: String,
+    val oldPrice: String,
+    val price: String,
+    val title: String
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakerScreen(navController: NavHostController) {
@@ -95,12 +105,51 @@ fun SpeakerScreen(navController: NavHostController) {
     val barVisible = remember {
         mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
     }
+    val photoSpeakerBig1 = remember {
+        mutableStateOf("")
+    }
+    val oldPrice = remember {
+        mutableStateOf("")
+    }
+    val price = remember {
+        mutableStateOf("")
+    }
+    val title = remember {
+        mutableStateOf("")
+    }
     val searchBar = remember {
         mutableStateOf("")
     }
+    val speakerListBig = remember { mutableStateListOf<SpeakerDataBig>() }
+    val isSpeakerLoading = remember { mutableStateOf(true) }
+    val speakersDb = Firebase.firestore
+    LaunchedEffect(Unit) {
+        isSpeakerLoading.value = true
+        speakersDb.collection("products").document("speakers")
+            .collection("Aggiy AG-S21 Bluetooth Hoparlör")
+            .get()
+            .addOnSuccessListener { documents ->
+                speakerListBig.clear()
+                for (document in documents) {
+                    val speakerDataBigVal: Map<String, Any> = document.data
+                    // Firestore'dan gelen 'usercaption' field değerini 'userCaption' değişkenine atıyoruz
+                    photoSpeakerBig1.value = speakerDataBigVal["photo1"].toString()
+                    oldPrice.value = speakerDataBigVal["oldPrice"].toString()
+                    price.value = speakerDataBigVal["price"].toString()
+                    title.value = speakerDataBigVal["title"].toString()
+                    speakerListBig.add(SpeakerDataBig(photoSpeakerBig1.value,oldPrice.value,price.value,title.value))
+
+                }
+                isSpeakerLoading.value = false
+            }.addOnFailureListener {
+                println(it)
+            }
+
+    }
+
     val sidebarWidth by animateDpAsState(
         targetValue = if (barVisible.value) (LocalConfiguration.current.screenWidthDp * 0.50f).dp else 0.dp,
-        animationSpec =  if (barVisible.value) {
+        animationSpec = if (barVisible.value) {
             tween(
                 durationMillis = 500,
                 easing = LinearOutSlowInEasing // Bu yavaşça kapanmasını sağlar
@@ -127,27 +176,19 @@ fun SpeakerScreen(navController: NavHostController) {
             .get()
             .addOnSuccessListener {
                 val data = it.data
-                name.value = data?.get("name") as String ?: " "
+                name.value = data?.get("name") as String
 
             }
     }
-    val aggiyRed = remember {
-        mutableStateOf("")
-    }
-    db.collection("products").document("speaker")
-        .collection("Aggiy AG-S21 Bluetooth Hoparlör Kırmızı")
-        .document("Aggiy AG-S21 Bluetooth Hoparlör Kırmızı")
-        .get()
-        .addOnSuccessListener {
-            val data = it.data
-            aggiyRed.value = data?.get("photo1") as String ?: " "
-        }
-    val painterAggiyRed = rememberAsyncImagePainter(model = aggiyRed.value)
+
+
     val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .blur(radius = if (barVisible.value) 5.dp else 0.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(radius = if (barVisible.value) 5.dp else 0.dp)
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -166,8 +207,8 @@ fun SpeakerScreen(navController: NavHostController) {
                     )
                 }
                 Row(modifier = Modifier.clickable {
-                    navController.navigate("main_screen"){
-                        popUpTo("profile_screen"){
+                    navController.navigate("main_screen") {
+                        popUpTo("profile_screen") {
                             inclusive = true
                         }
                     }
@@ -181,29 +222,32 @@ fun SpeakerScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Button(onClick = {
-                    if (!isMenuVisible.value) {
-                        if (currentUser == null) {
-                            val popBackStackDestinationId = navController.previousBackStackEntry?.destination?.route
-                            navController.navigate("login_screen") {
-                                // "login_screen" sayfasına geçerken geriye gitme işlemini yapılandırın
-                                if (popBackStackDestinationId == "main_screen") {
-                                    // Eğer önceki sayfa "main_screen" ise geriye gitme işlemini devre dışı bırak
-                                    popUpTo("login_screen") {
-                                        saveState = false
-                                        inclusive = false
+                Button(
+                    onClick = {
+                        if (!isMenuVisible.value) {
+                            if (currentUser == null) {
+                                val popBackStackDestinationId =
+                                    navController.previousBackStackEntry?.destination?.route
+                                navController.navigate("login_screen") {
+                                    // "login_screen" sayfasına geçerken geriye gitme işlemini yapılandırın
+                                    if (popBackStackDestinationId == "main_screen") {
+                                        // Eğer önceki sayfa "main_screen" ise geriye gitme işlemini devre dışı bırak
+                                        popUpTo("login_screen") {
+                                            saveState = false
+                                            inclusive = false
+                                        }
                                     }
                                 }
+                            } else {
+                                navController.navigate("profile_screen")
                             }
-                        }else {
-                            navController.navigate("profile_screen")
                         }
-                    }
 
 
-                }, enabled = !isMenuVisible.value, colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = MaterialTheme.colorScheme.primary
-                )) {
+                    }, enabled = !isMenuVisible.value, colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
                     //Profil ve Hesap Açma
                     val fontSizeInDp = 26.dp
                     if (currentUser == null) {
@@ -214,14 +258,15 @@ fun SpeakerScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(32.dp)
                         )
-                    }else {
+                    } else {
                         Box(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(40.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = firstLetter.toString(), color = MaterialTheme.colorScheme.secondary,
+                            Text(text = firstLetter.toString(),
+                                color = MaterialTheme.colorScheme.secondary,
                                 fontSize = with(LocalDensity.current) { fontSizeInDp.toSp() }
                             )
 
@@ -244,17 +289,28 @@ fun SpeakerScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.padding(end = 4.dp))
             }
-            Box(modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center) {
-                OutlinedTextField(value = searchBar.value , onValueChange = {
-                    searchBar.value = it
-                }, modifier = Modifier.fillMaxWidth(0.9f), label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                    focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    cursorColor = MaterialTheme.colorScheme.secondary
-                ),
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                OutlinedTextField(value = searchBar.value,
+                    onValueChange = {
+                        searchBar.value = it
+                    },
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    label = {
+                        Text(
+                            text = "Ne Aramıştınız?",
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        cursorColor = MaterialTheme.colorScheme.secondary
+                    ),
                     shape = RoundedCornerShape(16.dp),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Search // "Search" işlemini yakala
@@ -286,55 +342,43 @@ fun SpeakerScreen(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.padding(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-               Row(modifier = Modifier.fillMaxWidth(0.650f)) {
-                   Spacer(modifier = Modifier.weight(1f))
-                   SimpleLine()
-                   Spacer(modifier = Modifier.weight(1f))
-               }
-           }
+                Row(modifier = Modifier.fillMaxWidth(0.650f)) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    SimpleLine()
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
             Spacer(modifier = Modifier.padding(20.dp))
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Spacer(modifier = Modifier.padding(start = 12.dp))
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Box(modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .size(200.dp)
-                                .background(Color(31, 31, 31, 255)),
-                                contentAlignment = Alignment.Center) {
-                                Column(modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally) {
-                                    val fontSizeProducts = 16.dp
-                                    Row(modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.End) {
-                                        Text(text = "%45", color = MaterialTheme.colorScheme.secondary
-                                        , fontWeight = FontWeight.Bold, fontSize = with(LocalDensity.current) { fontSizeProducts.toSp() })
-                                        Spacer(modifier = Modifier.padding(end = 6.dp))
-                                    }
-                                    Spacer(modifier = Modifier.padding(bottom = 8.dp))
-                                    Image(painter = painterAggiyRed, contentDescription = "Ürün 1",
-                                        modifier = Modifier
-                                            .fillMaxSize(0.8f)
-                                            .clip(RoundedCornerShape(20.dp))
-                                            .border(
-                                                width = 2.dp,
-                                                color = MaterialTheme.colorScheme.secondary,
-                                                shape = RoundedCornerShape(20.dp)
-                                            ),
-                                        contentScale = ContentScale.Crop)
-                                }
+            if (isSpeakerLoading.value){
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 70.dp)
+                    ,
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                }
+            }else {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(speakerListBig.size) { index ->
+                        val speakerBigData = speakerListBig[index]
+                        val painterBigSpeaker = rememberAsyncImagePainter(model = speakerBigData.photo1)
+                        Box(modifier = Modifier
+                            .size(400.dp)
+                            .background(MaterialTheme.colorScheme.tertiary)) {
+                            Column {
+                                Text(text = speakerBigData.title, color = MaterialTheme.colorScheme.secondary)
+                                Text(text = speakerBigData.oldPrice, color = MaterialTheme.colorScheme.secondary)
+                                Text(text = speakerBigData.price, color = MaterialTheme.colorScheme.secondary)
+                                Image(painter = painterBigSpeaker, contentDescription = null )
+
                             }
                         }
                     }
-
                 }
             }
-
         }
-
-        //SideBar
         val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 
         if (isMenuVisible.value) {
@@ -373,7 +417,7 @@ fun SpeakerScreen(navController: NavHostController) {
                     //SideBar İçeriği
                     Column(modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(31, 31, 31, 255))) {
+                        .background(MaterialTheme.colorScheme.onPrimary)){
                         val sideBarFontSize = 20.dp
                         Row(
                             modifier = Modifier
@@ -404,7 +448,7 @@ fun SpeakerScreen(navController: NavHostController) {
                                     }
                                 }
                             }, colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(31,31,31,255)
+                                containerColor = MaterialTheme.colorScheme.onPrimary
                             )) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
@@ -676,6 +720,5 @@ fun SpeakerScreen(navController: NavHostController) {
                 }
             }
         }
-
     }
 }

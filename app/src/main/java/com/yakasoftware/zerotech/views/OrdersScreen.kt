@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -60,9 +59,9 @@ fun OrdersScreen(navController: NavHostController) {
                 .get()
                 .addOnSuccessListener {
                     val data = it.data
-                    name.value = data?.get("name") as String ?: " "
-                    surname.value = data?.get("surname") as String ?: ""
-                    phoneNumber.value = data?.get("phoneNumber") as String ?: ""
+                    name.value = data?.get("name") as String
+                    surname.value = data["surname"] as String
+                    phoneNumber.value = data["phoneNumber"] as String
 
                 }
 

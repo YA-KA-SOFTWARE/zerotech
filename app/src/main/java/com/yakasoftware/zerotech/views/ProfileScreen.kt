@@ -18,14 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DoubleArrow
-import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ShoppingBasket
-import androidx.compose.material.icons.filled.Watch
-import androidx.compose.material.icons.filled.Whatsapp
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,10 +46,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.R
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-data class UserData(val name: String , val userName: String, val phoneNumber: String)
+
 @Composable
 fun ProfileScreen(navController: NavHostController) {
     val context = LocalContext.current
@@ -77,9 +70,9 @@ fun ProfileScreen(navController: NavHostController) {
             .get()
             .addOnSuccessListener {
                 val data = it.data
-                name.value = data?.get("name") as String ?: " "
-                surname.value = data?.get("surname") as  String ?: ""
-                phoneNumber.value = data?.get("phoneNumber") as String ?: ""
+                name.value = data?.get("name") as String
+                surname.value = data["surname"] as  String
+                phoneNumber.value = data["phoneNumber"] as String
 
             }
 

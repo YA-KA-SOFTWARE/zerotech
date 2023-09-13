@@ -1,7 +1,6 @@
 package com.yakasoftware.zerotech.views
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,12 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,7 +52,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
-import com.yakasoftware.zerotech.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,9 +76,9 @@ fun ResetPasswordScreen(navController: NavHostController) {
             .get()
             .addOnSuccessListener {
                 val data = it.data
-                name.value = data?.get("name") as String ?: " "
-                surname.value = data?.get("surname") as String ?: ""
-                phoneNumber.value = data?.get("phoneNumber") as String ?: ""
+                name.value = data?.get("name") as String
+                surname.value = data["surname"] as String
+                phoneNumber.value = data["phoneNumber"] as String
 
             }
 
