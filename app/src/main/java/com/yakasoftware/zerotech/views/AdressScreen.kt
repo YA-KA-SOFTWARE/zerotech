@@ -173,21 +173,24 @@ fun AdressScreen(navController: NavHostController) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ){
-                    Box(modifier = Modifier
-                        .fillMaxWidth(0.500f)
-                        .height(200.dp)
-                        .clip(CircleShape)
-                        .background(Color.DarkGray)
-                        .border(
-                            BorderStroke(10.dp, MaterialTheme.colorScheme.secondary),
-                            CircleShape
-                        ) ){
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.500f)
+                            .height(200.dp)
+                            .clip(CircleShape)
+                            .background(Color.DarkGray)
+                            .border(
+                                BorderStroke(10.dp, MaterialTheme.colorScheme.secondary),
+                                CircleShape
+                            )
+                    ) {
                     }
                 }
-
+                Spacer(modifier = Modifier.padding(top = 12.dp))
             }
         }
     }
 }
+
 

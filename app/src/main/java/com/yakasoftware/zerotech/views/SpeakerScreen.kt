@@ -1,11 +1,13 @@
 package com.yakasoftware.zerotech.views
 
 import android.content.Intent
+import android.media.Image
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,10 +34,12 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shop
+import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material.icons.filled.Watch
@@ -61,9 +65,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -353,6 +360,9 @@ fun SpeakerScreen(navController: NavHostController) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
+
+
+
             Spacer(modifier = Modifier.padding(20.dp))
             if (isSpeakerLoading.value){
                 Box(
@@ -364,27 +374,22 @@ fun SpeakerScreen(navController: NavHostController) {
                 ) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
                 }
-            }else {
+            }
+            else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(speakerList.size) { index ->
-                        val speakerData = speakerList[index]
-                        val painterSpeaker = rememberAsyncImagePainter(model = speakerData.photo1)
+
+                    items(speakerList.size) {
                         Box(modifier = Modifier
                             .size(400.dp)
-                            .background(MaterialTheme.colorScheme.tertiary)) {
-                            Column {
-                                Text(text = speakerData.title, color = MaterialTheme.colorScheme.secondary)
-                                Text(text = speakerData.oldPrice, color = MaterialTheme.colorScheme.secondary)
-                                Text(text = speakerData.price, color = MaterialTheme.colorScheme.secondary)
-                                Text(text = speakerData.discount, color = MaterialTheme.colorScheme.secondary)
-                                Image(painter = painterSpeaker, contentDescription = "Büyük Hoparlör" )
-
-                            }
+                            .background(MaterialTheme.colorScheme.primary)) {
+                                    RectanglesWithLines()
                         }
-                    }
+
                 }
             }
         }
+    }
+}
         val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 
         if (isMenuVisible.value) {
@@ -747,11 +752,11 @@ fun SpeakerScreen(navController: NavHostController) {
                 }
             }
         }
-    }
 }
 
 @Composable
 fun RectanglesWithLines() {
+    val nah = painterResource(id = R.drawable.deneme)
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -763,63 +768,130 @@ fun RectanglesWithLines() {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.onSecondary, RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(14.dp))
                 .padding(4.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+
+            //Resimler + Ürün ismi buraya müminim
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(4f)
-                    .background(Color.White,RoundedCornerShape(16.dp))
+                    .weight(5f)
+                    .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(10.dp))
             )
+            {
+                Image(painter = nah, contentDescription = "nah", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)))
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Sepetim",
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .align(alignment = Alignment.TopEnd)
+                )
+
+                Column (modifier = Modifier.fillMaxHeight().background(brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Transparent,// Başlangıç rengi
+                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                    ),
+                    startY = 0f,
+                    endY = 800f // Yüksekliği ayarlayın
+                )), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
+                    Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center){
+                        Text(text = "Hoparlör Model -x23", color = MaterialTheme.colorScheme.secondary)
+                    }
+
+                }
+            }
+            //Sepete ekleme - ürün fiyat
             Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(Color.White,RoundedCornerShape(16.dp))
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1.2f)
-                    .background(Color.White,RoundedCornerShape(16.dp))
-            )
+                    .weight(0.7f)
+                    .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(10.dp))
+
+            ) {
+                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start){
+                    Column (modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center){
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Sepetim",
+                            tint = MaterialTheme.colorScheme.onSecondary,
+                            modifier = Modifier
+                                .size(35.dp)
+                        )
+                    }}
+            }
         }
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // İkinci dikdörtgeni üç parçaya böl
         Column(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.onSecondary, RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(14.dp))
                 .padding(4.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+
+            //Resimler + Ürün ismi buraya müminim
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(4f)
-                    .background(Color.White,RoundedCornerShape(16.dp))
+                    .weight(5f)
+                    .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(10.dp))
             )
+            {
+                Image(painter = nah, contentDescription = "nah", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)))
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Sepetim",
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .align(alignment = Alignment.TopEnd)
+                )
+
+                Column (modifier = Modifier.fillMaxHeight().background(brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Transparent,// Başlangıç rengi
+                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                    ),
+                    startY = 0f,
+                    endY = 800f // Yüksekliği ayarlayın
+                )), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
+                    Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center){
+                        Text(text = "Hoparlör Model -x23", color = MaterialTheme.colorScheme.secondary)
+                    }
+
+                }
+            }
+            //Sepete ekleme - ürün fiyat
             Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(Color.White,RoundedCornerShape(16.dp))
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1.2f)
-                    .background(Color.White,RoundedCornerShape(16.dp))
-            )
+                    .weight(0.7f)
+                    .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(10.dp))
+
+            ) {
+                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start){
+                    Column (modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center){
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Sepetim",
+                            tint = MaterialTheme.colorScheme.onSecondary,
+                            modifier = Modifier
+                                .size(35.dp)
+                        )
+                    }}
+            }
         }
     }
 }
