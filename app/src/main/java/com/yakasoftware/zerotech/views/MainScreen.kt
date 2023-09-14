@@ -605,6 +605,27 @@ fun MainScreen(navController: NavHostController) {
                         Row(modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center) {
                             Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Aksesuar", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(R.drawable.accosoriestr), // Simgenizin adını buraya ekleyin
+                                contentDescription = "Aksesuar",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
                             Text(text = "Kampanyalar", color = MaterialTheme.colorScheme.secondary,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })

@@ -87,11 +87,12 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
 
-data class SpeakerDataBig(
+data class SpeakerData(
     val photo1: String,
     val oldPrice: String,
     val price: String,
-    val title: String
+    val title: String,
+    val discount: String
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,7 +106,7 @@ fun SpeakerScreen(navController: NavHostController) {
     val barVisible = remember {
         mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
     }
-    val photoSpeakerBig1 = remember {
+    val photoSpeaker1 = remember {
         mutableStateOf("")
     }
     val oldPrice = remember {
@@ -114,13 +115,16 @@ fun SpeakerScreen(navController: NavHostController) {
     val price = remember {
         mutableStateOf("")
     }
+    val discount = remember {
+        mutableStateOf("")
+    }
     val title = remember {
         mutableStateOf("")
     }
     val searchBar = remember {
         mutableStateOf("")
     }
-    val speakerListBig = remember { mutableStateListOf<SpeakerDataBig>() }
+    val speakerList = remember { mutableStateListOf<SpeakerData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
     val speakersDb = Firebase.firestore
     LaunchedEffect(Unit) {
@@ -129,22 +133,22 @@ fun SpeakerScreen(navController: NavHostController) {
             .collection("Aggiy AG-S21 Bluetooth Hoparlör")
             .get()
             .addOnSuccessListener { documents ->
-                speakerListBig.clear()
+                speakerList.clear()
                 for (document in documents) {
                     val speakerDataBigVal: Map<String, Any> = document.data
                     // Firestore'dan gelen 'usercaption' field değerini 'userCaption' değişkenine atıyoruz
-                    photoSpeakerBig1.value = speakerDataBigVal["photo1"].toString()
+                    photoSpeaker1.value = speakerDataBigVal["photo1"].toString()
                     oldPrice.value = speakerDataBigVal["oldPrice"].toString()
                     price.value = speakerDataBigVal["price"].toString()
                     title.value = speakerDataBigVal["title"].toString()
-                    speakerListBig.add(SpeakerDataBig(photoSpeakerBig1.value,oldPrice.value,price.value,title.value))
+                    discount.value = speakerDataBigVal["discount"].toString()
+                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
 
                 }
                 isSpeakerLoading.value = false
             }.addOnFailureListener {
                 println(it)
             }
-
     }
 
     val sidebarWidth by animateDpAsState(
@@ -361,17 +365,18 @@ fun SpeakerScreen(navController: NavHostController) {
                 }
             }else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(speakerListBig.size) { index ->
-                        val speakerBigData = speakerListBig[index]
-                        val painterBigSpeaker = rememberAsyncImagePainter(model = speakerBigData.photo1)
+                    items(speakerList.size) { index ->
+                        val speakerData = speakerList[index]
+                        val painterSpeaker = rememberAsyncImagePainter(model = speakerData.photo1)
                         Box(modifier = Modifier
                             .size(400.dp)
                             .background(MaterialTheme.colorScheme.tertiary)) {
                             Column {
-                                Text(text = speakerBigData.title, color = MaterialTheme.colorScheme.secondary)
-                                Text(text = speakerBigData.oldPrice, color = MaterialTheme.colorScheme.secondary)
-                                Text(text = speakerBigData.price, color = MaterialTheme.colorScheme.secondary)
-                                Image(painter = painterBigSpeaker, contentDescription = null )
+                                Text(text = speakerData.title, color = MaterialTheme.colorScheme.secondary)
+                                Text(text = speakerData.oldPrice, color = MaterialTheme.colorScheme.secondary)
+                                Text(text = speakerData.price, color = MaterialTheme.colorScheme.secondary)
+                                Text(text = speakerData.discount, color = MaterialTheme.colorScheme.secondary)
+                                Image(painter = painterSpeaker, contentDescription = "Büyük Hoparlör" )
 
                             }
                         }
@@ -563,6 +568,27 @@ fun SpeakerScreen(navController: NavHostController) {
                                 tint = MaterialTheme.colorScheme.secondary,
                                 modifier = Modifier
                                     .size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(end = 10.dp))
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(text = "Aksesuar", color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(R.drawable.accosoriestr), // Simgenizin adını buraya ekleyin
+                                contentDescription = "Aksesuar",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(24.dp)
                             )
                             Spacer(modifier = Modifier.padding(end = 10.dp))
                         }
