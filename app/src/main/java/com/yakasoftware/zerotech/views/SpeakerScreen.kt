@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -745,6 +746,80 @@ fun SpeakerScreen(navController: NavHostController) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun RectanglesWithLines() {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // İlk dikdörtgeni üç parçaya böl
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.onSecondary, RoundedCornerShape(24.dp))
+                .padding(4.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(4f)
+                    .background(Color.White,RoundedCornerShape(16.dp))
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(Color.White,RoundedCornerShape(16.dp))
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1.2f)
+                    .background(Color.White,RoundedCornerShape(16.dp))
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        // İkinci dikdörtgeni üç parçaya böl
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.onSecondary, RoundedCornerShape(24.dp))
+                .padding(4.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(4f)
+                    .background(Color.White,RoundedCornerShape(16.dp))
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(Color.White,RoundedCornerShape(16.dp))
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1.2f)
+                    .background(Color.White,RoundedCornerShape(16.dp))
+            )
         }
     }
 }
