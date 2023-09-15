@@ -93,7 +93,7 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
 
-data class SpeakerData(
+data class ProductsData(
     val photo1: String,
     val oldPrice: String,
     val price: String,
@@ -714,7 +714,7 @@ fun RectanglesWithLinesSpeaker() {
     val title = remember {
         mutableStateOf("")
     }
-    val speakerList = remember { mutableStateListOf<SpeakerData>() }
+    val speakerList = remember { mutableStateListOf<ProductsData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
     val speakersDb = Firebase.firestore
     val fontSize = 12.dp
@@ -735,7 +735,7 @@ fun RectanglesWithLinesSpeaker() {
                     price.value = speakerDataBigVal["price"].toString()
                     title.value = speakerDataBigVal["title"].toString()
                     discount.value = speakerDataBigVal["discount"].toString()
-                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
+                    speakerList.add(ProductsData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
 
                 }
                 isSpeakerLoading.value = false
@@ -925,7 +925,7 @@ fun RectanglesWithLinesSpeaker() {
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
                                         Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
+                                            Text(text = secondSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center,)
                                         }

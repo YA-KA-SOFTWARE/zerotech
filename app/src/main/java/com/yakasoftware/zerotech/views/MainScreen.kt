@@ -534,7 +534,7 @@ fun MainScreen(navController: NavHostController) {
                         Spacer(modifier = Modifier.padding(top = 6.dp))
                         Row(modifier = Modifier.fillMaxWidth()
                             .clickable {
-                                navController.navigate("speaker_screen"){
+                                navController.navigate("headphones_screen"){
                                     popUpTo("profile_screen"){
                                         inclusive = true
                                     }

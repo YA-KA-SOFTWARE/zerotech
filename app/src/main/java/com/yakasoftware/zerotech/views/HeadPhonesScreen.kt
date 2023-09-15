@@ -313,7 +313,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
 
 
             Spacer(modifier = Modifier.padding(20.dp))
-            RectanglesWithLinesSpeaker()
+            RectanglesWithLinesHeadPhones()
 
         }
     }
@@ -705,19 +705,19 @@ fun RectanglesWithLinesHeadPhones() {
     val title = remember {
         mutableStateOf("")
     }
-    val speakerList = remember { mutableStateListOf<SpeakerData>() }
+    val headPhoneList = remember { mutableStateListOf<ProductsData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
-    val speakersDb = Firebase.firestore
+    val headphonesDb = Firebase.firestore
     val fontSize = 12.dp
     val fontSizePrice = 16.dp
 
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
-        speakersDb.collection("products").document("speakers")
-            .collection("Aggiy AG-S21 Bluetooth Hoparlör")
+        headphonesDb.collection("products").document("headphones")
+            .collection("AirPod")
             .get()
             .addOnSuccessListener { documents ->
-                speakerList.clear()
+                headPhoneList.clear()
                 for (document in documents) {
                     val speakerDataBigVal: Map<String, Any> = document.data
                     // Firestore'dan gelen 'usercaption' field değerini 'userCaption' değişkenine atıyoruz
@@ -726,7 +726,7 @@ fun RectanglesWithLinesHeadPhones() {
                     price.value = speakerDataBigVal["price"].toString()
                     title.value = speakerDataBigVal["title"].toString()
                     discount.value = speakerDataBigVal["discount"].toString()
-                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
+                    headPhoneList.add(ProductsData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
 
                 }
                 isSpeakerLoading.value = false
@@ -749,15 +749,16 @@ fun RectanglesWithLinesHeadPhones() {
     else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-            items(speakerList.size / 2) { rowIndex ->
+            items(headPhoneList.size/ 2) { rowIndex ->
                 val firstSpeakerIndex = rowIndex * 2
                 val secondSpeakerIndex = rowIndex * 2 + 1
-                val firstSpeakerData = speakerList[firstSpeakerIndex]
-                val secondSpeakerData = speakerList.getOrNull(secondSpeakerIndex)
+                val firstSpeakerData = headPhoneList[firstSpeakerIndex]
+                val secondSpeakerData = headPhoneList.getOrNull(secondSpeakerIndex)
                 val painter = rememberAsyncImagePainter(model = firstSpeakerData.photo1)
                 Box(modifier = Modifier
-                    .size(400.dp)
+                    .size(390.dp)
                     .background(MaterialTheme.colorScheme.primary)) {
+
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
@@ -788,9 +789,9 @@ fun RectanglesWithLinesHeadPhones() {
                                     )
                             )
                             {
-                                Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
+                                Image(painter = painter, contentDescription = "Kulaklık", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(RoundedCornerShape(10.dp)))
+                                    .clip(RoundedCornerShape(10.dp)),)
                                 Icon(
                                     imageVector = Icons.Default.FavoriteBorder,
                                     contentDescription = "Sepetim",
@@ -916,7 +917,7 @@ fun RectanglesWithLinesHeadPhones() {
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
                                         Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
+                                            Text(text = secondSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center,)
                                         }
