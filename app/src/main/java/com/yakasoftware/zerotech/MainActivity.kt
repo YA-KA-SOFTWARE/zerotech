@@ -14,7 +14,6 @@ import com.yakasoftware.zerotech.views.AccountDetailScreen
 import com.yakasoftware.zerotech.views.AdressScreen
 import com.yakasoftware.zerotech.views.BasketScreen
 import com.yakasoftware.zerotech.views.FavoriteScreen
-import com.yakasoftware.zerotech.views.HeadPhonesScreen
 import com.yakasoftware.zerotech.views.LoginScreen
 import com.yakasoftware.zerotech.views.MainScreen
 import com.yakasoftware.zerotech.views.NoInternetScreen
@@ -83,9 +82,6 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("speaker_screen"){
                         SpeakerScreen(navController = navController)
-                    }
-                    composable("headphones_screen") {
-                        HeadPhonesScreen(navController = navController)
                     }
                 }
             }
