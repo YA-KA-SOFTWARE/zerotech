@@ -92,18 +92,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
-
-data class SpeakerData(
-    val photo1: String,
-    val oldPrice: String,
-    val price: String,
-    val title: String,
-    val discount: String
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakerScreen(navController: NavHostController) {
+fun HeadPhonesScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
@@ -297,7 +288,7 @@ fun SpeakerScreen(navController: NavHostController) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "Hoparlörler",
+                    text = "Kulaklıklar",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 24.sp,
                     modifier = Modifier
@@ -324,381 +315,381 @@ fun SpeakerScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.padding(20.dp))
             RectanglesWithLinesSpeaker()
 
+        }
     }
-}
-        val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
+    val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 
-        if (isMenuVisible.value) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent)
-                    .pointerInput(Unit) {
-                        detectTapGestures { offset ->
-                            if (offset.x >= 0 && offset.x <= screenHalf.value) {
-                                // Box içine tıklandığında herhangi bir işlem yapma
-                            } else {
-                                // Box dışına tıklanırsa menüyü kapat
-                                coroutineScope.launch {
-                                    if (isMenuVisible.value) {
-                                        barVisible.value = false
-                                        delay(250) // Delay for 1000 milliseconds (1 second)
-                                    }
-                                    if (!barVisible.value) {
-                                        isMenuVisible.value = false
-                                    }
+    if (isMenuVisible.value) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent)
+                .pointerInput(Unit) {
+                    detectTapGestures { offset ->
+                        if (offset.x >= 0 && offset.x <= screenHalf.value) {
+                            // Box içine tıklandığında herhangi bir işlem yapma
+                        } else {
+                            // Box dışına tıklanırsa menüyü kapat
+                            coroutineScope.launch {
+                                if (isMenuVisible.value) {
+                                    barVisible.value = false
+                                    delay(250) // Delay for 1000 milliseconds (1 second)
+                                }
+                                if (!barVisible.value) {
+                                    isMenuVisible.value = false
                                 }
                             }
                         }
                     }
+                }
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(0, 10, 10, 0))
+                    .fillMaxHeight()
+                    .width(sidebarWidth)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .zIndex(if (isMenuVisible.value) 1f else 0f)
+                    .animateContentSize()
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(0, 10, 10, 0))
-                        .fillMaxHeight()
-                        .width(sidebarWidth)
-                        .background(MaterialTheme.colorScheme.primary)
-                        .zIndex(if (isMenuVisible.value) 1f else 0f)
-                        .animateContentSize()
-                ) {
-                    //SideBar İçeriği
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.onPrimary)){
-                        val sideBarFontSize = 20.dp
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable(
-                                    enabled = false
-                                ) {
-
-                                },
-
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Spacer(modifier = Modifier.padding(start = 40.dp))
-                            Image(
-                                bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
-                                contentDescription = "Logo",
-                                modifier = Modifier.size(80.dp)
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            Button(onClick = {
-                                coroutineScope.launch {
-                                    if (isMenuVisible.value) {
-                                        barVisible.value = false
-                                        delay(250) // Delay for 1000 milliseconds (1 second)
-                                    }
-                                    if (!barVisible.value) {
-                                        isMenuVisible.value = false
-                                    }
-                                }
-                            }, colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary
-                            )) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Menü Kapama",
-                                    tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                )
-                            }
-
-                        }
-                        Spacer(modifier = Modifier.padding(top = 20.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Text(text = "Ürünler", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.padding(4.dp))
-                            Icon(
-                                imageVector = Icons.Default.Shop,
-                                contentDescription = "Ürünler",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(top = 4.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Row(modifier = Modifier.fillMaxWidth(0.6f)) {
-                                SimpleLineWhite()
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(top = 18.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(bottom = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Akıllı Saat", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                painter = painterResource(R.drawable.saatlogotr), // Simgenizin adını buraya ekleyin
-                                contentDescription = "Akıllı Saat",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
-                            .clickable {
-                                navController.navigate("headphones_screen"){
-                                    popUpTo("profile_screen"){
-                                        inclusive = true
-                                    }
-                                }
-                            },
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Kulaklık", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Headphones,
-                                contentDescription = "Kulaklık",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Kordon", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Watch,
-                                contentDescription = "Kordon",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Hoparlör", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Speaker,
-                                contentDescription = "Hoparlör",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Aksesuar", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                painter = painterResource(R.drawable.accosoriestr), // Simgenizin adını buraya ekleyin
-                                contentDescription = "Aksesuar",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Kampanyalar", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Campaign,
-                                contentDescription = "Kampanylar",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 40.dp))
-
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Text(text = "İletişim", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.padding(4.dp))
-                            Icon(
-                                imageVector = Icons.Default.ContactPhone,
-                                contentDescription = "iletişim",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(top = 4.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Row(modifier = Modifier.fillMaxWidth(0.6f)) {
-                                SimpleLineWhite()
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(top = 18.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier
+                //SideBar İçeriği
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.onPrimary)){
+                    val sideBarFontSize = 20.dp
+                    Row(
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                if (isMenuVisible.value && barVisible.value) {
-                                    val phoneNumber = "+905010996541"
-                                    val message = "Merhaba uygulama üzerinden ulaşıyorum."
-                                    val url = "https://wa.me/$phoneNumber?text=${
-                                        URLEncoder.encode(
-                                            message,
-                                            "UTF-8"
-                                        )
-                                    }"
-                                    val intent = Intent(Intent.ACTION_VIEW)
-                                    intent.data = Uri.parse(url)
-                                    intent.setPackage("com.whatsapp")
-                                    context.startActivity(
-                                        // on below line we are opening the intent.
-                                        Intent(
-                                            // on below line we are calling
-                                            // uri to parse the data
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(
-                                                // on below line we are passing uri,
-                                                // message and whats app phone number.
-                                                java.lang.String.format(
-                                                    "https://api.whatsapp.com/send?phone=%s&text=%s",
-                                                    phoneNumber,
-                                                    message
-                                                )
+                            .clickable(
+                                enabled = false
+                            ) {
+
+                            },
+
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.padding(start = 40.dp))
+                        Image(
+                            bitmap = ImageBitmap.imageResource(id = R.drawable.logonoback),
+                            contentDescription = "Logo",
+                            modifier = Modifier.size(80.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Button(onClick = {
+                            coroutineScope.launch {
+                                if (isMenuVisible.value) {
+                                    barVisible.value = false
+                                    delay(250) // Delay for 1000 milliseconds (1 second)
+                                }
+                                if (!barVisible.value) {
+                                    isMenuVisible.value = false
+                                }
+                            }
+                        }, colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.onPrimary
+                        )) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Menü Kapama",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
+                        }
+
+                    }
+                    Spacer(modifier = Modifier.padding(top = 20.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Text(text = "Ürünler", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Icon(
+                            imageVector = Icons.Default.Shop,
+                            contentDescription = "Ürünler",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(top = 4.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth(0.6f)) {
+                            SimpleLineWhite()
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(top = 18.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(bottom = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Akıllı Saat", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            painter = painterResource(R.drawable.saatlogotr), // Simgenizin adını buraya ekleyin
+                            contentDescription = "Akıllı Saat",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Kulaklık", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Headphones,
+                            contentDescription = "Kulaklık",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Kordon", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Watch,
+                            contentDescription = "Kordon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            navController.navigate("speaker_screen"){
+                                popUpTo("profile_screen"){
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Hoparlör", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Speaker,
+                            contentDescription = "Hoparlör",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Aksesuar", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            painter = painterResource(R.drawable.accosoriestr), // Simgenizin adını buraya ekleyin
+                            contentDescription = "Aksesuar",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Kampanyalar", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Campaign,
+                            contentDescription = "Kampanylar",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 40.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Text(text = "İletişim", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Icon(
+                            imageVector = Icons.Default.ContactPhone,
+                            contentDescription = "iletişim",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(top = 4.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth(0.6f)) {
+                            SimpleLineWhite()
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(top = 18.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (isMenuVisible.value && barVisible.value) {
+                                val phoneNumber = "+905010996541"
+                                val message = "Merhaba uygulama üzerinden ulaşıyorum."
+                                val url = "https://wa.me/$phoneNumber?text=${
+                                    URLEncoder.encode(
+                                        message,
+                                        "UTF-8"
+                                    )
+                                }"
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(url)
+                                intent.setPackage("com.whatsapp")
+                                context.startActivity(
+                                    // on below line we are opening the intent.
+                                    Intent(
+                                        // on below line we are calling
+                                        // uri to parse the data
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(
+                                            // on below line we are passing uri,
+                                            // message and whats app phone number.
+                                            java.lang.String.format(
+                                                "https://api.whatsapp.com/send?phone=%s&text=%s",
+                                                phoneNumber,
+                                                message
                                             )
                                         )
                                     )
-                                }
+                                )
+                            }
 
-                            },
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Canlı Destek", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Whatsapp,
-                                contentDescription = "Whatsapp",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (isMenuVisible.value && barVisible.value) {
-                                    val instagramUri =
-                                        Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
-                                    val intent = Intent(Intent.ACTION_VIEW, instagramUri)
-
-                                    intent.setPackage("com.instagram.android")
-
-                                    try {
-                                        context.startActivity(intent)
-                                    } catch (e: Exception) {
-                                        context.startActivity(
-                                            Intent(
-                                                Intent.ACTION_VIEW,
-                                                Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
-                                            )
-                                        )
-                                    }
-                                }
-                            },
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Tüm Ürünler", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                painter = painterResource(R.drawable.instagramlogo), // Simgenizin adını buraya ekleyin
-                                contentDescription = "instagram",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
-
+                        },
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Canlı Destek", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Whatsapp,
+                            contentDescription = "Whatsapp",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
                     }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (isMenuVisible.value && barVisible.value) {
+                                val instagramUri =
+                                    Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
+                                val intent = Intent(Intent.ACTION_VIEW, instagramUri)
+
+                                intent.setPackage("com.instagram.android")
+
+                                try {
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    context.startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse("https://instagram.com/__zerotech__?igshid=MzRlODBiNWFlZA==")
+                                        )
+                                    )
+                                }
+                            }
+                        },
+                        horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(text = "Tüm Ürünler", color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            painter = painterResource(R.drawable.instagramlogo), // Simgenizin adını buraya ekleyin
+                            contentDescription = "instagram",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(end = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLineWhite()
+                    }
+
                 }
             }
         }
+    }
 }
 
 @Composable
-fun RectanglesWithLinesSpeaker() {
+fun RectanglesWithLinesHeadPhones() {
     val photoSpeaker1 = remember {
         mutableStateOf("")
     }
@@ -823,9 +814,9 @@ fun RectanglesWithLinesSpeaker() {
                                         )
                                     ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
                                     Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
-                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                textAlign = TextAlign.Center,)
+                                        Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
+                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                            textAlign = TextAlign.Center,)
                                     }
 
                                 }
@@ -872,7 +863,7 @@ fun RectanglesWithLinesSpeaker() {
 
                             }
 
-                            }
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
                         if (secondSpeakerData != null) {
                             val painter2 = rememberAsyncImagePainter(model = secondSpeakerData.photo1)
@@ -982,5 +973,5 @@ fun RectanglesWithLinesSpeaker() {
             }
         }
     }
-   
+
 }
