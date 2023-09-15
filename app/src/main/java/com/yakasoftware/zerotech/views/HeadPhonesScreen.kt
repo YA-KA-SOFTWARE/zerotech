@@ -488,10 +488,11 @@ fun HeadPhonesScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
-                            navController.navigate("speaker_screen"){
-                                popUpTo("profile_screen"){
+                            navController.navigate("speaker_screen") {
+                                popUpTo("profile_screen") {
                                     inclusive = true
                                 }
                             }
@@ -705,19 +706,19 @@ fun RectanglesWithLinesHeadPhones() {
     val title = remember {
         mutableStateOf("")
     }
-    val headPhoneList = remember { mutableStateListOf<ProductsData>() }
+    val speakerList = remember { mutableStateListOf<SpeakerData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
-    val headphonesDb = Firebase.firestore
+    val speakersDb = Firebase.firestore
     val fontSize = 12.dp
     val fontSizePrice = 16.dp
 
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
-        headphonesDb.collection("products").document("headphones")
+        speakersDb.collection("products").document("headphones")
             .collection("AirPod")
             .get()
             .addOnSuccessListener { documents ->
-                headPhoneList.clear()
+                speakerList.clear()
                 for (document in documents) {
                     val speakerDataBigVal: Map<String, Any> = document.data
                     // Firestore'dan gelen 'usercaption' field değerini 'userCaption' değişkenine atıyoruz
@@ -726,7 +727,7 @@ fun RectanglesWithLinesHeadPhones() {
                     price.value = speakerDataBigVal["price"].toString()
                     title.value = speakerDataBigVal["title"].toString()
                     discount.value = speakerDataBigVal["discount"].toString()
-                    headPhoneList.add(ProductsData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
+                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
 
                 }
                 isSpeakerLoading.value = false
@@ -749,16 +750,15 @@ fun RectanglesWithLinesHeadPhones() {
     else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-            items(headPhoneList.size/ 2) { rowIndex ->
+            items(speakerList.size / 2) { rowIndex ->
                 val firstSpeakerIndex = rowIndex * 2
                 val secondSpeakerIndex = rowIndex * 2 + 1
-                val firstSpeakerData = headPhoneList[firstSpeakerIndex]
-                val secondSpeakerData = headPhoneList.getOrNull(secondSpeakerIndex)
+                val firstSpeakerData = speakerList[firstSpeakerIndex]
+                val secondSpeakerData = speakerList.getOrNull(secondSpeakerIndex)
                 val painter = rememberAsyncImagePainter(model = firstSpeakerData.photo1)
                 Box(modifier = Modifier
-                    .size(390.dp)
+                    .size(400.dp)
                     .background(MaterialTheme.colorScheme.primary)) {
-
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
@@ -789,9 +789,9 @@ fun RectanglesWithLinesHeadPhones() {
                                     )
                             )
                             {
-                                Image(painter = painter, contentDescription = "Kulaklık", contentScale = ContentScale.Crop, modifier = Modifier
+                                Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(RoundedCornerShape(10.dp)),)
+                                    .clip(RoundedCornerShape(10.dp)))
                                 Icon(
                                     imageVector = Icons.Default.FavoriteBorder,
                                     contentDescription = "Sepetim",
@@ -917,7 +917,7 @@ fun RectanglesWithLinesHeadPhones() {
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
                                         Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = secondSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
+                                            Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center,)
                                         }

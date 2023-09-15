@@ -136,10 +136,6 @@ fun MainScreen(navController: NavHostController) {
     val pagerLoading = remember {
         mutableStateOf(true)
     }
-    LaunchedEffect(Unit) {
-        delay(750)
-        pagerLoading.value = false
-    }
 
     val searchBar = remember {
         mutableStateOf("")
@@ -158,21 +154,25 @@ fun MainScreen(navController: NavHostController) {
         mutableStateOf("")
     }
 
-    db.collection("products").document("catalog")
-        .get()
-        .addOnSuccessListener {
-            val data = it.data
-            airMax.value = data?.get("airmax") as String
-            offers.value = data["offers"] as String
-            bluetooth.value = data["bluetooth"] as String
-            watchs.value = data["watchs"] as String
+    LaunchedEffect(Unit) {
+        pagerLoading.value = true
+        db.collection("products").document("catalog")
+            .get()
+            .addOnSuccessListener {
+                val data = it.data
+                airMax.value = data?.get("airmax") as String
+                offers.value = data["offers"] as String
+                bluetooth.value = data["bluetooth"] as String
+                watchs.value = data["watchs"] as String
 
+                pagerLoading.value = false
 
+            }
+            .addOnFailureListener {
+                println(it)
+            }
+    }
 
-        }
-        .addOnFailureListener {
-            println(it)
-        }
 
     val airMaxPainter = rememberAsyncImagePainter(model = airMax.value)
     val offersPainter = rememberAsyncImagePainter(model = offers.value)
@@ -532,10 +532,11 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
-                                navController.navigate("headphones_screen"){
-                                    popUpTo("profile_screen"){
+                                navController.navigate("headphone_screen") {
+                                    popUpTo("profile_screen") {
                                         inclusive = true
                                     }
                                 }
@@ -581,13 +582,14 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
-                                       navController.navigate("speaker_screen"){
-                                           popUpTo("profile_screen"){
-                                               inclusive = true
-                                           }
-                                       }
+                                navController.navigate("speaker_screen") {
+                                    popUpTo("profile_screen") {
+                                        inclusive = true
+                                    }
+                                }
                             },
                             horizontalArrangement = Arrangement.Center) {
                             Spacer(modifier = Modifier.weight(1f))
