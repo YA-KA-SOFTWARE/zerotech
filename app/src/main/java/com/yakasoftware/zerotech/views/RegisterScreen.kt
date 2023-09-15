@@ -404,6 +404,9 @@ fun RegisterScreen(navController: NavHostController) {
                                                                                                                         userdata.addUserData("surname",surName.value)
 
                                                                                                                         userdata.addUserData("phoneNumber",phoneNumber.value)
+
+                                                                                                                        userdata.addUserData("email", userEmail.value)
+
                                                                                                                     }
                                                                                                                 }
                                                                                                                 else {
