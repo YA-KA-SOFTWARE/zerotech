@@ -20,8 +20,10 @@ import com.yakasoftware.zerotech.views.MainScreen
 import com.yakasoftware.zerotech.views.NoInternetScreen
 import com.yakasoftware.zerotech.views.OrdersScreen
 import com.yakasoftware.zerotech.views.ProfileScreen
+import com.yakasoftware.zerotech.views.RectanglesWithLinesSpeaker
 import com.yakasoftware.zerotech.views.RegisterScreen
 import com.yakasoftware.zerotech.views.ResetPasswordScreen
+import com.yakasoftware.zerotech.views.SpeakerDetailScreen
 import com.yakasoftware.zerotech.views.SpeakerScreen
 import com.yakasoftware.zerotech.views.SplashScreen
 
@@ -86,6 +88,14 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("headphone_screen"){
                         HeadPhonesScreen(navController = navController)
+                    }
+                    composable("speaker_detail_screen/{title}"){backStackEntry ->
+                        backStackEntry.arguments?.getString("title")
+                            ?.let { SpeakerDetailScreen(navController = navController, productTitle = it) }
+
+                    }
+                    composable("RectanglesWithLinesSpeaker"){
+                        RectanglesWithLinesSpeaker(navController = navController)
                     }
                 }
             }

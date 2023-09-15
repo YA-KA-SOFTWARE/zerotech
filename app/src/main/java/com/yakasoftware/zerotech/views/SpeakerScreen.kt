@@ -322,7 +322,7 @@ fun SpeakerScreen(navController: NavHostController) {
 
 
             Spacer(modifier = Modifier.padding(20.dp))
-            RectanglesWithLinesSpeaker()
+            RectanglesWithLinesSpeaker(navController)
 
         }
     }
@@ -698,7 +698,7 @@ fun SpeakerScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RectanglesWithLinesSpeaker() {
+fun RectanglesWithLinesSpeaker(navController: NavHostController) {
     val photoSpeaker1 = remember {
         mutableStateOf("")
     }
@@ -782,7 +782,9 @@ fun RectanglesWithLinesSpeaker() {
                                     MaterialTheme.colorScheme.secondary,
                                     RoundedCornerShape(14.dp)
                                 )
-                                .padding(4.dp),
+                                .padding(4.dp).clickable {
+                                                         navController.navigate("speaker_detail_screen/${firstSpeakerData.title}")
+                                },
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
 
@@ -884,7 +886,10 @@ fun RectanglesWithLinesSpeaker() {
                                         MaterialTheme.colorScheme.secondary,
                                         RoundedCornerShape(14.dp)
                                     )
-                                    .padding(4.dp),
+                                    .padding(4.dp)
+                                    .clickable{
+                                              navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
+                                    },
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
 
