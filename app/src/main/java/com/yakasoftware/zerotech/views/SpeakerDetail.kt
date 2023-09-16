@@ -19,12 +19,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,10 +39,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -126,99 +135,173 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
                         }
 
-                    }else {
+                    } else {
                         val pagerState = rememberPagerState(pageCount = { photoUrls.size })
 
-                        HorizontalPager(state = pagerState,
-                            modifier = Modifier.fillMaxWidth()) { page ->
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { page ->
                             val painter = rememberAsyncImagePainter(model = photoUrls[page])
-                            Image(painter = painter, contentDescription = "Hoparlör Detayları",
+                            Image(
+                                painter = painter, contentDescription = "Hoparlör Detayları",
                                 modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop)
+                                contentScale = ContentScale.Crop
+                            )
                         }
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Transparent,// Başlangıç rengi
-                                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
-                                    ),
-                                    startY = 0f,
-                                    endY = 1000f // Yüksekliği ayarlayın
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Transparent,
+                                            Color.Transparent,// Başlangıç rengi
+                                            MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                        ),
+                                        startY = 0f,
+                                        endY = 1000f // Yüksekliği ayarlayın
+                                    )
                                 )
-                            )){
+                        ) {
 
                         }
                     }
 
                 }
             }
-                Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-                //Ürünün İsmi
+            //Ürünün İsmi
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = productTitle,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            //Yorum ve Yıldız ve FİYAT bilgisi
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+
+                //Yıldızlar
+                repeat(5) {
+                    Box(
+                        modifier = Modifier
+                            .size(25.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.StarBorder,
+                            contentDescription = "Sepetim",
+                            tint = MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
+                }
+
+                //Yorum sayısı - Puanı - FİYAT BİLGİSİ
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+
+                ) {
+                    Text(
+                        text = "31 Yorum - 4.9 puan",
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+            //LazyColumn Dışında kalacak FİYAT BİLGİSİ - SATIN ALMA - SEPETE EKLEME
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(Color(255, 172, 130, 72))
+                    //BORDER EKLENEBİLİR
+                        ,
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                //FİYAT BİLGİSİ
+                Row(
+                    modifier = Modifier
+                        .size(100.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "5252",
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f),
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center,
+                            textDecoration = TextDecoration.LineThrough
+                        )
+                        Spacer(modifier = Modifier.padding(top = 2.dp))
+                        Text(
+                            text = "3131", color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 20.sp, fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(20.dp),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = productTitle,
-                        color = MaterialTheme.colorScheme.secondary,
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                //Yorum ve Yıldız ve FİYAT bilgisi
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start
+                        .height(100.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    //Yıldızlar
-                    repeat(5) {
-                        Box(
-                            modifier = Modifier
-                                .size(25.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.StarBorder,
-                                contentDescription = "Sepetim",
-                                tint = MaterialTheme.colorScheme.onSecondary
-                            )
-                        }
-                    }
-
-                    //Yorum sayısı - Puanı - FİYAT BİLGİSİ
-                    Box(
+                    OutlinedButton(
+                        onClick = { /*TODO*/ },
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-
+                            .width(120.dp)
+                            .height(60.dp)
+                            .border(
+                                BorderStroke(2.dp, Color(255, 153, 102, 255)),
+                                RoundedCornerShape(5.dp)
+                            ),
+                        shape = RoundedCornerShape(5.dp)
+                    ) {
+                        Text(text = "Satın Al", color = MaterialTheme.colorScheme.secondary)
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
+                    OutlinedButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .width(120.dp)
+                            .height(60.dp)
+                            .border(
+                                BorderStroke(2.dp, Color(255, 153, 102, 255)),
+                                RoundedCornerShape(5.dp)
+                            ),
+                        shape = RoundedCornerShape(5.dp)
                     ) {
                         Text(
-                            text = "(0) Yorum - 0 puan",
-                            fontSize = 10.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            text = "Sepete Ekle",
+                            color = MaterialTheme.colorScheme.onSecondary,
+                            fontSize = 12.sp
                         )
-
-                        //FİYAT BİLGİSİ
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Text(text = "3131$", fontSize = 30.sp)
-                        }
-
                     }
-
                 }
+            }
 
         }
     }

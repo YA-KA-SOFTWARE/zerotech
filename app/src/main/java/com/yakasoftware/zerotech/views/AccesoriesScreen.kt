@@ -891,7 +891,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Favorilerim",
-                                        tint = Color.Red,
+                                        tint = Color(238, 69, 69, 255),
                                         modifier = Modifier
                                             .size(34.dp)
                                             .align(alignment = Alignment.TopEnd)
@@ -965,7 +965,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                             )
                                             Spacer(modifier = Modifier.weight(1f))
                                             Column {
-                                                Text(text = firstSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary,
+                                                Text(text = firstSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary.copy(alpha =0.7f),
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     textAlign = TextAlign.Center,
                                                     textDecoration = TextDecoration.LineThrough)
@@ -1060,7 +1060,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
                                             contentDescription = "Favorilerim",
-                                            tint = Color.Red,
+                                            tint = Color(238, 69, 69, 255),
                                             modifier = Modifier
                                                 .size(34.dp)
                                                 .align(alignment = Alignment.TopEnd)
@@ -1133,7 +1133,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
                                                 Column {
-                                                    Text(text = secondSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary,
+                                                    Text(text = secondSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
                                                         fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                         textAlign = TextAlign.Center,
                                                         textDecoration = TextDecoration.LineThrough)

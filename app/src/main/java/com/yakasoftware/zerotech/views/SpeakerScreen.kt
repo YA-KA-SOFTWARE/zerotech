@@ -50,9 +50,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -832,7 +834,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                 .weight(1f)
                                 .fillMaxHeight()
                                 .background(
-                                    MaterialTheme.colorScheme.secondary,
+                                    MaterialTheme.colorScheme.onSecondary,
                                     RoundedCornerShape(14.dp)
                                 )
                                 .padding(4.dp)
@@ -896,7 +898,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Favorilerim",
-                                        tint = Color.Red,
+                                        tint = Color(238, 69, 69, 255),
                                         modifier = Modifier
                                             .size(34.dp)
                                             .align(alignment = Alignment.TopEnd)
@@ -970,7 +972,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             )
                                             Spacer(modifier = Modifier.weight(1f))
                                             Column {
-                                                Text(text = firstSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary,
+                                                Text(text = firstSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     textAlign = TextAlign.Center,
                                                     textDecoration = TextDecoration.LineThrough)
@@ -996,7 +998,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     .weight(1f)
                                     .fillMaxSize()
                                     .background(
-                                        MaterialTheme.colorScheme.secondary,
+                                        MaterialTheme.colorScheme.onSecondary,
                                         RoundedCornerShape(14.dp)
                                     )
                                     .padding(4.dp)
@@ -1058,7 +1060,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
                                             contentDescription = "Favorilerim",
-                                            tint = Color.Red,
+                                            tint = Color(238, 69, 69, 255),
                                             modifier = Modifier
                                                 .size(34.dp)
                                                 .align(alignment = Alignment.TopEnd)
@@ -1131,7 +1133,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
                                                 Column {
-                                                    Text(text = secondSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary,
+                                                    Text(text = secondSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
                                                         fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                         textAlign = TextAlign.Center,
                                                         textDecoration = TextDecoration.LineThrough)
