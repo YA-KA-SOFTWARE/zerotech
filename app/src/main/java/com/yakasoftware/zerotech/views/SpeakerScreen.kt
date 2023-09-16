@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
@@ -91,6 +92,7 @@ import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import java.util.UUID
 
 
 data class SpeakerData(
@@ -455,10 +457,11 @@ fun SpeakerScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
-                            navController.navigate("headphone_screen"){
-                                popUpTo("profile_screen"){
+                            navController.navigate("headphone_screen") {
+                                popUpTo("profile_screen") {
                                     inclusive = true
                                 }
                             }
@@ -764,6 +767,47 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                 val firstSpeakerData = speakerList[firstSpeakerIndex]
                 val secondSpeakerData = speakerList.getOrNull(secondSpeakerIndex)
                 val painter = rememberAsyncImagePainter(model = firstSpeakerData.photo1)
+                val controlEmail = Firebase.auth.currentUser?.email
+                val controlFavDbFirst = Firebase.firestore
+                val isFavoriteFirst = remember {
+                    mutableStateOf(false)
+                }
+                val isFavoriteSecond = remember {
+                    mutableStateOf(false)
+                }
+                LaunchedEffect(isFavoriteFirst.value){
+                    if (controlEmail != null) {
+                        val docRef = controlFavDbFirst.collection("fav").document(controlEmail)
+                            .collection(controlEmail)
+                            .document(firstSpeakerData.title)
+                        docRef.get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    isFavoriteFirst.value = true
+                                }
+                            }
+                            .addOnFailureListener {
+                                println(it)
+                            }
+                    }
+                }
+                LaunchedEffect(isFavoriteSecond.value){
+                    if (controlEmail != null) {
+                        val docRef = secondSpeakerData?.let {
+                            controlFavDbFirst.collection("fav").document(controlEmail)
+                                .collection(controlEmail)
+                                .document(secondSpeakerData.title)
+                        }
+                        docRef?.get()?.addOnSuccessListener { document ->
+                            if (document.exists()) {
+                                isFavoriteSecond.value = true
+                            }
+                        }?.addOnFailureListener {
+                            println(it)
+                        }
+                    }
+                }
+
                 Box(modifier = Modifier
                     .size(400.dp)
                     .background(MaterialTheme.colorScheme.primary)) {
@@ -782,8 +826,9 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     MaterialTheme.colorScheme.secondary,
                                     RoundedCornerShape(14.dp)
                                 )
-                                .padding(4.dp).clickable {
-                                                         navController.navigate("speaker_detail_screen/${firstSpeakerData.title}")
+                                .padding(4.dp)
+                                .clickable {
+                                    navController.navigate("speaker_detail_screen/${firstSpeakerData.title}")
                                 },
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -802,15 +847,69 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                 Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(10.dp)))
-                                Icon(
-                                    imageVector = Icons.Default.FavoriteBorder,
-                                    contentDescription = "Sepetim",
-                                    tint = MaterialTheme.colorScheme.onSecondary,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .align(alignment = Alignment.TopEnd)
 
-                                )
+                                if (!isFavoriteFirst.value) {
+                                    Icon(
+                                        imageVector = Icons.Default.FavoriteBorder,
+                                        contentDescription = "Favorilerim",
+                                        tint = MaterialTheme.colorScheme.onSecondary,
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .align(alignment = Alignment.TopEnd)
+                                            .clickable {
+                                                val favDb = Firebase.firestore
+                                                val userEmail = Firebase.auth.currentUser?.email
+                                                if (userEmail != null) {
+                                                    val docRef = favDb
+                                                        .collection("fav")
+                                                        .document(userEmail)
+                                                        .collection(userEmail)
+                                                        .document(firstSpeakerData.title)
+                                                    docRef
+                                                        .set(firstSpeakerData)
+                                                        .addOnSuccessListener {
+                                                            println("ekledi")
+                                                        }
+                                                        .addOnFailureListener {
+                                                            println(it)
+                                                        }
+                                                    isFavoriteFirst.value = true
+                                                }
+                                            }
+
+                                    )
+
+                                }else {
+                                    Icon(
+                                        imageVector = Icons.Default.Favorite,
+                                        contentDescription = "Favorilerim",
+                                        tint = Color.Red,
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .align(alignment = Alignment.TopEnd)
+                                            .clickable {
+                                                val favDb = Firebase.firestore
+                                                val userEmail = Firebase.auth.currentUser?.email
+                                                if (userEmail != null) {
+                                                    val docRef = favDb
+                                                        .collection("fav")
+                                                        .document(userEmail)
+                                                        .collection(userEmail)
+                                                        .document(firstSpeakerData.title)
+                                                    docRef
+                                                        .delete()
+                                                        .addOnSuccessListener {
+                                                            isFavoriteFirst.value = false
+                                                        }
+                                                        .addOnFailureListener {
+                                                            println(it)
+                                                        }
+                                                }
+                                            }
+
+                                    )
+                                }
+
 
                                 Column (modifier = Modifier
                                     .fillMaxSize()
@@ -888,8 +987,8 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         RoundedCornerShape(14.dp)
                                     )
                                     .padding(4.dp)
-                                    .clickable{
-                                              navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
+                                    .clickable {
+                                        navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
                                     },
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -908,14 +1007,67 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
                                         .clip(RoundedCornerShape(10.dp)))
-                                    Icon(
-                                        imageVector = Icons.Default.FavoriteBorder,
-                                        contentDescription = "Sepetim",
-                                        tint = MaterialTheme.colorScheme.onSecondary,
-                                        modifier = Modifier
-                                            .size(34.dp)
-                                            .align(alignment = Alignment.TopEnd)
-                                    )
+                                    if (!isFavoriteSecond.value) {
+                                        Icon(
+                                            imageVector = Icons.Default.FavoriteBorder,
+                                            contentDescription = "Favorilerim",
+                                            tint = MaterialTheme.colorScheme.onSecondary,
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .align(alignment = Alignment.TopEnd)
+                                                .clickable {
+                                                    val favDb = Firebase.firestore
+                                                    val userEmail = Firebase.auth.currentUser?.email
+                                                    if (userEmail != null) {
+                                                        val docRef = favDb
+                                                            .collection("fav")
+                                                            .document(userEmail)
+                                                            .collection(userEmail)
+                                                            .document(secondSpeakerData.title)
+                                                        docRef
+                                                            .set(secondSpeakerData)
+                                                            .addOnSuccessListener {
+                                                                println("ekledi")
+                                                            }
+                                                            .addOnFailureListener {
+                                                                println(it)
+                                                            }
+                                                        isFavoriteSecond.value = true
+                                                    }
+                                                }
+
+                                        )
+
+                                    }else {
+                                        Icon(
+                                            imageVector = Icons.Default.Favorite,
+                                            contentDescription = "Favorilerim",
+                                            tint = Color.Red,
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .align(alignment = Alignment.TopEnd)
+                                                .clickable {
+                                                    val favDb = Firebase.firestore
+                                                    val userEmail = Firebase.auth.currentUser?.email
+                                                    if (userEmail != null) {
+                                                        val docRef = favDb
+                                                            .collection("fav")
+                                                            .document(userEmail)
+                                                            .collection(userEmail)
+                                                            .document(secondSpeakerData.title)
+                                                        docRef
+                                                            .delete()
+                                                            .addOnSuccessListener {
+                                                                isFavoriteSecond.value = false
+                                                            }
+                                                            .addOnFailureListener {
+                                                                println(it)
+                                                            }
+                                                    }
+                                                }
+
+                                        )
+                                    }
 
                                     Column (modifier = Modifier
                                         .fillMaxHeight()
