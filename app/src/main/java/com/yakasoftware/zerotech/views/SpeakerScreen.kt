@@ -807,8 +807,9 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     contentDescription = "Sepetim",
                                     tint = MaterialTheme.colorScheme.onSecondary,
                                     modifier = Modifier
-                                        .size(30.dp)
+                                        .size(34.dp)
                                         .align(alignment = Alignment.TopEnd)
+
                                 )
 
                                 Column (modifier = Modifier
@@ -912,7 +913,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         contentDescription = "Sepetim",
                                         tint = MaterialTheme.colorScheme.onSecondary,
                                         modifier = Modifier
-                                            .size(30.dp)
+                                            .size(34.dp)
                                             .align(alignment = Alignment.TopEnd)
                                     )
 
