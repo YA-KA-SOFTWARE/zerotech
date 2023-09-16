@@ -2,6 +2,7 @@ package com.yakasoftware.zerotech.views
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -32,6 +33,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
@@ -313,7 +315,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
 
 
             Spacer(modifier = Modifier.padding(20.dp))
-            RectanglesWithLinesHeadPhones()
+            RectanglesWithLinesHeadPhones(navController)
 
         }
     }
@@ -690,7 +692,8 @@ fun HeadPhonesScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RectanglesWithLinesHeadPhones() {
+fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
+    val context = LocalContext.current
     val photoSpeaker1 = remember {
         mutableStateOf("")
     }
@@ -756,6 +759,46 @@ fun RectanglesWithLinesHeadPhones() {
                 val firstSpeakerData = speakerList[firstSpeakerIndex]
                 val secondSpeakerData = speakerList.getOrNull(secondSpeakerIndex)
                 val painter = rememberAsyncImagePainter(model = firstSpeakerData.photo1)
+                val controlEmail = Firebase.auth.currentUser?.email
+                val controlFavDbFirst = Firebase.firestore
+                val isFavoriteFirst = remember {
+                    mutableStateOf(false)
+                }
+                val isFavoriteSecond = remember {
+                    mutableStateOf(false)
+                }
+                LaunchedEffect(isFavoriteFirst.value){
+                    if (controlEmail != null) {
+                        val docRef = controlFavDbFirst.collection("fav").document(controlEmail)
+                            .collection(controlEmail)
+                            .document(firstSpeakerData.title)
+                        docRef.get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    isFavoriteFirst.value = true
+                                }
+                            }
+                            .addOnFailureListener {
+                                println(it)
+                            }
+                    }
+                }
+                LaunchedEffect(isFavoriteSecond.value){
+                    if (controlEmail != null) {
+                        val docRef = secondSpeakerData?.let {
+                            controlFavDbFirst.collection("fav").document(controlEmail)
+                                .collection(controlEmail)
+                                .document(secondSpeakerData.title)
+                        }
+                        docRef?.get()?.addOnSuccessListener { document ->
+                            if (document.exists()) {
+                                isFavoriteSecond.value = true
+                            }
+                        }?.addOnFailureListener {
+                            println(it)
+                        }
+                    }
+                }
                 Box(modifier = Modifier
                     .size(400.dp)
                     .background(MaterialTheme.colorScheme.primary)) {
@@ -792,14 +835,72 @@ fun RectanglesWithLinesHeadPhones() {
                                 Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(10.dp)))
-                                Icon(
-                                    imageVector = Icons.Default.FavoriteBorder,
-                                    contentDescription = "Sepetim",
-                                    tint = MaterialTheme.colorScheme.onSecondary,
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .align(alignment = Alignment.TopEnd)
-                                )
+                                if (!isFavoriteFirst.value) {
+                                    Icon(
+                                        imageVector = Icons.Default.FavoriteBorder,
+                                        contentDescription = "Favorilerim",
+                                        tint = MaterialTheme.colorScheme.onSecondary,
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .align(alignment = Alignment.TopEnd)
+                                            .clickable {
+                                                val favDb = Firebase.firestore
+                                                val userEmail = Firebase.auth.currentUser?.email
+                                                if (userEmail != null) {
+                                                    val docRef = favDb
+                                                        .collection("fav")
+                                                        .document(userEmail)
+                                                        .collection(userEmail)
+                                                        .document(firstSpeakerData.title)
+                                                    docRef
+                                                        .set(firstSpeakerData)
+                                                        .addOnSuccessListener {
+                                                            println("ekledi")
+                                                        }
+                                                        .addOnFailureListener {
+                                                            println(it)
+                                                        }
+                                                    isFavoriteFirst.value = true
+                                                }
+                                                else {
+                                                    navController.navigate("login_screen")
+                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",
+                                                        Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+
+                                    )
+
+                                }else {
+                                    Icon(
+                                        imageVector = Icons.Default.Favorite,
+                                        contentDescription = "Favorilerim",
+                                        tint = Color.Red,
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .align(alignment = Alignment.TopEnd)
+                                            .clickable {
+                                                val favDb = Firebase.firestore
+                                                val userEmail = Firebase.auth.currentUser?.email
+                                                if (userEmail != null) {
+                                                    val docRef = favDb
+                                                        .collection("fav")
+                                                        .document(userEmail)
+                                                        .collection(userEmail)
+                                                        .document(firstSpeakerData.title)
+                                                    docRef
+                                                        .delete()
+                                                        .addOnSuccessListener {
+                                                            isFavoriteFirst.value = false
+                                                        }
+                                                        .addOnFailureListener {
+                                                            println(it)
+                                                        }
+                                                }
+                                            }
+
+                                    )
+                                }
 
                                 Column (modifier = Modifier
                                     .fillMaxSize()
@@ -894,14 +995,70 @@ fun RectanglesWithLinesHeadPhones() {
                                     Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
                                         .clip(RoundedCornerShape(10.dp)))
-                                    Icon(
-                                        imageVector = Icons.Default.FavoriteBorder,
-                                        contentDescription = "Sepetim",
-                                        tint = MaterialTheme.colorScheme.onSecondary,
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                            .align(alignment = Alignment.TopEnd)
-                                    )
+                                    if (!isFavoriteSecond.value) {
+                                        Icon(
+                                            imageVector = Icons.Default.FavoriteBorder,
+                                            contentDescription = "Favorilerim",
+                                            tint = MaterialTheme.colorScheme.onSecondary,
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .align(alignment = Alignment.TopEnd)
+                                                .clickable {
+                                                    val favDb = Firebase.firestore
+                                                    val userEmail = Firebase.auth.currentUser?.email
+                                                    if (userEmail != null) {
+                                                        val docRef = favDb
+                                                            .collection("fav")
+                                                            .document(userEmail)
+                                                            .collection(userEmail)
+                                                            .document(secondSpeakerData.title)
+                                                        docRef
+                                                            .set(secondSpeakerData)
+                                                            .addOnSuccessListener {
+                                                                println("ekledi")
+                                                            }
+                                                            .addOnFailureListener {
+                                                                println(it)
+                                                            }
+                                                        isFavoriteSecond.value = true
+                                                    }else {
+                                                        navController.navigate("login_screen")
+                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                    }
+                                                }
+
+                                        )
+
+                                    }else {
+                                        Icon(
+                                            imageVector = Icons.Default.Favorite,
+                                            contentDescription = "Favorilerim",
+                                            tint = Color.Red,
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .align(alignment = Alignment.TopEnd)
+                                                .clickable {
+                                                    val favDb = Firebase.firestore
+                                                    val userEmail = Firebase.auth.currentUser?.email
+                                                    if (userEmail != null) {
+                                                        val docRef = favDb
+                                                            .collection("fav")
+                                                            .document(userEmail)
+                                                            .collection(userEmail)
+                                                            .document(secondSpeakerData.title)
+                                                        docRef
+                                                            .delete()
+                                                            .addOnSuccessListener {
+                                                                isFavoriteSecond.value = false
+                                                            }
+                                                            .addOnFailureListener {
+                                                                println(it)
+                                                            }
+                                                    }
+                                                }
+
+                                        )
+                                    }
 
                                     Column (modifier = Modifier
                                         .fillMaxHeight()
@@ -917,7 +1074,7 @@ fun RectanglesWithLinesHeadPhones() {
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
                                         Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
+                                            Text(text = secondSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center,)
                                         }

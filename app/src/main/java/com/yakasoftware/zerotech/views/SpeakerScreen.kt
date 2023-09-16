@@ -1072,9 +1072,6 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                             .addOnFailureListener {
                                                                 println(it)
                                                             }
-                                                    }else {
-                                                        navController.navigate("login_screen")
-                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                     }
                                                 }
 
@@ -1095,7 +1092,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
                                         Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
+                                            Text(text = secondSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center,)
                                         }

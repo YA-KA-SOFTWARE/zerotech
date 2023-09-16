@@ -20,6 +20,7 @@ import com.yakasoftware.zerotech.views.MainScreen
 import com.yakasoftware.zerotech.views.NoInternetScreen
 import com.yakasoftware.zerotech.views.OrdersScreen
 import com.yakasoftware.zerotech.views.ProfileScreen
+import com.yakasoftware.zerotech.views.RectanglesWithLinesHeadPhones
 import com.yakasoftware.zerotech.views.RectanglesWithLinesSpeaker
 import com.yakasoftware.zerotech.views.RegisterScreen
 import com.yakasoftware.zerotech.views.ResetPasswordScreen
@@ -96,6 +97,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("RectanglesWithLinesSpeaker"){
                         RectanglesWithLinesSpeaker(navController = navController)
+                    }
+                    composable("RectanglesWithLinesHeadPhone"){
+                        RectanglesWithLinesHeadPhones(navController = navController)
                     }
                 }
             }

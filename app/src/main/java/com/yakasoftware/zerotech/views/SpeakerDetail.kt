@@ -70,7 +70,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         println(productTitle)
         LaunchedEffect(Unit) {
             pagerLoading.value = true
-
             docRef.whereEqualTo("title", productTitle)
                 .get()
                 .addOnSuccessListener { documents ->
