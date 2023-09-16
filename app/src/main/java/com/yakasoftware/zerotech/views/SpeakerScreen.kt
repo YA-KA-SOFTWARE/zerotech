@@ -2,6 +2,7 @@ package com.yakasoftware.zerotech.views
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -702,6 +703,7 @@ fun SpeakerScreen(navController: NavHostController) {
 
 @Composable
 fun RectanglesWithLinesSpeaker(navController: NavHostController) {
+    val context = LocalContext.current
     val photoSpeaker1 = remember {
         mutableStateOf("")
     }
@@ -875,6 +877,10 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                         }
                                                     isFavoriteFirst.value = true
                                                 }
+                                                else {
+                                                    navController.navigate("login_screen")
+                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                }
                                             }
 
                                     )
@@ -1033,6 +1039,9 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                                 println(it)
                                                             }
                                                         isFavoriteSecond.value = true
+                                                    }else {
+                                                        navController.navigate("login_screen")
+                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                     }
                                                 }
 
@@ -1063,6 +1072,9 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                             .addOnFailureListener {
                                                                 println(it)
                                                             }
+                                                    }else {
+                                                        navController.navigate("login_screen")
+                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                     }
                                                 }
 

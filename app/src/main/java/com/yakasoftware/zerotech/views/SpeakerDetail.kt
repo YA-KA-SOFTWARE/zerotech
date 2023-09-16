@@ -149,7 +149,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     startY = 0f,
                                     endY = 1000f // Yüksekliği ayarlayın
                                 )
-                            )){}
+                            )){
+
+                        }
                     }
 
                 }
