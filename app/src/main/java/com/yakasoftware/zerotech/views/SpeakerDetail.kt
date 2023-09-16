@@ -117,17 +117,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     modifier = Modifier
                         .fillMaxSize()
                         .border(BorderStroke(5.dp, MaterialTheme.colorScheme.onSecondary))
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Transparent,//
-                                    MaterialTheme.colorScheme.onPrimary
-                                ),
-                                startY = 0f,
-                                endY = 800f
-                            )
-                        )
                 ) {
 
                     if (pagerLoading.value) {
@@ -147,14 +136,24 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             Image(painter = painter, contentDescription = "Hoparlör Detayları",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop)
-
                         }
-                        //Resimler bu kısıma eklenecek - ayarlama yapılacak sonrasında
-                        // Image(painter = , contentDescription = )
+                        Box(modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Transparent,// Başlangıç rengi
+                                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                    ),
+                                    startY = 0f,
+                                    endY = 1000f // Yüksekliği ayarlayın
+                                )
+                            )){}
                     }
 
                 }
-
+            }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Ürünün İsmi
@@ -219,7 +218,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     }
 
                 }
-            }
+
         }
     }
 }

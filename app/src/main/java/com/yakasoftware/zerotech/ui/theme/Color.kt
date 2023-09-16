@@ -12,7 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 //Açık Tema
 val beyaz = Color(255, 255, 255, 255)
 val turuncu = Color(255, 165, 0, 255)
-val aciksiyah = Color(233, 233, 233, 255)
+val aciksiyah = Color(46, 46, 46, 255)
 val acikturuncu = Color(255, 153, 102, 255)
 //Koyu Tema
 val siyah = Color(31,  31, 31, 255)
