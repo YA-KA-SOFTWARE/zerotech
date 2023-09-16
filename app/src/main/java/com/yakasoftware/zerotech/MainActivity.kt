@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
+import com.yakasoftware.zerotech.views.AccesoiresScreen
 import com.yakasoftware.zerotech.views.AccountDetailScreen
 import com.yakasoftware.zerotech.views.AdressScreen
 import com.yakasoftware.zerotech.views.BasketScreen
@@ -100,6 +101,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("RectanglesWithLinesHeadPhone"){
                         RectanglesWithLinesHeadPhones(navController = navController)
+                    }
+                    composable("accesories_screen"){
+                        AccesoiresScreen(navController = navController)
                     }
                 }
             }

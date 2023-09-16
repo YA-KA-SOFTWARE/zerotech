@@ -611,7 +611,14 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
+                        Row(modifier = Modifier.fillMaxWidth()
+                            .clickable {
+                                navController.navigate("accesories_screen") {
+                                    popUpTo("profile_screen") {
+                                        inclusive = true
+                                    }
+                                }
+                            },
                             horizontalArrangement = Arrangement.Center) {
                             Spacer(modifier = Modifier.weight(1f))
                             Text(text = "Aksesuar", color = MaterialTheme.colorScheme.secondary,

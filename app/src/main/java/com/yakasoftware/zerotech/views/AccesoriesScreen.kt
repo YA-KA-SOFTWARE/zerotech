@@ -96,7 +96,7 @@ import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeadPhonesScreen(navController: NavHostController) {
+fun AccesoiresScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
@@ -290,7 +290,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "Kulaklıklar",
+                    text = "Aksesuarlar",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 24.sp,
                     modifier = Modifier
@@ -315,7 +315,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
 
 
             Spacer(modifier = Modifier.padding(20.dp))
-            RectanglesWithLinesHeadPhones(navController)
+            RectanglesWithLinesAccesoires(navController = navController)
 
         }
     }
@@ -448,7 +448,15 @@ fun HeadPhonesScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate("headphone_screen") {
+                                popUpTo("profile_screen") {
+                                    inclusive = true
+                                }
+                            }
+                        },
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Kulaklık", color = MaterialTheme.colorScheme.secondary,
@@ -519,14 +527,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .clickable {
-                            navController.navigate("accesories_screen") {
-                                popUpTo("profile_screen") {
-                                    inclusive = true
-                                }
-                            }
-                        },
+                    Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Aksesuar", color = MaterialTheme.colorScheme.secondary,
@@ -699,7 +700,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
+fun RectanglesWithLinesAccesoires(navController: NavHostController) {
     val context = LocalContext.current
     val photoSpeaker1 = remember {
         mutableStateOf("")
@@ -724,8 +725,8 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
-        speakersDb.collection("products").document("headphones")
-            .collection("AirPod")
+        speakersDb.collection("products").document("accesories")
+            .collection("accesories")
             .get()
             .addOnSuccessListener { documents ->
                 speakerList.clear()
@@ -806,6 +807,7 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                         }
                     }
                 }
+
                 Box(modifier = Modifier
                     .size(400.dp)
                     .background(MaterialTheme.colorScheme.primary)) {
@@ -824,7 +826,10 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                     MaterialTheme.colorScheme.secondary,
                                     RoundedCornerShape(14.dp)
                                 )
-                                .padding(4.dp),
+                                .padding(4.dp)
+                                .clickable {
+                                    navController.navigate("speaker_detail_screen/${firstSpeakerData.title}")
+                                },
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
 
@@ -842,6 +847,7 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                 Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(10.dp)))
+
                                 if (!isFavoriteFirst.value) {
                                     Icon(
                                         imageVector = Icons.Default.FavoriteBorder,
@@ -868,11 +874,14 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                                             println(it)
                                                         }
                                                     isFavoriteFirst.value = true
-                                                }
-                                                else {
+                                                } else {
                                                     navController.navigate("login_screen")
-                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",
-                                                        Toast.LENGTH_SHORT).show()
+                                                    Toast
+                                                        .makeText(
+                                                            context, "Oturum açmanız gerekiyor.",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
                                                 }
                                             }
 
@@ -908,6 +917,7 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
 
                                     )
                                 }
+
 
                                 Column (modifier = Modifier
                                     .fillMaxSize()
@@ -968,7 +978,8 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
 
                                         }
 
-                                    }}
+                                    }
+                                }
 
                             }
 
@@ -984,7 +995,10 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                         MaterialTheme.colorScheme.secondary,
                                         RoundedCornerShape(14.dp)
                                     )
-                                    .padding(4.dp),
+                                    .padding(4.dp)
+                                    .clickable {
+                                        navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
+                                    },
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
 
@@ -1028,9 +1042,15 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                                                 println(it)
                                                             }
                                                         isFavoriteSecond.value = true
-                                                    }else {
+                                                    } else {
                                                         navController.navigate("login_screen")
-                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Oturum açmanız gerekiyor.",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
                                                     }
                                                 }
 
@@ -1126,7 +1146,8 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
 
                                             }
 
-                                        }}
+                                        }
+                                    }
                                 }
                             }
                         }
