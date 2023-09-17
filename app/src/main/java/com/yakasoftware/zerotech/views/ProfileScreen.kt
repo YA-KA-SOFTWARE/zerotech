@@ -75,8 +75,21 @@ fun ProfileScreen(navController: NavHostController) {
                 phoneNumber.value = data["phoneNumber"] as String
 
             }
-
     }
+    
+    val favSize = remember {
+        mutableStateOf(0)
+    }
+
+    if (currentUser != null) {
+        db.collection("fav").document(email!!)
+            .collection(email)
+            .get()
+            .addOnSuccessListener { documents ->
+                favSize.value = documents.size()
+            }
+    }
+
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
 
@@ -222,7 +235,7 @@ fun ProfileScreen(navController: NavHostController) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                  navController.navigate("favorite_screen")
+                    navController.navigate("favorite_screen")
                 }) {
                 Spacer(modifier = Modifier.padding(start = 8.dp))
                 Icon(
@@ -232,6 +245,18 @@ fun ProfileScreen(navController: NavHostController) {
                     modifier = Modifier
                         .size(24.dp)
                 )
+                Box(modifier = Modifier
+                    .clip(CircleShape)
+                    .size(12.dp)
+                    .background(
+                    MaterialTheme.colorScheme.secondary
+                ),contentAlignment = Alignment.Center) {
+                    val fontSizeIcon = 10.dp
+                    Text(text = favSize.value.toString(), color = Color.Black,
+                        fontSize = with(LocalDensity.current) { fontSizeIcon.toSp() }
+                    )
+
+                }
                 Spacer(modifier = Modifier.padding(start = 12.dp))
                 Text(text = "Favorilerim", color = MaterialTheme.colorScheme.secondary,
                     fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
@@ -284,7 +309,7 @@ fun ProfileScreen(navController: NavHostController) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                   navController.navigate("account_detail_screen")
+                    navController.navigate("account_detail_screen")
                 }) {
                 Spacer(modifier = Modifier.padding(start = 8.dp))
                 Icon(
@@ -352,13 +377,16 @@ fun ProfileScreen(navController: NavHostController) {
                         .fillMaxWidth(0.6f)
                         .background(Color(202, 47, 47, 255))
                         .clickable {
-                            navController.navigate("main_screen"){
+                            navController.navigate("main_screen") {
                                 popUpTo("main_screen") { inclusive = true }
-                                launchSingleTop = true }
+                                launchSingleTop = true
+                            }
                             if (currentUser != null) {
                                 auth.signOut()
                             }
-                            Toast.makeText(context,"Başarıyla çıkış yapıdı.",Toast.LENGTH_SHORT).show()
+                            Toast
+                                .makeText(context, "Başarıyla çıkış yapıdı.", Toast.LENGTH_SHORT)
+                                .show()
                         }
                         , verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.weight(1f))
