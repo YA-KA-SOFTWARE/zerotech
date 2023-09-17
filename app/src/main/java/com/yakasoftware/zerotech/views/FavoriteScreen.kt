@@ -1,5 +1,6 @@
 package com.yakasoftware.zerotech.views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,15 +33,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.R
+import kotlinx.coroutines.tasks.await
+import androidx.compose.foundation.lazy.LazyColumn as LazyColumn
+
 
 @Composable
 fun FavoriteScreen(navController: NavHostController) {
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+
         val context = LocalContext.current
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -162,7 +169,60 @@ fun FavoriteScreen(navController: NavHostController) {
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
+                data class FavProduct (
+                    val title: String,
+                    val photo1: String,
+                    val price: String,
+                    val oldPrice: String,
+                    val discount: String,
+                    val type: String
+                )
+                val db = Firebase.firestore
+
+                val title = remember { mutableStateOf("") }
+                val photo1 = remember{ mutableStateOf("") }
+                val price = remember{ mutableStateOf("") }
+                val oldPrice = remember { mutableStateOf("") }
+                val discount = remember{ mutableStateOf("") }
+                val type = remember {
+                    mutableStateOf("")
+                }
+                val favList =remember{ mutableStateListOf<FavProduct>() }
+                val collectionRef = db.collection("fav").document(email!!).collection(email)
+                collectionRef.get().addOnSuccessListener { documents ->
+                    favList.clear()
+                    for(document in documents){
+                        val favData: Map<String,Any> = document.data
+                        title.value = favData["title"].toString()
+                        photo1.value = favData["photo1"].toString()
+                        price.value = favData["price"].toString()
+                        oldPrice.value = favData["oldPrice"].toString()
+                        discount.value = favData["discount"].toString()
+                        type.value = favData["type"].toString()
+                        favList.add(FavProduct(title.value,photo1.value,price.value,oldPrice.value,discount.value,type.value))
+                    }
+                    if (favList != null){
+
+
+
+                }
             }
+                LazyColumn{
+                    items(favList.size){index ->
+                        val favListData = favList[index]
+                        Column {
+                            //ürün çeşitlerine göre favListData.type üzerinden if else ile doğru detail sayfasına yönlendirme yapmayı düşünüyorum ona göre ayarlamanızı yapın M.K.
+                            Text(text = favListData.title, color = MaterialTheme.colorScheme.secondary)
+                            val painter = rememberAsyncImagePainter(model = favListData.photo1)
+                            Image(painter = painter, contentDescription ="photo1", Modifier.size(50.dp))
+                            Text(text = "${favListData.price}",color = MaterialTheme.colorScheme.secondary)
+                            Text(text = "${favListData.oldPrice}", color = MaterialTheme.colorScheme.secondary)
+                            Text(text = "${favListData.discount}", color = MaterialTheme.colorScheme.secondary)
+                        }
+
+                    }
+                }
         }
     }
 }
+
