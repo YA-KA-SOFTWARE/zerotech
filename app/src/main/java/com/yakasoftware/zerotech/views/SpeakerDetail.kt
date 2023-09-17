@@ -6,11 +6,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +23,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
@@ -37,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +60,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -72,6 +78,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val pagerLoading = remember {
         mutableStateOf(true)
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     val photoUrls = mutableListOf<String>()
 
@@ -111,6 +119,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         }
         println(photoUrls)
         println(photo1)
+        val maxPage = photoUrls.size - 1
 
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -124,7 +133,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .border(BorderStroke(5.dp, MaterialTheme.colorScheme.onSecondary))
+                        .border(5.dp, MaterialTheme.colorScheme.onSecondary,
+                            shape = RoundedCornerShape(20.dp)
+                        )
+                        .clip(RoundedCornerShape(20.dp))
+
                 ) {
 
                     if (pagerLoading.value) {
@@ -145,7 +158,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             val painter = rememberAsyncImagePainter(model = photoUrls[page])
                             Image(
                                 painter = painter, contentDescription = "Hoparlör Detayları",
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxSize()
+                                    .clip(RoundedCornerShape(20.dp)),
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -166,6 +180,45 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         ) {
 
                         }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (pagerState.currentPage > 0) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowLeft,
+                                    contentDescription = "Sola gitme",
+                                    tint = MaterialTheme.colorScheme.onSecondary
+                                    , modifier = Modifier
+                                        .size(36.dp)
+                                        .clickable {
+                                            coroutineScope.launch {
+                                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                                            }
+                                        }
+                                )
+                            }
+
+                            if (pagerState.currentPage < maxPage) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowRight,
+                                    contentDescription = "Sağa gitme",
+                                    tint = MaterialTheme.colorScheme.onSecondary
+                                    , modifier = Modifier
+                                        .size(36.dp)
+                                        .clickable {
+                                            coroutineScope.launch {
+                                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                                            }
+                                        }
+                                )
+                            }
+                        }
+
                     }
 
                 }
