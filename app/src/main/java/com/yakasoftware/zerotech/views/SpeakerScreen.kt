@@ -3,6 +3,7 @@ package com.yakasoftware.zerotech.views
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -735,6 +736,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
     val title = remember {
         mutableStateOf("")
     }
+
     val speakerList = remember { mutableStateListOf<SpeakerData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
     val speakersDb = Firebase.firestore
@@ -865,14 +867,25 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                 Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(10.dp)))
+                                val sizeState = remember {
+                                    androidx.compose.animation.core.Animatable(
+                                        1f
+                                    )
+                                }
 
                                 if (!isFavoriteFirst.value) {
+                                    LaunchedEffect(!isFavoriteFirst.value) {
+                                        if (!isFavoriteFirst.value) {
+                                            sizeState.animateTo(1.2f)
+                                            sizeState.animateTo(1f)
+                                        }
+                                    }
                                     Icon(
                                         imageVector = Icons.Default.FavoriteBorder,
                                         contentDescription = "Favorilerim",
                                         tint = MaterialTheme.colorScheme.onSecondary,
                                         modifier = Modifier
-                                            .size(34.dp)
+                                            .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
                                             .clickable {
                                                 val favDb = Firebase.firestore
@@ -902,12 +915,18 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     )
 
                                 }else {
+                                    LaunchedEffect(isFavoriteFirst) {
+                                        if (isFavoriteFirst.value) {
+                                            sizeState.animateTo(1.2f)
+                                            sizeState.animateTo(1f)
+                                        }
+                                    }
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Favorilerim",
                                         tint = Color(238, 69, 69, 255),
                                         modifier = Modifier
-                                            .size(34.dp)
+                                            .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
                                             .clickable {
                                                 val favDb = Firebase.firestore
@@ -1029,13 +1048,25 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
                                         .clip(RoundedCornerShape(10.dp)))
+
+                                    val sizeState2 = remember {
+                                        androidx.compose.animation.core.Animatable(
+                                            1f
+                                        )
+                                    }
                                     if (!isFavoriteSecond.value) {
+                                        LaunchedEffect(!isFavoriteSecond.value) {
+                                            if (!isFavoriteSecond.value) {
+                                                sizeState2.animateTo(1.2f)
+                                                sizeState2.animateTo(1f)
+                                            }
+                                        }
                                         Icon(
                                             imageVector = Icons.Default.FavoriteBorder,
                                             contentDescription = "Favorilerim",
                                             tint = MaterialTheme.colorScheme.onSecondary,
                                             modifier = Modifier
-                                                .size(34.dp)
+                                                .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
@@ -1064,12 +1095,18 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         )
 
                                     }else {
+                                        LaunchedEffect(isFavoriteSecond.value) {
+                                            if (isFavoriteSecond.value) {
+                                                sizeState2.animateTo(1.2f)
+                                                sizeState2.animateTo(1f)
+                                            }
+                                        }
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
                                             contentDescription = "Favorilerim",
                                             tint = Color(238, 69, 69, 255),
                                             modifier = Modifier
-                                                .size(34.dp)
+                                                .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
                                                 .clickable {
                                                     val favDb = Firebase.firestore

@@ -1,24 +1,19 @@
 package com.yakasoftware.zerotech.views
 
 
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,8 +21,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
@@ -44,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,7 +55,6 @@ import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,10 +73,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         mutableStateOf(true)
     }
 
-    val coroutineScope = rememberCoroutineScope()
-
-
     val photoUrls = mutableListOf<String>()
+
     Surface(Modifier.fillMaxSize()) {
         println(productTitle)
         LaunchedEffect(Unit) {
@@ -122,7 +111,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         }
         println(photoUrls)
         println(photo1)
-        val maxPage = photoUrls.size - 1
 
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -136,10 +124,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .border(5.dp, MaterialTheme.colorScheme.onSecondary,
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .clip(RoundedCornerShape(20.dp))
+                        .border(BorderStroke(5.dp, MaterialTheme.colorScheme.onSecondary))
                 ) {
 
                     if (pagerLoading.value) {
@@ -152,7 +137,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                     } else {
                         val pagerState = rememberPagerState(pageCount = { photoUrls.size })
-
 
                         HorizontalPager(
                             state = pagerState,
@@ -181,46 +165,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 )
                         ) {
 
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            if (pagerState.currentPage > 0) {
-
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowLeft,
-                                    contentDescription = "Sola Gitme",
-                                    tint = MaterialTheme.colorScheme.onSecondary,
-                                    modifier = Modifier.clickable {
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                        }
-
-                                    }
-                                        .size(38.dp)
-                                )
-
-                            }
-
-                            if (pagerState.currentPage < maxPage) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowRight,
-                                    contentDescription = "Sağa Gitme",
-                                    tint = MaterialTheme.colorScheme.onSecondary,
-                                    modifier = Modifier.clickable {
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                        }
-                                    }
-                                        .size(38.dp)
-                                )
-
-                            }
                         }
                     }
 
