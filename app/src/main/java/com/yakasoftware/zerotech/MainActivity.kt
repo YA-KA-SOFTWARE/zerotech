@@ -13,6 +13,7 @@ import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
 import com.yakasoftware.zerotech.views.AccesoiresScreen
 import com.yakasoftware.zerotech.views.AccountDetailScreen
 import com.yakasoftware.zerotech.views.AdressScreen
+import com.yakasoftware.zerotech.views.BandsScreen
 import com.yakasoftware.zerotech.views.BasketScreen
 import com.yakasoftware.zerotech.views.FavoriteScreen
 import com.yakasoftware.zerotech.views.HeadPhonesScreen
@@ -104,6 +105,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("accesories_screen"){
                         AccesoiresScreen(navController = navController)
+                    }
+                    composable("band_screen"){
+                        BandsScreen(navController = navController)
                     }
                 }
             }

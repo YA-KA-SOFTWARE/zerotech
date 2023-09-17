@@ -50,11 +50,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -95,20 +93,10 @@ import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
-import java.util.UUID
-
-
-data class SpeakerData(
-    val photo1: String,
-    val oldPrice: String,
-    val price: String,
-    val title: String,
-    val discount: String
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakerScreen(navController: NavHostController) {
+fun BandsScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
@@ -302,7 +290,7 @@ fun SpeakerScreen(navController: NavHostController) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "Hoparlörler",
+                    text = "Kordonlar",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 24.sp,
                     modifier = Modifier
@@ -327,7 +315,7 @@ fun SpeakerScreen(navController: NavHostController) {
 
 
             Spacer(modifier = Modifier.padding(20.dp))
-            RectanglesWithLinesSpeaker(navController)
+            RectanglesWithLinesBand(navController)
 
         }
     }
@@ -489,14 +477,7 @@ fun SpeakerScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .clickable {
-                            navController.navigate("band_screen") {
-                                popUpTo("profile_screen") {
-                                    inclusive = true
-                                }
-                            }
-                        },
+                    Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Kordon", color = MaterialTheme.colorScheme.secondary,
@@ -517,7 +498,15 @@ fun SpeakerScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate("speaker_screen") {
+                                popUpTo("profile_screen") {
+                                    inclusive = true
+                                }
+                            }
+                        },
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Hoparlör", color = MaterialTheme.colorScheme.secondary,
@@ -538,7 +527,8 @@ fun SpeakerScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
                             navController.navigate("accesories_screen") {
                                 popUpTo("profile_screen") {
@@ -718,7 +708,7 @@ fun SpeakerScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RectanglesWithLinesSpeaker(navController: NavHostController) {
+fun RectanglesWithLinesBand(navController: NavHostController) {
     val context = LocalContext.current
     val photoSpeaker1 = remember {
         mutableStateOf("")
@@ -743,8 +733,8 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
-        speakersDb.collection("products").document("speakers")
-            .collection("Aggiy AG-S21 Bluetooth Hoparlör")
+        speakersDb.collection("products").document("bands")
+            .collection("bands")
             .get()
             .addOnSuccessListener { documents ->
                 speakerList.clear()
@@ -862,7 +852,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     )
                             )
                             {
-                                Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
+                                Image(painter = painter, contentDescription = "Kordon", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(10.dp)))
 
@@ -892,10 +882,14 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                             println(it)
                                                         }
                                                     isFavoriteFirst.value = true
-                                                }
-                                                else {
+                                                } else {
                                                     navController.navigate("login_screen")
-                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                    Toast
+                                                        .makeText(
+                                                            context, "Oturum açmanız gerekiyor.",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
                                                 }
                                             }
 
@@ -992,7 +986,8 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
 
                                         }
 
-                                    }}
+                                    }
+                                }
 
                             }
 
@@ -1026,7 +1021,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         )
                                 )
                                 {
-                                    Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
+                                    Image(painter = painter2, contentDescription = "Kordon", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
                                         .clip(RoundedCornerShape(10.dp)))
                                     if (!isFavoriteSecond.value) {
@@ -1055,9 +1050,15 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                                 println(it)
                                                             }
                                                         isFavoriteSecond.value = true
-                                                    }else {
+                                                    } else {
                                                         navController.navigate("login_screen")
-                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Oturum açmanız gerekiyor.",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
                                                     }
                                                 }
 
@@ -1153,7 +1154,8 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
 
                                             }
 
-                                        }}
+                                        }
+                                    }
                                 }
                             }
                         }
