@@ -307,7 +307,10 @@ fun MainScreen(navController: NavHostController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
-                            .clip(RoundedCornerShape(30.dp))
+                            .clip(RoundedCornerShape(33.dp))
+                            .border(
+                                width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
+                            )
                     ) {
 
                         if (pagerLoading.value) {
@@ -339,10 +342,7 @@ fun MainScreen(navController: NavHostController) {
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
                                                     painter = offersPainter,
-                                                    contentDescription = "Kampanya",
-                                                    Modifier.border(
-                                                        width = 2.dp, color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(30.dp)
-                                                    )
+                                                    contentDescription = "Kampanya"
                                                 )
                                             }
 
@@ -352,10 +352,7 @@ fun MainScreen(navController: NavHostController) {
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
                                                     painter = airMaxPainter,
-                                                    contentDescription = "Airmax",
-                                                    Modifier.border(
-                                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
-                                                    )
+                                                    contentDescription = "Airmax"
                                                 )
                                             }
                                         }
@@ -364,10 +361,7 @@ fun MainScreen(navController: NavHostController) {
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
                                                     painter = bluetoothPainter,
-                                                    contentDescription = "Bluetooth Hoparlör",
-                                                    Modifier.border(
-                                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
-                                                    )
+                                                    contentDescription = "Bluetooth Hoparlör"
                                                 )
                                             }
                                         }
@@ -376,12 +370,7 @@ fun MainScreen(navController: NavHostController) {
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
                                                     painter = watchsPainter,
-                                                    contentDescription = "Saat",
-                                                    Modifier.border(
-                                                        width = 2.dp,
-                                                        color = MaterialTheme.colorScheme.secondary,
-                                                        shape = RoundedCornerShape(30.dp)
-                                                    )
+                                                    contentDescription = "Saat"
                                                 )
                                             }
                                         }

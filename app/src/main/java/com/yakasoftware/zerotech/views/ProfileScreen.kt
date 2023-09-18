@@ -249,10 +249,10 @@ fun ProfileScreen(navController: NavHostController) {
                     .clip(CircleShape)
                     .size(12.dp)
                     .background(
-                    MaterialTheme.colorScheme.secondary
+                        Color(238, 69, 69, 255)
                 ),contentAlignment = Alignment.Center) {
                     val fontSizeIcon = 10.dp
-                    Text(text = favSize.value.toString(), color = Color.Black,
+                    Text(text = favSize.value.toString(), color = MaterialTheme.colorScheme.primary,
                         fontSize = with(LocalDensity.current) { fontSizeIcon.toSp() }
                     )
 

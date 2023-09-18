@@ -1,24 +1,33 @@
 package com.yakasoftware.zerotech.views
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,10 +35,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -182,6 +195,9 @@ fun FavoriteScreen(navController: NavHostController) {
                 val price = remember{ mutableStateOf("") }
                 val oldPrice = remember { mutableStateOf("") }
                 val discount = remember{ mutableStateOf("") }
+
+                val fontSize = 12.dp
+                val fontSizePrice = 16.dp
                 val type = remember {
                     mutableStateOf("")
                 }
@@ -202,21 +218,450 @@ fun FavoriteScreen(navController: NavHostController) {
                  println("favList.size = ${favList.size}")
             }
                 LazyColumn{
-                    items(favList.size){index ->
-                        val favListData = favList[index]
+                    items(if(favList.size%2==0)favList.size/2 else favList.size/2 + 1) { rowIndex ->
+                        val firstSpeakerIndex = rowIndex * 2
+                        val secondSpeakerIndex = rowIndex * 2 + 1
+                        val favListData = favList[firstSpeakerIndex]
+                        val secondSpeakerData = favList.getOrNull(secondSpeakerIndex)
                         Column {
+                            val isFavoriteFirst = remember {
+                                mutableStateOf(false)
+                            }
+                            val isFavoriteSecond = remember {
+                                mutableStateOf(false)
+                            }
                             //ürün çeşitlerine göre favListData.type üzerinden if else ile doğru detail sayfasına yönlendirme yapmayı düşünüyorum ona göre ayarlamanızı yapın M.K.
-                            Text(text = favListData.title, color = MaterialTheme.colorScheme.secondary)
                             val painter = rememberAsyncImagePainter(model = favListData.photo1)
-                            Image(painter = painter, contentDescription ="photo1", Modifier.size(50.dp))
-                            Text(text = "${favListData.price}",color = MaterialTheme.colorScheme.secondary)
-                            Text(text = "${favListData.oldPrice}", color = MaterialTheme.colorScheme.secondary)
-                            Text(text = "${favListData.discount}", color = MaterialTheme.colorScheme.secondary)
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.primary)) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(280.dp)
+                                        .padding(10.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    // İlk dikdörtgeni üç parçaya böl
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxHeight()
+                                            .background(
+                                                MaterialTheme.colorScheme.secondary,
+                                                RoundedCornerShape(14.dp)
+                                            )
+                                            .padding(4.dp),
+                                        verticalArrangement = Arrangement.SpaceBetween
+                                    ) {
+
+                                        //Resimler + Ürün ismi buraya müminim
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .weight(5f)
+                                                .background(
+                                                    MaterialTheme.colorScheme.onPrimary,
+                                                    RoundedCornerShape(10.dp)
+                                                )
+                                        )
+                                        {
+                                            Image(
+                                                painter = painter,
+                                                contentDescription = "Hoparlör",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(RoundedCornerShape(10.dp))
+                                            )
+                                            val sizeState = remember {
+                                                androidx.compose.animation.core.Animatable(
+                                                    1f
+                                                )
+                                            }
+                                            if (!isFavoriteFirst.value) {
+                                                LaunchedEffect(!isFavoriteFirst.value) {
+                                                    if (!isFavoriteFirst.value) {
+                                                        sizeState.animateTo(1.2f)
+                                                        sizeState.animateTo(1f)
+                                                    }
+                                                }
+                                                Icon(
+                                                    imageVector = Icons.Default.FavoriteBorder,
+                                                    contentDescription = "Favorilerim",
+                                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                                    modifier = Modifier
+                                                        .size(34.dp * sizeState.value)
+                                                        .align(alignment = Alignment.TopEnd)
+                                                        .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                        .clickable {
+                                                            val favDb = Firebase.firestore
+                                                            val userEmail =
+                                                                Firebase.auth.currentUser?.email
+                                                            if (userEmail != null) {
+                                                                val docRef = favDb
+                                                                    .collection("fav")
+                                                                    .document(userEmail)
+                                                                    .collection(userEmail)
+                                                                    .document(favListData.title)
+                                                                docRef
+                                                                    .set(favListData)
+                                                                    .addOnSuccessListener {
+                                                                        println("ekledi")
+                                                                    }
+                                                                    .addOnFailureListener {
+                                                                        println(it)
+                                                                    }
+                                                                isFavoriteFirst.value = true
+                                                            } else {
+                                                                navController.navigate("login_screen")
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Oturum açmanız gerekiyor.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                        }
+
+                                                )
+
+                                            } else {
+                                                LaunchedEffect(isFavoriteFirst) {
+                                                    if (isFavoriteFirst.value) {
+                                                        sizeState.animateTo(1.2f)
+                                                        sizeState.animateTo(1f)
+                                                    }
+                                                }
+                                                Icon(
+                                                    imageVector = Icons.Default.Favorite,
+                                                    contentDescription = "Favorilerim",
+                                                    tint = Color(238, 69, 69, 255),
+                                                    modifier = Modifier
+                                                        .size(34.dp * sizeState.value)
+                                                        .align(alignment = Alignment.TopEnd)
+                                                        .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                        .clickable {
+                                                            val favDb = Firebase.firestore
+                                                            val userEmail =
+                                                                Firebase.auth.currentUser?.email
+                                                            if (userEmail != null) {
+                                                                val docRef = favDb
+                                                                    .collection("fav")
+                                                                    .document(userEmail)
+                                                                    .collection(userEmail)
+                                                                    .document(favListData.title)
+                                                                docRef
+                                                                    .delete()
+                                                                    .addOnSuccessListener {
+                                                                        isFavoriteFirst.value =
+                                                                            false
+                                                                    }
+                                                                    .addOnFailureListener {
+                                                                        println(it)
+                                                                    }
+                                                            }
+                                                        }
+
+                                                )
+                                            }
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .background(
+                                                        brush = Brush.verticalGradient(
+                                                            colors = listOf(
+                                                                Color.Transparent,
+                                                                Color.Transparent,// Başlangıç rengi
+                                                                MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                            ),
+                                                            startY = 0f,
+                                                            endY = 800f // Yüksekliği ayarlayın
+                                                        )
+                                                    ),
+                                                verticalArrangement = Arrangement.Bottom,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+
+                                            }
+                                        }
+                                        //Sepete ekleme - ürün fiyat
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .weight(1.4f)
+                                                .background(
+                                                    MaterialTheme.colorScheme.onPrimary,
+                                                    RoundedCornerShape(10.dp)
+                                                )
+
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.fillMaxSize(),
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                                        Text(
+                                                            text = favListData.title, color = Color(
+                                                                255,
+                                                                231,
+                                                                208,
+                                                                255
+                                                            ), fontWeight = FontWeight.Bold,
+                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                            textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                        )
+                                                    }
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    Column {
+                                                        Text(
+                                                            text = favListData.oldPrice,
+                                                            color = Color(100, 100, 100, 255),
+                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                            textAlign = TextAlign.Center,
+                                                            textDecoration = TextDecoration.LineThrough
+                                                        )
+                                                        Spacer(modifier = Modifier.padding(top = 2.dp))
+                                                        Text(
+                                                            text = favListData.price,
+                                                            color = MaterialTheme.colorScheme.secondary,
+                                                            fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                            fontWeight = FontWeight.Bold,
+                                                            textAlign = TextAlign.Center
+                                                        )
+                                                    }
+                                                    Spacer(modifier = Modifier.weight(1f))
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    if (secondSpeakerData != null) {
+                                        val painter2 =
+                                            rememberAsyncImagePainter(model = secondSpeakerData.photo1)
+                                        Column(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .fillMaxSize()
+                                                .background(
+                                                    MaterialTheme.colorScheme.secondary,
+                                                    RoundedCornerShape(14.dp)
+                                                )
+                                                .padding(4.dp),
+                                            verticalArrangement = Arrangement.SpaceBetween
+                                        ) {
+
+                                            //Resimler + Ürün ismi buraya müminim
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(5f)
+                                                    .background(
+                                                        MaterialTheme.colorScheme.onPrimary,
+                                                        RoundedCornerShape(10.dp)
+                                                    )
+                                            )
+                                            {
+                                                Image(
+                                                    painter = painter2,
+                                                    contentDescription = "Hoparlör",
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .clip(RoundedCornerShape(10.dp))
+                                                )
+                                                val sizeState2 = remember {
+                                                    androidx.compose.animation.core.Animatable(
+                                                        1f
+                                                    )
+                                                }
+                                                if (!isFavoriteSecond.value) {
+                                                    LaunchedEffect(!isFavoriteSecond.value) {
+                                                        if (!isFavoriteSecond.value) {
+                                                            sizeState2.animateTo(1.2f)
+                                                            sizeState2.animateTo(1f)
+                                                        }
+                                                    }
+                                                    Icon(
+                                                        imageVector = Icons.Default.FavoriteBorder,
+                                                        contentDescription = "Favorilerim",
+                                                        tint = MaterialTheme.colorScheme.onSecondary,
+                                                        modifier = Modifier
+                                                            .size(34.dp * sizeState2.value)
+                                                            .align(alignment = Alignment.TopEnd)
+                                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                            .clickable {
+                                                                val favDb = Firebase.firestore
+                                                                val userEmail =
+                                                                    Firebase.auth.currentUser?.email
+                                                                if (userEmail != null) {
+                                                                    val docRef = favDb
+                                                                        .collection("fav")
+                                                                        .document(userEmail)
+                                                                        .collection(userEmail)
+                                                                        .document(secondSpeakerData.title)
+                                                                    docRef
+                                                                        .set(secondSpeakerData)
+                                                                        .addOnSuccessListener {
+                                                                            println("ekledi")
+                                                                        }
+                                                                        .addOnFailureListener {
+                                                                            println(it)
+                                                                        }
+                                                                    isFavoriteSecond.value = true
+                                                                } else {
+                                                                    navController.navigate("login_screen")
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Oturum açmanız gerekiyor.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                            }
+
+                                                    )
+
+                                                } else {
+                                                    LaunchedEffect(isFavoriteSecond.value) {
+                                                        if (isFavoriteSecond.value) {
+                                                            sizeState2.animateTo(1.2f)
+                                                            sizeState2.animateTo(1f)
+                                                        }
+                                                    }
+                                                    Icon(
+                                                        imageVector = Icons.Default.Favorite,
+                                                        contentDescription = "Favorilerim",
+                                                        tint = Color(238, 69, 69, 255),
+                                                        modifier = Modifier
+                                                            .size(34.dp * sizeState2.value)
+                                                            .align(alignment = Alignment.TopEnd)
+                                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                            .clickable {
+                                                                val favDb = Firebase.firestore
+                                                                val userEmail =
+                                                                    Firebase.auth.currentUser?.email
+                                                                if (userEmail != null) {
+                                                                    val docRef = favDb
+                                                                        .collection("fav")
+                                                                        .document(userEmail)
+                                                                        .collection(userEmail)
+                                                                        .document(secondSpeakerData.title)
+                                                                    docRef
+                                                                        .delete()
+                                                                        .addOnSuccessListener {
+                                                                            isFavoriteSecond.value =
+                                                                                false
+                                                                        }
+                                                                        .addOnFailureListener {
+                                                                            println(it)
+                                                                        }
+                                                                }
+                                                            }
+
+                                                    )
+                                                }
+
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxHeight()
+                                                        .background(
+                                                            brush = Brush.verticalGradient(
+                                                                colors = listOf(
+                                                                    Color.Transparent,
+                                                                    Color.Transparent,// Başlangıç rengi
+                                                                    MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                                ),
+                                                                startY = 0f,
+                                                                endY = 800f // Yüksekliği ayarlayın
+                                                            )
+                                                        ),
+                                                    verticalArrangement = Arrangement.Bottom,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+
+                                                }
+                                            }
+                                            //Sepete ekleme - ürün fiyat
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1.4f)
+                                                    .background(
+                                                        MaterialTheme.colorScheme.onPrimary,
+                                                        RoundedCornerShape(10.dp)
+                                                    )
+
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.Start
+                                                ) {
+                                                    Column(
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        verticalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                                            Text(
+                                                                text = secondSpeakerData.title, color = Color(
+                                                                    255,
+                                                                    231,
+                                                                    208,
+                                                                    255
+                                                                ), fontWeight = FontWeight.Bold,
+                                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                                textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                            )
+                                                        }
+                                                        Spacer(modifier = Modifier.weight(1f))
+                                                        Column {
+                                                            Text(
+                                                                text = secondSpeakerData.oldPrice,
+                                                                color = Color(100, 100, 100, 255),
+                                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                                textAlign = TextAlign.Center,
+                                                                textDecoration = TextDecoration.LineThrough
+                                                            )
+                                                            Spacer(modifier = Modifier.padding(top = 2.dp))
+                                                            Text(
+                                                                text = secondSpeakerData.price,
+                                                                color = MaterialTheme.colorScheme.secondary,
+                                                                fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                                fontWeight = FontWeight.Bold,
+                                                                textAlign = TextAlign.Center
+                                                            )
+                                                        }
+                                                        Spacer(modifier = Modifier.weight(1f))
+
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                        else{
+                                            println("Tek sayı hatası")
+                                        }
+                                }
+
+
+                                }
+
+                            }
                         }
 
                     }
                 }
         }
-    }
+
 }
 

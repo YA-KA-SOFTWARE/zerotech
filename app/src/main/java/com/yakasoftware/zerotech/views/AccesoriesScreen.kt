@@ -314,7 +314,7 @@ fun AccesoiresScreen(navController: NavHostController) {
 
 
 
-            Spacer(modifier = Modifier.padding(20.dp))
+
             RectanglesWithLinesAccesoires(navController = navController)
 
         }
@@ -809,12 +809,13 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                 }
 
                 Box(modifier = Modifier
-                    .size(400.dp)
+                    .fillMaxSize()
                     .background(MaterialTheme.colorScheme.primary)) {
                     Row(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                            .fillMaxWidth()
+                            .height(280.dp)
+                            .padding(10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // İlk dikdörtgeni üç parçaya böl
@@ -846,16 +847,27 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                             {
                                 Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(RoundedCornerShape(10.dp)))
-
+                                    .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp)))
+                                val sizeState = remember {
+                                    androidx.compose.animation.core.Animatable(
+                                        1f
+                                    )
+                                }
                                 if (!isFavoriteFirst.value) {
+                                    LaunchedEffect(!isFavoriteFirst.value) {
+                                        if (!isFavoriteFirst.value) {
+                                            sizeState.animateTo(1.2f)
+                                            sizeState.animateTo(1f)
+                                        }
+                                    }
                                     Icon(
                                         imageVector = Icons.Default.FavoriteBorder,
                                         contentDescription = "Favorilerim",
                                         tint = MaterialTheme.colorScheme.onSecondary,
                                         modifier = Modifier
-                                            .size(34.dp)
+                                            .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
+                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -888,13 +900,20 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                     )
 
                                 }else {
+                                    LaunchedEffect(isFavoriteFirst) {
+                                        if (isFavoriteFirst.value) {
+                                            sizeState.animateTo(1.2f)
+                                            sizeState.animateTo(1f)
+                                        }
+                                    }
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Favorilerim",
                                         tint = Color(238, 69, 69, 255),
                                         modifier = Modifier
-                                            .size(34.dp)
+                                            .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
+                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -932,11 +951,6 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                             endY = 800f // Yüksekliği ayarlayın
                                         )
                                     ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
-                                    Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                        Text(text = firstSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
-                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                            textAlign = TextAlign.Center,)
-                                    }
 
                                 }
                             }
@@ -945,40 +959,55 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(0.7f)
+                                    .weight(1.4f)
                                     .background(
                                         MaterialTheme.colorScheme.onPrimary,
                                         RoundedCornerShape(10.dp)
                                     )
 
                             ) {
-                                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start){
-                                    Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center){
-                                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center,
-                                            verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(
-                                                imageVector = Icons.Default.ShoppingCart,
-                                                contentDescription = "Sepetim",
-                                                tint = MaterialTheme.colorScheme.onSecondary,
-                                                modifier = Modifier
-                                                    .size(35.dp)
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                            Text(
+                                                text = firstSpeakerData.title, color = Color(
+                                                    255,
+                                                    231,
+                                                    208,
+                                                    255
+                                                ), fontWeight = FontWeight.Bold,
+                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                textAlign = TextAlign.Left, lineHeight = 12.sp
                                             )
-                                            Spacer(modifier = Modifier.weight(1f))
-                                            Column {
-                                                Text(text = firstSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary.copy(alpha =0.7f),
-                                                    fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                    textAlign = TextAlign.Center,
-                                                    textDecoration = TextDecoration.LineThrough)
-                                                Spacer(modifier = Modifier.padding(top = 2.dp))
-                                                Text(text = firstSpeakerData.price, color = MaterialTheme.colorScheme.secondary,
-                                                    fontSize = with(LocalDensity.current) { fontSizePrice.toSp() }, fontWeight = FontWeight.Bold,
-                                                    textAlign = TextAlign.Center)
-                                            }
-                                            Spacer(modifier = Modifier.weight(1f))
-
                                         }
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Column {
+                                            Text(
+                                                text = firstSpeakerData.oldPrice,
+                                                color = Color(100, 100, 100, 255),
+                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                textAlign = TextAlign.Center,
+                                                textDecoration = TextDecoration.LineThrough
+                                            )
+                                            Spacer(modifier = Modifier.padding(top = 2.dp))
+                                            Text(
+                                                text = firstSpeakerData.price,
+                                                color = MaterialTheme.colorScheme.secondary,
+                                                fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                fontWeight = FontWeight.Bold,
+                                                textAlign = TextAlign.Center
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.weight(1f))
 
                                     }
+
                                 }
 
                             }
@@ -1015,15 +1044,28 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                 {
                                     Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
-                                        .clip(RoundedCornerShape(10.dp)))
+                                        .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp)))
+
+                                    val sizeState2 = remember {
+                                        androidx.compose.animation.core.Animatable(
+                                            1f
+                                        )
+                                    }
                                     if (!isFavoriteSecond.value) {
+                                        LaunchedEffect(!isFavoriteSecond.value) {
+                                            if (!isFavoriteSecond.value) {
+                                                sizeState2.animateTo(1.2f)
+                                                sizeState2.animateTo(1f)
+                                            }
+                                        }
                                         Icon(
                                             imageVector = Icons.Default.FavoriteBorder,
                                             contentDescription = "Favorilerim",
                                             tint = MaterialTheme.colorScheme.onSecondary,
                                             modifier = Modifier
-                                                .size(34.dp)
+                                                .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
+                                                .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1057,13 +1099,20 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         )
 
                                     }else {
+                                        LaunchedEffect(isFavoriteSecond.value) {
+                                            if (isFavoriteSecond.value) {
+                                                sizeState2.animateTo(1.2f)
+                                                sizeState2.animateTo(1f)
+                                            }
+                                        }
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
                                             contentDescription = "Favorilerim",
                                             tint = Color(238, 69, 69, 255),
                                             modifier = Modifier
-                                                .size(34.dp)
+                                                .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
+                                                .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1100,11 +1149,6 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                 endY = 800f // Yüksekliği ayarlayın
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
-                                        Box (modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                                            Text(text = secondSpeakerData.title, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold,
-                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                textAlign = TextAlign.Center,)
-                                        }
 
                                     }
                                 }
@@ -1113,40 +1157,55 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .weight(0.7f)
+                                        .weight(1.4f)
                                         .background(
                                             MaterialTheme.colorScheme.onPrimary,
                                             RoundedCornerShape(10.dp)
                                         )
 
                                 ) {
-                                    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start){
-                                        Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center){
-                                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center,
-                                                verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(
-                                                    imageVector = Icons.Default.ShoppingCart,
-                                                    contentDescription = "Sepetim",
-                                                    tint = MaterialTheme.colorScheme.onSecondary,
-                                                    modifier = Modifier
-                                                        .size(35.dp)
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                Text(
+                                                    text = secondSpeakerData.title, color = Color(
+                                                        255,
+                                                        231,
+                                                        208,
+                                                        255
+                                                    ), fontWeight = FontWeight.Bold,
+                                                    fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                    textAlign = TextAlign.Left, lineHeight = 12.sp
                                                 )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                Column {
-                                                    Text(text = secondSpeakerData.oldPrice, color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
-                                                        fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                        textAlign = TextAlign.Center,
-                                                        textDecoration = TextDecoration.LineThrough)
-                                                    Spacer(modifier = Modifier.padding(top = 2.dp))
-                                                    Text(text = secondSpeakerData.price, color = MaterialTheme.colorScheme.secondary,
-                                                        fontSize = with(LocalDensity.current) { fontSizePrice.toSp() }, fontWeight = FontWeight.Bold,
-                                                        textAlign = TextAlign.Center)
-                                                }
-                                                Spacer(modifier = Modifier.weight(1f))
-
                                             }
+                                            Spacer(modifier = Modifier.weight(1f))
+                                            Column {
+                                                Text(
+                                                    text = secondSpeakerData.oldPrice,
+                                                    color = Color(100, 100, 100, 255),
+                                                    fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                    textAlign = TextAlign.Center,
+                                                    textDecoration = TextDecoration.LineThrough
+                                                )
+                                                Spacer(modifier = Modifier.padding(top = 2.dp))
+                                                Text(
+                                                    text = secondSpeakerData.price,
+                                                    color = MaterialTheme.colorScheme.secondary,
+                                                    fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                    fontWeight = FontWeight.Bold,
+                                                    textAlign = TextAlign.Center
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.weight(1f))
 
                                         }
+
                                     }
                                 }
                             }
