@@ -402,13 +402,9 @@ fun ProfileScreen(navController: NavHostController) {
                                 .size(28.dp)
                         )
                         Spacer(modifier = Modifier.weight(1f))
-
                     }
-
                 }
-
             }
         }
-
-        }
     }
+}
