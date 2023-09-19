@@ -274,96 +274,40 @@ fun FavoriteScreen(navController: NavHostController) {
                                                     .fillMaxSize()
                                                     .clip(RoundedCornerShape(10.dp))
                                             )
-                                            val sizeState = remember {
-                                                androidx.compose.animation.core.Animatable(
-                                                    1f
-                                                )
-                                            }
-                                            if (!isFavoriteFirst.value) {
-                                                LaunchedEffect(!isFavoriteFirst.value) {
-                                                    if (!isFavoriteFirst.value) {
-                                                        sizeState.animateTo(1.2f)
-                                                        sizeState.animateTo(1f)
-                                                    }
-                                                }
-                                                Icon(
-                                                    imageVector = Icons.Default.FavoriteBorder,
-                                                    contentDescription = "Favorilerim",
-                                                    tint = MaterialTheme.colorScheme.onSecondary,
-                                                    modifier = Modifier
-                                                        .size(34.dp * sizeState.value)
-                                                        .align(alignment = Alignment.TopEnd)
-                                                        .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
-                                                        .clickable {
-                                                            val favDb = Firebase.firestore
-                                                            val userEmail =
-                                                                Firebase.auth.currentUser?.email
-                                                            if (userEmail != null) {
-                                                                val docRef = favDb
-                                                                    .collection("fav")
-                                                                    .document(userEmail)
-                                                                    .collection(userEmail)
-                                                                    .document(favListData.title)
-                                                                docRef
-                                                                    .set(favListData)
-                                                                    .addOnSuccessListener {
-                                                                        println("ekledi")
+                                            Icon(
+                                                imageVector = Icons.Default.Favorite,
+                                                contentDescription = "Favorilerim",
+                                                tint = Color(238, 69, 69, 255),
+                                                modifier = Modifier
+                                                    .size(34.dp)
+                                                    .align(alignment = Alignment.TopEnd)
+                                                    .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                    .clickable {
+                                                        val favDb = Firebase.firestore
+                                                        val userEmail =
+                                                            Firebase.auth.currentUser?.email
+                                                        if (userEmail != null) {
+                                                            val docRef = favDb
+                                                                .collection("fav")
+                                                                .document(userEmail)
+                                                                .collection(userEmail)
+                                                                .document(favListData.title)
+                                                            docRef
+                                                                .delete()
+                                                                .addOnSuccessListener {
+                                                                    navController.navigate("favorite_screen"){
+                                                                        popUpTo("favorite_screen"){
+                                                                            inclusive = true
+                                                                        }
                                                                     }
-                                                                    .addOnFailureListener {
-                                                                        println(it)
-                                                                    }
-                                                                isFavoriteFirst.value = true
-                                                            } else {
-                                                                navController.navigate("login_screen")
-                                                                Toast.makeText(
-                                                                    context,
-                                                                    "Oturum açmanız gerekiyor.",
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
-                                                            }
+                                                                }
+                                                                .addOnFailureListener {
+                                                                    println(it)
+                                                                }
                                                         }
-
-                                                )
-
-                                            } else {
-                                                LaunchedEffect(isFavoriteFirst) {
-                                                    if (isFavoriteFirst.value) {
-                                                        sizeState.animateTo(1.2f)
-                                                        sizeState.animateTo(1f)
                                                     }
-                                                }
-                                                Icon(
-                                                    imageVector = Icons.Default.Favorite,
-                                                    contentDescription = "Favorilerim",
-                                                    tint = Color(238, 69, 69, 255),
-                                                    modifier = Modifier
-                                                        .size(34.dp * sizeState.value)
-                                                        .align(alignment = Alignment.TopEnd)
-                                                        .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
-                                                        .clickable {
-                                                            val favDb = Firebase.firestore
-                                                            val userEmail =
-                                                                Firebase.auth.currentUser?.email
-                                                            if (userEmail != null) {
-                                                                val docRef = favDb
-                                                                    .collection("fav")
-                                                                    .document(userEmail)
-                                                                    .collection(userEmail)
-                                                                    .document(favListData.title)
-                                                                docRef
-                                                                    .delete()
-                                                                    .addOnSuccessListener {
-                                                                        isFavoriteFirst.value =
-                                                                            false
-                                                                    }
-                                                                    .addOnFailureListener {
-                                                                        println(it)
-                                                                    }
-                                                            }
-                                                        }
 
-                                                )
-                                            }
+                                            )
 
                                             Column(
                                                 modifier = Modifier
@@ -479,96 +423,41 @@ fun FavoriteScreen(navController: NavHostController) {
                                                         .fillMaxSize()
                                                         .clip(RoundedCornerShape(10.dp))
                                                 )
-                                                val sizeState2 = remember {
-                                                    androidx.compose.animation.core.Animatable(
-                                                        1f
-                                                    )
-                                                }
-                                                if (!isFavoriteSecond.value) {
-                                                    LaunchedEffect(!isFavoriteSecond.value) {
-                                                        if (!isFavoriteSecond.value) {
-                                                            sizeState2.animateTo(1.2f)
-                                                            sizeState2.animateTo(1f)
-                                                        }
-                                                    }
-                                                    Icon(
-                                                        imageVector = Icons.Default.FavoriteBorder,
-                                                        contentDescription = "Favorilerim",
-                                                        tint = MaterialTheme.colorScheme.onSecondary,
-                                                        modifier = Modifier
-                                                            .size(34.dp * sizeState2.value)
-                                                            .align(alignment = Alignment.TopEnd)
-                                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
-                                                            .clickable {
-                                                                val favDb = Firebase.firestore
-                                                                val userEmail =
-                                                                    Firebase.auth.currentUser?.email
-                                                                if (userEmail != null) {
-                                                                    val docRef = favDb
-                                                                        .collection("fav")
-                                                                        .document(userEmail)
-                                                                        .collection(userEmail)
-                                                                        .document(secondSpeakerData.title)
-                                                                    docRef
-                                                                        .set(secondSpeakerData)
-                                                                        .addOnSuccessListener {
-                                                                            println("ekledi")
+
+                                                Icon(
+                                                    imageVector = Icons.Default.Favorite,
+                                                    contentDescription = "Favorilerim",
+                                                    tint = Color(238, 69, 69, 255),
+                                                    modifier = Modifier
+                                                        .size(34.dp)
+                                                        .align(alignment = Alignment.TopEnd)
+                                                        .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                        .clickable {
+                                                            val favDb = Firebase.firestore
+                                                            val userEmail =
+                                                                Firebase.auth.currentUser?.email
+                                                            if (userEmail != null) {
+                                                                val docRef = favDb
+                                                                    .collection("fav")
+                                                                    .document(userEmail)
+                                                                    .collection(userEmail)
+                                                                    .document(favListData.title)
+                                                                docRef
+                                                                    .delete()
+                                                                    .addOnSuccessListener {
+                                                                        navController.navigate("favorite_screen"){
+                                                                            popUpTo("favorite_screen"){
+                                                                                inclusive = true
+                                                                            }
                                                                         }
-                                                                        .addOnFailureListener {
-                                                                            println(it)
-                                                                        }
-                                                                    isFavoriteSecond.value = true
-                                                                } else {
-                                                                    navController.navigate("login_screen")
-                                                                    Toast.makeText(
-                                                                        context,
-                                                                        "Oturum açmanız gerekiyor.",
-                                                                        Toast.LENGTH_SHORT
-                                                                    ).show()
-                                                                }
+                                                                    }
+                                                                    .addOnFailureListener {
+                                                                        println(it)
+                                                                    }
                                                             }
-
-                                                    )
-
-                                                } else {
-                                                    LaunchedEffect(isFavoriteSecond.value) {
-                                                        if (isFavoriteSecond.value) {
-                                                            sizeState2.animateTo(1.2f)
-                                                            sizeState2.animateTo(1f)
                                                         }
-                                                    }
-                                                    Icon(
-                                                        imageVector = Icons.Default.Favorite,
-                                                        contentDescription = "Favorilerim",
-                                                        tint = Color(238, 69, 69, 255),
-                                                        modifier = Modifier
-                                                            .size(34.dp * sizeState2.value)
-                                                            .align(alignment = Alignment.TopEnd)
-                                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
-                                                            .clickable {
-                                                                val favDb = Firebase.firestore
-                                                                val userEmail =
-                                                                    Firebase.auth.currentUser?.email
-                                                                if (userEmail != null) {
-                                                                    val docRef = favDb
-                                                                        .collection("fav")
-                                                                        .document(userEmail)
-                                                                        .collection(userEmail)
-                                                                        .document(secondSpeakerData.title)
-                                                                    docRef
-                                                                        .delete()
-                                                                        .addOnSuccessListener {
-                                                                            isFavoriteSecond.value =
-                                                                                false
-                                                                        }
-                                                                        .addOnFailureListener {
-                                                                            println(it)
-                                                                        }
-                                                                }
-                                                            }
 
-                                                    )
-                                                }
+                                                )
 
                                                 Column(
                                                     modifier = Modifier

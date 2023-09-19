@@ -888,7 +888,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                            .background(Color(255, 211, 181, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -930,7 +930,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                            .background(Color(255, 211, 181, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -965,7 +965,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                             ),
                                             startY = 0f,
-                                            endY = 800f // Yüksekliği ayarlayın
+                                            endY = 500f // Yüksekliği ayarlayın
                                         )
                                     ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -1000,11 +1000,13 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                     255
                                                 ), fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                textAlign = TextAlign.Center, lineHeight = 12.sp
                                             )
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
-                                        Column {
+                                        Column(modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally) {
                                             Text(
                                                 text = firstSpeakerData.oldPrice,
                                                 color = Color(100, 100, 100, 255),
@@ -1012,7 +1014,6 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 textAlign = TextAlign.Center,
                                                 textDecoration = TextDecoration.LineThrough
                                             )
-                                            Spacer(modifier = Modifier.padding(top = 2.dp))
                                             Text(
                                                 text = firstSpeakerData.price,
                                                 color = MaterialTheme.colorScheme.secondary,
@@ -1082,7 +1083,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                .background(Color(255, 211, 181, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1124,7 +1125,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                .background(Color(255, 211, 181, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1149,7 +1150,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                     }
 
                                     Column (modifier = Modifier
-                                        .fillMaxHeight()
+                                        .fillMaxSize()
                                         .background(
                                             brush = Brush.verticalGradient(
                                                 colors = listOf(
@@ -1158,7 +1159,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                     MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                 ),
                                                 startY = 0f,
-                                                endY = 800f // Yüksekliği ayarlayın
+                                                endY = 500f // Yüksekliği ayarlayın
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -1193,11 +1194,13 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                         255
                                                     ), fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                    textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                    textAlign = TextAlign.Center, lineHeight = 12.sp
                                                 )
                                             }
                                             Spacer(modifier = Modifier.weight(1f))
-                                            Column {
+                                            Column( modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.Center,
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
                                                 Text(
                                                     text = secondSpeakerData.oldPrice,
                                                     color = Color(100, 100, 100, 255),
@@ -1205,7 +1208,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                     textAlign = TextAlign.Center,
                                                     textDecoration = TextDecoration.LineThrough
                                                 )
-                                                Spacer(modifier = Modifier.padding(top = 2.dp))
+
                                                 Text(
                                                     text = secondSpeakerData.price,
                                                     color = MaterialTheme.colorScheme.secondary,
