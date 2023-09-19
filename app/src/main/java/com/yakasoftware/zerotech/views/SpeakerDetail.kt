@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -339,20 +340,42 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             Spacer(modifier = Modifier.height(8.dp))
 
             //Ürünün İsmi
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(20.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = productTitle,
-                    color = MaterialTheme.colorScheme.secondary,
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp),
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = productTitle,
+                        color = MaterialTheme.colorScheme.secondary,
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp
+                    )
+                }
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    repeat(5) {
+                        Box(
+                            modifier = Modifier
+                                .size(25.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.StarBorder,
+                                contentDescription = "Yıldızlar",
+                                tint = MaterialTheme.colorScheme.onSecondary
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+
+
+                }
+
             }
+
 
             Spacer(modifier = Modifier.height(12.dp))
 
