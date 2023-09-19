@@ -23,18 +23,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Whatsapp
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -59,7 +66,7 @@ import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) {
     val db = Firebase.firestore
@@ -259,6 +266,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             state = pagerState,
                             modifier = Modifier.fillMaxWidth()
                         ) { page ->
+
                             val painter = rememberAsyncImagePainter(model = photoUrls[page])
                                 Image(
                                     painter = painter,
@@ -549,6 +557,71 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             }
                         }
 
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    //Yorumlar
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "Yorumlar",
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                                .padding(12.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Spacer(modifier = Modifier.padding(6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth(0.650f)) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            SimpleLine()
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(text = "Yorumları Çekicez Buraya ")
+                    }
+                    Row(Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        val comments = remember {
+                            mutableStateOf("")
+                        }
+                        OutlinedTextField(value = comments.value,
+                            onValueChange = {
+                                comments.value = it
+                            },
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            label = {
+                                Text(
+                                    text = "Yorum Yap!",
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                cursorColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Send
+                            ),
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Send,
+                                    contentDescription = "Yorum Yapma",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            })
                     }
                 }
                 item { 
