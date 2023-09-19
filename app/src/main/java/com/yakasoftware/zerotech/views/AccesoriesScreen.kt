@@ -717,6 +717,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
     val title = remember {
         mutableStateOf("")
     }
+
     val speakerList = remember { mutableStateListOf<SpeakerData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
     val speakersDb = Firebase.firestore
@@ -824,7 +825,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                 .weight(1f)
                                 .fillMaxHeight()
                                 .background(
-                                    MaterialTheme.colorScheme.secondary,
+                                    MaterialTheme.colorScheme.onSecondary,
                                     RoundedCornerShape(14.dp)
                                 )
                                 .padding(4.dp)
@@ -847,12 +848,13 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                             {
                                 Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp)))
+                                    .clip(RoundedCornerShape(10.dp)))
                                 val sizeState = remember {
                                     androidx.compose.animation.core.Animatable(
                                         1f
                                     )
                                 }
+
                                 if (!isFavoriteFirst.value) {
                                     LaunchedEffect(!isFavoriteFirst.value) {
                                         if (!isFavoriteFirst.value) {
@@ -867,7 +869,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                            .background(Color(255, 255, 255, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -886,14 +888,10 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                             println(it)
                                                         }
                                                     isFavoriteFirst.value = true
-                                                } else {
+                                                }
+                                                else {
                                                     navController.navigate("login_screen")
-                                                    Toast
-                                                        .makeText(
-                                                            context, "Oturum açmanız gerekiyor.",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
+                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                 }
                                             }
 
@@ -913,7 +911,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                            .background(Color(255, 255, 255, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -948,7 +946,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                 MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                             ),
                                             startY = 0f,
-                                            endY = 800f // Yüksekliği ayarlayın
+                                            endY = 500f // Yüksekliği ayarlayın
                                         )
                                     ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -983,11 +981,13 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                     255
                                                 ), fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                textAlign = TextAlign.Center, lineHeight = 12.sp
                                             )
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
-                                        Column {
+                                        Column(modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally) {
                                             Text(
                                                 text = firstSpeakerData.oldPrice,
                                                 color = Color(100, 100, 100, 255),
@@ -995,7 +995,6 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                 textAlign = TextAlign.Center,
                                                 textDecoration = TextDecoration.LineThrough
                                             )
-                                            Spacer(modifier = Modifier.padding(top = 2.dp))
                                             Text(
                                                 text = firstSpeakerData.price,
                                                 color = MaterialTheme.colorScheme.secondary,
@@ -1021,7 +1020,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                     .weight(1f)
                                     .fillMaxSize()
                                     .background(
-                                        MaterialTheme.colorScheme.secondary,
+                                        MaterialTheme.colorScheme.onSecondary,
                                         RoundedCornerShape(14.dp)
                                     )
                                     .padding(4.dp)
@@ -1044,7 +1043,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                 {
                                     Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
-                                        .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp)))
+                                        .clip(RoundedCornerShape(10.dp)))
 
                                     val sizeState2 = remember {
                                         androidx.compose.animation.core.Animatable(
@@ -1065,7 +1064,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1084,15 +1083,9 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                                 println(it)
                                                             }
                                                         isFavoriteSecond.value = true
-                                                    } else {
+                                                    }else {
                                                         navController.navigate("login_screen")
-                                                        Toast
-                                                            .makeText(
-                                                                context,
-                                                                "Oturum açmanız gerekiyor.",
-                                                                Toast.LENGTH_SHORT
-                                                            )
-                                                            .show()
+                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                     }
                                                 }
 
@@ -1105,6 +1098,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                 sizeState2.animateTo(1f)
                                             }
                                         }
+
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
                                             contentDescription = "Favorilerim",
@@ -1112,7 +1106,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 211, 181, 255), RoundedCornerShape(0.dp,10.dp,0.dp,10.dp))
+                                                .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1137,7 +1131,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                     }
 
                                     Column (modifier = Modifier
-                                        .fillMaxHeight()
+                                        .fillMaxSize()
                                         .background(
                                             brush = Brush.verticalGradient(
                                                 colors = listOf(
@@ -1146,7 +1140,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                     MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                 ),
                                                 startY = 0f,
-                                                endY = 800f // Yüksekliği ayarlayın
+                                                endY = 500f // Yüksekliği ayarlayın
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -1181,11 +1175,13 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                         255
                                                     ), fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                    textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                    textAlign = TextAlign.Center, lineHeight = 12.sp
                                                 )
                                             }
                                             Spacer(modifier = Modifier.weight(1f))
-                                            Column {
+                                            Column( modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.Center,
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
                                                 Text(
                                                     text = secondSpeakerData.oldPrice,
                                                     color = Color(100, 100, 100, 255),
@@ -1193,7 +1189,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                                     textAlign = TextAlign.Center,
                                                     textDecoration = TextDecoration.LineThrough
                                                 )
-                                                Spacer(modifier = Modifier.padding(top = 2.dp))
+
                                                 Text(
                                                     text = secondSpeakerData.price,
                                                     color = MaterialTheme.colorScheme.secondary,

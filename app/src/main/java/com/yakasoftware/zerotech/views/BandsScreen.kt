@@ -725,11 +725,12 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
     val title = remember {
         mutableStateOf("")
     }
+
     val speakerList = remember { mutableStateListOf<SpeakerData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
     val speakersDb = Firebase.firestore
-    val fontSize = 10.dp
-    val fontSizePrice = 14.dp
+    val fontSize = 12.dp
+    val fontSizePrice = 16.dp
 
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
@@ -746,15 +747,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                     price.value = speakerDataBigVal["price"].toString()
                     title.value = speakerDataBigVal["title"].toString()
                     discount.value = speakerDataBigVal["discount"].toString()
-                    speakerList.add(
-                        SpeakerData(
-                            photoSpeaker1.value,
-                            oldPrice.value,
-                            price.value,
-                            title.value,
-                            discount.value
-                        )
-                    )
+                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
 
                 }
                 isSpeakerLoading.value = false
@@ -763,16 +756,18 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
             }
     }
 
-    if (isSpeakerLoading.value) {
+    if (isSpeakerLoading.value){
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 70.dp),
+                .padding(bottom = 70.dp)
+            ,
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
         }
-    } else {
+    }
+    else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
 
             items(speakerList.size / 2) { rowIndex ->
@@ -789,7 +784,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                 val isFavoriteSecond = remember {
                     mutableStateOf(false)
                 }
-                LaunchedEffect(isFavoriteFirst.value) {
+                LaunchedEffect(isFavoriteFirst.value){
                     if (controlEmail != null) {
                         val docRef = controlFavDbFirst.collection("fav").document(controlEmail)
                             .collection(controlEmail)
@@ -805,7 +800,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                             }
                     }
                 }
-                LaunchedEffect(isFavoriteSecond.value) {
+                LaunchedEffect(isFavoriteSecond.value){
                     if (controlEmail != null) {
                         val docRef = secondSpeakerData?.let {
                             controlFavDbFirst.collection("fav").document(controlEmail)
@@ -822,11 +817,9 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                     }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primary)
-                ) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary)) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -861,19 +854,15 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                     )
                             )
                             {
-                                Image(
-                                    painter = painter,
-                                    contentDescription = "Kordon",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
-                                )
+                                Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(10.dp)))
                                 val sizeState = remember {
                                     androidx.compose.animation.core.Animatable(
                                         1f
                                     )
                                 }
+
                                 if (!isFavoriteFirst.value) {
                                     LaunchedEffect(!isFavoriteFirst.value) {
                                         if (!isFavoriteFirst.value) {
@@ -888,6 +877,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
+                                            .background(Color(255, 255, 255, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -906,19 +896,16 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                                             println(it)
                                                         }
                                                     isFavoriteFirst.value = true
-                                                } else {
+                                                }
+                                                else {
                                                     navController.navigate("login_screen")
-                                                    Toast
-                                                        .makeText(
-                                                            context, "Oturum açmanız gerekiyor.",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
+                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                 }
                                             }
 
                                     )
-                                } else {
+
+                                }else {
                                     LaunchedEffect(isFavoriteFirst) {
                                         if (isFavoriteFirst.value) {
                                             sizeState.animateTo(1.2f)
@@ -932,10 +919,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(
-                                                Color(255, 211, 181, 255),
-                                                RoundedCornerShape(0.dp, 10.dp, 0.dp, 10.dp)
-                                            )
+                                            .background(Color(255, 255, 255, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -960,23 +944,19 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                 }
 
 
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(
-                                            brush = Brush.verticalGradient(
-                                                colors = listOf(
-                                                    Color.Transparent,
-                                                    Color.Transparent,// Başlangıç rengi
-                                                    MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
-                                                ),
-                                                startY = 0f,
-                                                endY = 800f // Yüksekliği ayarlayın
-                                            )
-                                        ),
-                                    verticalArrangement = Arrangement.Bottom,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                                Column (modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.Transparent,
+                                                Color.Transparent,// Başlangıç rengi
+                                                MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                            ),
+                                            startY = 0f,
+                                            endY = 500f // Yüksekliği ayarlayın
+                                        )
+                                    ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
                                 }
                             }
@@ -1009,11 +989,13 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                                     255
                                                 ), fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                textAlign = TextAlign.Center, lineHeight = 12.sp
                                             )
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
-                                        Column {
+                                        Column(modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally) {
                                             Text(
                                                 text = firstSpeakerData.oldPrice,
                                                 color = Color(100, 100, 100, 255),
@@ -1021,7 +1003,6 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                                 textAlign = TextAlign.Center,
                                                 textDecoration = TextDecoration.LineThrough
                                             )
-                                            Spacer(modifier = Modifier.padding(top = 2.dp))
                                             Text(
                                                 text = firstSpeakerData.price,
                                                 color = MaterialTheme.colorScheme.secondary,
@@ -1041,8 +1022,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         if (secondSpeakerData != null) {
-                            val painter2 =
-                                rememberAsyncImagePainter(model = secondSpeakerData.photo1)
+                            val painter2 = rememberAsyncImagePainter(model = secondSpeakerData.photo1)
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
@@ -1069,14 +1049,10 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                         )
                                 )
                                 {
-                                    Image(
-                                        painter = painter2,
-                                        contentDescription = "Kordon",
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .clip(RoundedCornerShape(10.dp))
-                                    )
+                                    Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(10.dp)))
+
                                     val sizeState2 = remember {
                                         androidx.compose.animation.core.Animatable(
                                             1f
@@ -1095,11 +1071,8 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                             tint = MaterialTheme.colorScheme.onSecondary,
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
-                                                .background(
-                                                    Color(255, 211, 181, 255),
-                                                    RoundedCornerShape(0.dp, 10.dp, 0.dp, 10.dp)
-                                                )
                                                 .align(alignment = Alignment.TopEnd)
+                                                .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1118,27 +1091,22 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                                                 println(it)
                                                             }
                                                         isFavoriteSecond.value = true
-                                                    } else {
+                                                    }else {
                                                         navController.navigate("login_screen")
-                                                        Toast
-                                                            .makeText(
-                                                                context,
-                                                                "Oturum açmanız gerekiyor.",
-                                                                Toast.LENGTH_SHORT
-                                                            )
-                                                            .show()
+                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
                                                     }
                                                 }
 
                                         )
 
-                                    } else {
+                                    }else {
                                         LaunchedEffect(isFavoriteSecond.value) {
                                             if (isFavoriteSecond.value) {
                                                 sizeState2.animateTo(1.2f)
                                                 sizeState2.animateTo(1f)
                                             }
                                         }
+
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
                                             contentDescription = "Favorilerim",
@@ -1146,10 +1114,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(
-                                                    Color(255, 211, 181, 255),
-                                                    RoundedCornerShape(0.dp, 10.dp, 0.dp, 10.dp)
-                                                )
+                                                .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1173,22 +1138,19 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                         )
                                     }
 
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .background(
-                                                brush = Brush.verticalGradient(
-                                                    colors = listOf(
-                                                        Color.Transparent, // Başlangıç rengi
-                                                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
-                                                    ),
-                                                    startY = 0f,
-                                                    endY = 800f // Yüksekliği ayarlayın
-                                                )
-                                            ),
-                                        verticalArrangement = Arrangement.Bottom,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
+                                    Column (modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.Transparent,// Başlangıç rengi
+                                                    MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                ),
+                                                startY = 0f,
+                                                endY = 500f // Yüksekliği ayarlayın
+                                            )
+                                        ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
                                     }
                                 }
@@ -1221,11 +1183,13 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                                         255
                                                     ), fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                    textAlign = TextAlign.Left, lineHeight = 12.sp
+                                                    textAlign = TextAlign.Center, lineHeight = 12.sp
                                                 )
                                             }
                                             Spacer(modifier = Modifier.weight(1f))
-                                            Column {
+                                            Column( modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.Center,
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
                                                 Text(
                                                     text = secondSpeakerData.oldPrice,
                                                     color = Color(100, 100, 100, 255),
@@ -1233,7 +1197,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                                     textAlign = TextAlign.Center,
                                                     textDecoration = TextDecoration.LineThrough
                                                 )
-                                                Spacer(modifier = Modifier.padding(top = 2.dp))
+
                                                 Text(
                                                     text = secondSpeakerData.price,
                                                     color = MaterialTheme.colorScheme.secondary,
