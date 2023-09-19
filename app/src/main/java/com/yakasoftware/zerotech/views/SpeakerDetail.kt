@@ -620,7 +620,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 //FİYAT BİLGİSİ
                 Row(
                     modifier = Modifier
-                        .size(100.dp),
+                        .size(100.dp)
+                        .padding(start = 16.dp),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
