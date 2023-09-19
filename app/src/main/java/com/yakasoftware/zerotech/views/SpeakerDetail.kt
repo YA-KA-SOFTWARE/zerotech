@@ -1,6 +1,7 @@
 package com.yakasoftware.zerotech.views
 
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -26,13 +27,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -44,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -62,10 +62,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import kotlinx.coroutines.launch
+import java.sql.Timestamp
+import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -118,6 +122,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val detail15 = remember {
         mutableStateOf("")
     }
+    val context = LocalContext.current
 
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
@@ -135,7 +140,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val photoUrls = mutableListOf<String>()
 
     Surface(Modifier.fillMaxSize()) {
-        println(productTitle)
         LaunchedEffect(Unit) {
             pagerLoading.value = true
             docRef.whereEqualTo("title", productTitle)
@@ -616,6 +620,12 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         val comments = remember {
                             mutableStateOf("")
                         }
+                        val userName = remember {
+                            mutableStateOf("")
+                        }
+                        val userSurName = remember{
+                            mutableStateOf("")
+                        }
                         OutlinedTextField(value = comments.value,
                             onValueChange = {
                                 comments.value = it
@@ -642,7 +652,39 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 Icon(
                                     imageVector = Icons.Default.Send,
                                     contentDescription = "Yorum Yapma",
-                                    tint = MaterialTheme.colorScheme.secondary
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.clickable {
+                                        val auth = Firebase.auth
+                                        val currentUser = auth.currentUser!!
+                                        val email = currentUser.email
+                                        db.collection("users").document(email!!).get().addOnSuccessListener {
+                                            val data = it.data
+                                            userName.value = data?.get("name") as? String ?: ""
+                                            userSurName.value = data?.get("surname") as? String ?: ""
+                                            println(userName.value)
+                                            println(userSurName.value)
+                                            val calendar = Calendar.getInstance()
+
+                                            val commentData = hashMapOf(
+                                                "senderName" to userName.value,
+                                                "senderSurName" to userSurName.value,
+                                                "description" to comments.value,
+                                                "date" to calendar.time,
+                                                "productTitle" to productTitle
+                                            )
+                                            if (comments.value.isNotEmpty()){
+                                                db.collection("comments").add(commentData).addOnSuccessListener {
+                                                    Toast.makeText(context,"Yorum Başarıyla Gönderildi",Toast.LENGTH_SHORT).show()
+                                                    comments.value = ""
+                                                }
+                                            }else{
+                                                Toast.makeText(context,"Yorum Alanı Boş Bırakılamaz",Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+
+
+
+                                    }
                                 )
                             })
                     }
@@ -651,10 +693,59 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Spacer(modifier = Modifier.height(105.dp))
                 }
             }
+            //yorum kısmı veri çekme dahil tamam fakat layout ile ilgili bi sıkıntı var front-endciler sizde yargılanacaksınız M.K.
+            data class CommentData(
+                val productTitle: String,
+                val senderName: String,
+                val date: Date?,
+                val description: String,
+                val senderSurName: String
+            )
+            val name = remember {
+                mutableStateOf("")
+            }
+            val surName = remember {
+                mutableStateOf("")
+            }
+            val date = remember {
+                mutableStateOf<Date?>(null)
+            }
+            val description = remember {
+                mutableStateOf("")
+            }
+            val commentList = remember {
+                mutableStateListOf<CommentData>()
+            }
+            db.collection("comments").whereEqualTo("productTitle",productTitle)
+                .get()
+                .addOnSuccessListener {documents ->
+                    commentList.clear()
+                    for(document in documents){
+                        val commentDt: Map<String,Any> = document.data
+                        name.value = commentDt["senderName"].toString()
+                        surName.value = commentDt["senderSurName"].toString()
+                        date.value = commentDt["date"] as? Timestamp
+                        description.value = commentDt["description"].toString()
+                        commentList.add(CommentData(productTitle,name.value,date.value, description.value,surName.value))
 
+                    }
+                }
+            LazyColumn{
+                items(commentList.size){index ->
+                    val commentData = commentList[index]
+                    Column {
+                        Row(Modifier.fillMaxWidth()) {
+                            Text(text = commentData.senderName, color = MaterialTheme.colorScheme.secondary)
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Text(text = commentData.senderSurName, color = MaterialTheme.colorScheme.secondary)
+
+                        }
+                    }
+                }
+            }
 
             //Yorum ve Yıldız ve FİYAT bilgisi
-            /*
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
@@ -689,12 +780,12 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 }
             }
             
-             */
-/*
+
+
             //LazyColumn Dışında kalacak FİYAT BİLGİSİ - SATIN ALMA - SEPETE EKLEME
 
 
- */
+
 
         }
         Column(modifier = Modifier.fillMaxSize(),
