@@ -1,6 +1,7 @@
 package com.yakasoftware.zerotech.views
 
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -71,6 +73,7 @@ import java.sql.Timestamp
 import java.util.Calendar
 import java.util.Date
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) {
@@ -280,6 +283,16 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         println(photoUrls)
         println(photo1)
         val maxPage = photoUrls.size - 1
+
+        val sepetSayisi = remember {
+            mutableStateOf(1)
+        }
+
+        val floatPrice = price.value.toFloatOrNull() ?: 0.0f
+        val floatOldPrice = oldPrice.value.toFloatOrNull() ?: 0.0f
+
+        val para = floatPrice*sepetSayisi.value.toFloat()
+        val oldPara =  floatOldPrice*sepetSayisi.value.toFloat()
 
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -773,8 +786,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                 items(commentList.size) { index ->
                     val commentData = commentList[index]
-                    Column(modifier = Modifier.fillMaxWidth().height(50.dp)) {
-                        Row(Modifier.fillMaxWidth().height(50.dp)) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)) {
                             Text(
                                 text = commentData.senderName,
                                 color = MaterialTheme.colorScheme.secondary
@@ -861,22 +879,25 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 //FİYAT BİLGİSİ
                 Row(
                     modifier = Modifier
-                        .size(100.dp)
+                        .width(120.dp)
+                        .height(100.dp)
                         .padding(start = 16.dp),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
                         Text(
-                            text = oldPrice.value,
+                            text = String.format("%.2f", oldPara) + "₺",
                             color = Color(100,100,100,255),
                             fontSize = with(LocalDensity.current) {oldPriceFontSize.toSp()},
                             textDecoration = TextDecoration.LineThrough
                         )
                         Spacer(modifier = Modifier.padding(top = 2.dp))
                         Text(
-                            text = price.value, color = MaterialTheme.colorScheme.primary,
-                            fontSize = with(LocalDensity.current) {shoppingBarFontSize.toSp()}, fontWeight = FontWeight.Bold
+                            text = String.format("%.2f", para) + "₺",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = with(LocalDensity.current) {shoppingBarFontSize.toSp()},
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -889,18 +910,59 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
+                    Row(
                         modifier = Modifier
                             .width(120.dp)
-                            .height(60.dp)
+                            .height(45.dp)
                             .border(
                                 BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                RoundedCornerShape(5.dp)
+                                CircleShape
                             ),
-                        shape = RoundedCornerShape(5.dp)
+                        verticalAlignment = Alignment.CenterVertically,
+
                     ) {
-                        Text(text = "Satın Al", color = MaterialTheme.colorScheme.secondary)
+                        Spacer(modifier = Modifier.weight(0.2f))
+                       Box(modifier = Modifier
+                           .size(48.dp)
+                           .clip(CircleShape)
+                           .background(MaterialTheme.colorScheme.primary
+                           )
+                           .clickable {
+                               sepetSayisi.value -= 1
+                           },
+                           contentAlignment = Alignment.CenterStart){
+
+                           Text(text = "-",
+                               fontSize = 30.sp,
+                               modifier = Modifier
+                                   .align(Alignment.Center))
+
+                       }
+                        Spacer(modifier = Modifier.weight(0.5f))
+
+                        Text(
+                            text = sepetSayisi.value.toString(),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+
+                        Spacer(modifier = Modifier.weight(0.5f))
+                        Box(modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .clickable {
+                                sepetSayisi.value += 1
+                            },
+                            contentAlignment = Alignment.CenterEnd){
+
+                            Text(text = "+",
+                                fontSize = 30.sp,
+                                modifier = Modifier
+                                    .align(Alignment.Center))
+
+                        }
+                        Spacer(modifier = Modifier.weight(0.2f))
+
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     OutlinedButton(
