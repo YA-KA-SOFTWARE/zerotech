@@ -140,6 +140,51 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val photoUrls = mutableListOf<String>()
 
     Surface(Modifier.fillMaxSize()) {
+        data class CommentData(
+            val productTitle: String,
+            val senderName: String,
+            val date: Date?,
+            val description: String,
+            val senderSurName: String
+        )
+
+        val name = remember {
+            mutableStateOf("")
+        }
+        val surName = remember {
+            mutableStateOf("")
+        }
+        val date = remember {
+            mutableStateOf<Date?>(null)
+        }
+        val description = remember {
+            mutableStateOf("")
+        }
+        val commentList = remember {
+            mutableStateListOf<CommentData>()
+        }
+        db.collection("comments").whereEqualTo("productTitle", productTitle)
+            .get()
+            .addOnSuccessListener { documents ->
+                commentList.clear()
+                for (document in documents) {
+                    val commentDt: Map<String, Any> = document.data
+                    name.value = commentDt["senderName"].toString()
+                    surName.value = commentDt["senderSurName"].toString()
+                    date.value = commentDt["date"] as? Timestamp
+                    description.value = commentDt["description"].toString()
+                    commentList.add(
+                        CommentData(
+                            productTitle,
+                            name.value,
+                            date.value,
+                            description.value,
+                            surName.value
+                        )
+                    )
+
+                }
+            }
         LaunchedEffect(Unit) {
             pagerLoading.value = true
             docRef.whereEqualTo("title", productTitle)
@@ -273,6 +318,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         ) { page ->
 
                             val painter = rememberAsyncImagePainter(model = photoUrls[page])
+
                                 Image(
                                     painter = painter,
                                     contentDescription = "Hoparlör Detayları",
@@ -410,8 +456,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             //Özellikler
             LazyColumn() {
                 item {
-                    Column(modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Spacer(modifier = Modifier.padding(top = 32.dp))
                         val detailFontSize = 16.dp
                         if (detail1.value != "") {
@@ -422,8 +470,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail1.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail1.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -435,8 +484,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail2.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail2.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -448,8 +498,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail3.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail3.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -461,8 +512,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail4.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail4.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -474,8 +526,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail5.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail5.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -487,8 +540,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail6.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail6.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -500,8 +554,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail7.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail7.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -513,8 +568,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail9.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail9.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -526,8 +582,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail10.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail10.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -539,8 +596,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail11.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail11.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -552,8 +610,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail12.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail12.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -565,8 +624,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail13.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail13.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -578,8 +638,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = detail14.value, color = MaterialTheme.colorScheme.tertiary,
-                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp()}
+                                Text(text = detail14.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
                                 )
                             }
                         }
@@ -604,7 +665,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         Spacer(modifier = Modifier.weight(1f))
                     }
                     Spacer(modifier = Modifier.padding(6.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         Row(modifier = Modifier.fillMaxWidth(0.650f)) {
                             Spacer(modifier = Modifier.weight(1f))
                             SimpleLine()
@@ -614,16 +678,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Row(Modifier.fillMaxWidth()) {
                         Text(text = "Yorumları Çekicez Buraya ")
                     }
-                    Row(Modifier.fillMaxWidth(),
+                    Row(
+                        Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically) {
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         val comments = remember {
                             mutableStateOf("")
                         }
                         val userName = remember {
                             mutableStateOf("")
                         }
-                        val userSurName = remember{
+                        val userSurName = remember {
                             mutableStateOf("")
                         }
                         OutlinedTextField(value = comments.value,
@@ -657,31 +723,41 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         val auth = Firebase.auth
                                         val currentUser = auth.currentUser!!
                                         val email = currentUser.email
-                                        db.collection("users").document(email!!).get().addOnSuccessListener {
-                                            val data = it.data
-                                            userName.value = data?.get("name") as? String ?: ""
-                                            userSurName.value = data?.get("surname") as? String ?: ""
-                                            println(userName.value)
-                                            println(userSurName.value)
-                                            val calendar = Calendar.getInstance()
+                                        db.collection("users").document(email!!).get()
+                                            .addOnSuccessListener {
+                                                val data = it.data
+                                                userName.value = data?.get("name") as? String ?: ""
+                                                userSurName.value =
+                                                    data?.get("surname") as? String ?: ""
+                                                println(userName.value)
+                                                println(userSurName.value)
+                                                val calendar = Calendar.getInstance()
 
-                                            val commentData = hashMapOf(
-                                                "senderName" to userName.value,
-                                                "senderSurName" to userSurName.value,
-                                                "description" to comments.value,
-                                                "date" to calendar.time,
-                                                "productTitle" to productTitle
-                                            )
-                                            if (comments.value.isNotEmpty()){
-                                                db.collection("comments").add(commentData).addOnSuccessListener {
-                                                    Toast.makeText(context,"Yorum Başarıyla Gönderildi",Toast.LENGTH_SHORT).show()
-                                                    comments.value = ""
+                                                val commentData = hashMapOf(
+                                                    "senderName" to userName.value,
+                                                    "senderSurName" to userSurName.value,
+                                                    "description" to comments.value,
+                                                    "date" to calendar.time,
+                                                    "productTitle" to productTitle
+                                                )
+                                                if (comments.value.isNotEmpty()) {
+                                                    db.collection("comments").add(commentData)
+                                                        .addOnSuccessListener {
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Yorum Başarıyla Gönderildi",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                            comments.value = ""
+                                                        }
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Yorum Alanı Boş Bırakılamaz",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
                                                 }
-                                            }else{
-                                                Toast.makeText(context,"Yorum Alanı Boş Bırakılamaz",Toast.LENGTH_SHORT).show()
                                             }
-                                        }
-
 
 
                                     }
@@ -689,61 +765,39 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             })
                     }
                 }
-                item { 
+                item {
+                    Spacer(modifier = Modifier.height(105.dp))
+                }
+
+                //yorum kısmı veri çekme dahil tamam fakat layout ile ilgili bi sıkıntı var front-endciler sizde yargılanacaksınız M.K.
+
+                items(commentList.size) { index ->
+                    val commentData = commentList[index]
+                    Column(modifier = Modifier.fillMaxWidth().height(50.dp)) {
+                        Row(Modifier.fillMaxWidth().height(50.dp)) {
+                            Text(
+                                text = commentData.senderName,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Text(
+                                text = commentData.senderSurName,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            Text(
+                                text = commentData.description,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+
+                        }
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
+                }
+                item {
                     Spacer(modifier = Modifier.height(105.dp))
                 }
             }
-            //yorum kısmı veri çekme dahil tamam fakat layout ile ilgili bi sıkıntı var front-endciler sizde yargılanacaksınız M.K.
-            data class CommentData(
-                val productTitle: String,
-                val senderName: String,
-                val date: Date?,
-                val description: String,
-                val senderSurName: String
-            )
-            val name = remember {
-                mutableStateOf("")
-            }
-            val surName = remember {
-                mutableStateOf("")
-            }
-            val date = remember {
-                mutableStateOf<Date?>(null)
-            }
-            val description = remember {
-                mutableStateOf("")
-            }
-            val commentList = remember {
-                mutableStateListOf<CommentData>()
-            }
-            db.collection("comments").whereEqualTo("productTitle",productTitle)
-                .get()
-                .addOnSuccessListener {documents ->
-                    commentList.clear()
-                    for(document in documents){
-                        val commentDt: Map<String,Any> = document.data
-                        name.value = commentDt["senderName"].toString()
-                        surName.value = commentDt["senderSurName"].toString()
-                        date.value = commentDt["date"] as? Timestamp
-                        description.value = commentDt["description"].toString()
-                        commentList.add(CommentData(productTitle,name.value,date.value, description.value,surName.value))
-
-                    }
-                }
-            LazyColumn{
-                items(commentList.size){index ->
-                    val commentData = commentList[index]
-                    Column {
-                        Row(Modifier.fillMaxWidth()) {
-                            Text(text = commentData.senderName, color = MaterialTheme.colorScheme.secondary)
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Text(text = commentData.senderSurName, color = MaterialTheme.colorScheme.secondary)
-
-                        }
-                    }
-                }
-            }
-
             //Yorum ve Yıldız ve FİYAT bilgisi
 
             Row(
