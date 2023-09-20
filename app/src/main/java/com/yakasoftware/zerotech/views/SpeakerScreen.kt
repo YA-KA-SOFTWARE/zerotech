@@ -888,7 +888,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 255, 255, 255), CircleShape)
+                                            .background(Color(255, 211, 181, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -930,7 +930,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 255, 255, 255), CircleShape)
+                                            .background(Color(255, 211, 181, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -1083,7 +1083,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 255, 255, 255), CircleShape)
+                                                .background(Color(255, 211, 181, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1125,7 +1125,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 255, 255, 255), CircleShape)
+                                                .background(Color(255, 211, 181, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email

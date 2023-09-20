@@ -222,7 +222,7 @@ fun ProfileScreen(navController: NavHostController) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                  navController.navigate("favorite_screen")
+                    navController.navigate("favorite_screen")
                 }) {
                 Spacer(modifier = Modifier.padding(start = 8.dp))
                 Icon(
@@ -284,7 +284,7 @@ fun ProfileScreen(navController: NavHostController) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                   navController.navigate("account_detail_screen")
+                    navController.navigate("account_detail_screen")
                 }) {
                 Spacer(modifier = Modifier.padding(start = 8.dp))
                 Icon(
@@ -382,5 +382,5 @@ fun ProfileScreen(navController: NavHostController) {
             }
         }
 
-        }
     }
+}
