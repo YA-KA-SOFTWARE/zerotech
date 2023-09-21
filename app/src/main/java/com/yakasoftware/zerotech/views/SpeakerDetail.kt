@@ -142,13 +142,16 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val price = remember { mutableStateOf("") }
     val oldPrice = remember { mutableStateOf("") }
     val discount = remember { mutableStateOf("") }
+    val type = remember {
+        mutableStateOf("")
+    }
 
     val pagerLoading = remember {
         mutableStateOf(true)
     }
 
     val coroutineScope = rememberCoroutineScope()
-    
+
 
     val photoUrls = mutableListOf<String>()
 
@@ -283,6 +286,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         price.value = document.getString("price")!!
                         oldPrice.value = document.getString("oldPrice")!!
                         discount.value = document.getString("discount")!!
+                        type.value = document.getString("type")!!
                     }
                     pagerLoading.value = false
                 }
@@ -834,7 +838,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 }
                             }
                             Row(
-                                modifier = Modifier.fillMaxWidth().height(50.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
                                 verticalAlignment = Alignment.Bottom,
                                 horizontalArrangement = Arrangement.Center
                             ) {
@@ -861,62 +867,67 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                             }
                             for (i in 0 until commentList.size) {
-                            Column(modifier = Modifier.fillMaxWidth().height(50.dp)) {
-                                    Row(Modifier.fillMaxWidth().height(50.dp)) {
+                                Column(modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)) {
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(50.dp)) {
 
-                                            val commentData = commentList[i]
-                                            Text(
-                                                text = commentData.senderName,
-                                                color = MaterialTheme.colorScheme.secondary
-                                            )
-                                            Spacer(modifier = Modifier.padding(5.dp))
-                                            Text(
-                                                text = commentData.senderSurName,
-                                                color = MaterialTheme.colorScheme.secondary
-                                            )
-                                            Spacer(modifier = Modifier.padding(5.dp))
-                                            Text(
-                                                text = commentData.description,
-                                                color = MaterialTheme.colorScheme.secondary
-                                            )
-                                        }
-
+                                        val commentData = commentList[i]
+                                        Text(
+                                            text = commentData.senderName,
+                                            color = MaterialTheme.colorScheme.secondary
+                                        )
+                                        Spacer(modifier = Modifier.padding(5.dp))
+                                        Text(
+                                            text = commentData.senderSurName,
+                                            color = MaterialTheme.colorScheme.secondary
+                                        )
+                                        Spacer(modifier = Modifier.padding(5.dp))
+                                        Text(
+                                            text = commentData.description,
+                                            color = MaterialTheme.colorScheme.secondary
+                                        )
                                     }
-                                 Spacer(modifier = Modifier.height(15.dp))
+
                                 }
+                                Spacer(modifier = Modifier.height(15.dp))
+                            }
 
                         }
 
-                           }
+                    }
 
 
 
 
-                   /* Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(50.dp)) {
-                            Text(
-                                text = commentData.senderName,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Text(
-                                text = commentData.senderSurName,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            Text(
-                                text = commentData.description,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
+                    /* Column(modifier = Modifier
+                         .fillMaxWidth()
+                         .height(50.dp)) {
+                         Row(
+                             Modifier
+                                 .fillMaxWidth()
+                                 .height(50.dp)) {
+                             Text(
+                                 text = commentData.senderName,
+                                 color = MaterialTheme.colorScheme.secondary
+                             )
+                             Spacer(modifier = Modifier.padding(5.dp))
+                             Text(
+                                 text = commentData.senderSurName,
+                                 color = MaterialTheme.colorScheme.secondary
+                             )
+                             Spacer(modifier = Modifier.padding(5.dp))
+                             Text(
+                                 text = commentData.description,
+                                 color = MaterialTheme.colorScheme.secondary
+                             )
 
-                        }
-                        Spacer(modifier = Modifier.height(15.dp))
-                    } */
+                         }
+                         Spacer(modifier = Modifier.height(15.dp))
+                     } */
                 }
                 item {
                     Spacer(modifier = Modifier.height(105.dp))
@@ -1073,7 +1084,33 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     OutlinedButton(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            val currentUserEmailBasket = Firebase.auth.currentUser?.email
+                            val dataBasket = hashMapOf(
+                                "oldPrice" to oldPara.toString(),
+                                "price" to para.toString(),
+                                "photo1" to photo1.value,
+                                "discount" to discount.value,
+                                "type" to type.value,
+                                "title" to productTitle,
+                                "amount" to sepetSayisi.value.toString()
+                            )
+                            if(currentUserEmailBasket != null) {
+                                val docrefBasket = db.collection("basket")
+                                    .document(currentUserEmailBasket)
+                                    .collection(currentUserEmailBasket)
+                                    .document(productTitle)
+                                docrefBasket.set(dataBasket)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(context,"Ürün sepete eklendi.",Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(context,"Ürün eklenirken hata oluştu.",Toast.LENGTH_SHORT).show()
+                                    }
+                            }else {
+                                Toast.makeText(context,"Oturum açmanız gerekli.",Toast.LENGTH_SHORT).show()
+                            }
+                                  },
                         modifier = Modifier
                             .width(120.dp)
                             .height(60.dp)
