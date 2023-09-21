@@ -30,6 +30,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.CompareArrows
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -155,6 +157,12 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
 
     val photoUrls = mutableListOf<String>()
+
+    val isFavorite = remember {
+        mutableStateOf(false)
+
+    }
+
 
     Surface(Modifier.fillMaxSize()) {
         data class CommentData(
@@ -295,8 +303,26 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     println(it)
                 }
         }
-        println(photoUrls)
-        println(photo1)
+
+        val controlEmail = Firebase.auth.currentUser?.email
+        val controlFavDb = Firebase.firestore
+        LaunchedEffect(isFavorite.value){
+            if (controlEmail != null) {
+                val controlDocRef = controlFavDb.collection("fav").document(controlEmail)
+                    .collection(controlEmail)
+                    .document(productTitle)
+                controlDocRef.get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            isFavorite.value = true
+                        }
+                    }
+                    .addOnFailureListener {
+                        println(it)
+                    }
+            }
+        }
+
         val maxPage = photoUrls.size - 1
 
         val sepetSayisi = remember {
@@ -409,6 +435,108 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                             }
                                         }
                                 )
+                            }
+
+                            val favData = hashMapOf(
+                                "oldPrice" to oldPrice.value,
+                                "price" to price.value,
+                                "photo1" to photo1.value,
+                                "discount" to discount.value,
+                                "type" to type.value,
+                                "title" to productTitle
+                            )
+
+                            val sizeState = remember {
+                                androidx.compose.animation.core.Animatable(
+                                    1f
+                                )
+                            }
+                            Row(Modifier.fillMaxSize(),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.Top) {
+
+                                if (!isFavorite.value) {
+                                    LaunchedEffect(!isFavorite.value) {
+                                        if (!isFavorite.value) {
+                                            sizeState.animateTo(1.2f)
+                                            sizeState.animateTo(1f)
+                                        }
+                                    }
+                                    Icon(
+                                        imageVector = Icons.Default.FavoriteBorder,
+                                        contentDescription = "Favorilerim",
+                                        tint = MaterialTheme.colorScheme.onSecondary,
+                                        modifier = Modifier
+                                            .size(34.dp * sizeState.value)
+                                            .background(Color(255, 255, 255, 255), CircleShape)
+                                            .clickable {
+                                                val favDb = Firebase.firestore
+                                                val userEmail = Firebase.auth.currentUser?.email
+                                                if (userEmail != null) {
+                                                    val docRef = favDb
+                                                        .collection("fav")
+                                                        .document(userEmail)
+                                                        .collection(userEmail)
+                                                        .document(productTitle)
+                                                    docRef
+                                                        .set(favData)
+                                                        .addOnSuccessListener {
+                                                            println("ekledi")
+                                                        }
+                                                        .addOnFailureListener {
+                                                            println(it)
+                                                        }
+                                                    isFavorite.value = true
+                                                } else {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Oturum açmanız gerekiyor.",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            }
+
+                                    )
+
+                                }else {
+                                    LaunchedEffect(isFavorite.value) {
+                                        if (isFavorite.value) {
+                                            sizeState.animateTo(1.2f)
+                                            sizeState.animateTo(1f)
+                                        }
+                                    }
+                                    Icon(
+                                        imageVector = Icons.Default.Favorite,
+                                        contentDescription = "Favorilerim",
+                                        tint = Color(238, 69, 69, 255),
+                                        modifier = Modifier
+                                            .size(34.dp * sizeState.value)
+                                            .background(Color(255, 255, 255, 255), CircleShape)
+                                            .clickable {
+                                                val favDb = Firebase.firestore
+                                                val userEmail = Firebase.auth.currentUser?.email
+                                                if (userEmail != null) {
+                                                    val docRef = favDb
+                                                        .collection("fav")
+                                                        .document(userEmail)
+                                                        .collection(userEmail)
+                                                        .document(productTitle)
+                                                    docRef
+                                                        .delete()
+                                                        .addOnSuccessListener {
+                                                            isFavorite.value = false
+                                                        }
+                                                        .addOnFailureListener {
+                                                            println(it)
+                                                        }
+                                                }
+                                            }
+
+                                    )
+                                }
+
                             }
                         }
                     }
@@ -904,34 +1032,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                     }
 
-
-
-
-                    /* Column(modifier = Modifier
-                         .fillMaxWidth()
-                         .height(50.dp)) {
-                         Row(
-                             Modifier
-                                 .fillMaxWidth()
-                                 .height(50.dp)) {
-                             Text(
-                                 text = commentData.senderName,
-                                 color = MaterialTheme.colorScheme.secondary
-                             )
-                             Spacer(modifier = Modifier.padding(5.dp))
-                             Text(
-                                 text = commentData.senderSurName,
-                                 color = MaterialTheme.colorScheme.secondary
-                             )
-                             Spacer(modifier = Modifier.padding(5.dp))
-                             Text(
-                                 text = commentData.description,
-                                 color = MaterialTheme.colorScheme.secondary
-                             )
-
-                         }
-                         Spacer(modifier = Modifier.height(15.dp))
-                     } */
                 }
                 item {
                     Spacer(modifier = Modifier.height(105.dp))

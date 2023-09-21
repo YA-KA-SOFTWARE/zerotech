@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -67,6 +70,66 @@ fun BasketScreen(navController: NavHostController) {
                 }
 
         }
+
+        val isLoading = remember {
+            mutableStateOf(true)
+        }
+        val title = remember {
+            mutableStateOf("")
+        }
+        val oldPrice = remember {
+            mutableStateOf("")
+        }
+        val price = remember {
+            mutableStateOf("")
+        }
+        val discount = remember {
+            mutableStateOf("")
+        }
+        val type = remember {
+            mutableStateOf("")
+        }
+        val amount = remember {
+            mutableStateOf(0)
+        }
+        val photo1 = remember {
+            mutableStateOf("")
+        }
+        data class BasketProducts (
+            val title: String,
+            val photo1: String,
+            val price: String,
+            val oldPrice: String,
+            val discount: String,
+            val type: String
+        )
+        val basketList = remember{ mutableStateListOf<BasketProducts>() }
+        if (currentUser != null) {
+            LaunchedEffect(Unit) {
+                isLoading.value = true
+                db.collection("basket")
+                    .document(currentUser.email!!)
+                    .collection(currentUser.email!!)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        basketList.clear()
+                        for (document in documents) {
+                            val basketData: Map<String,Any> = document.data
+                            title.value = basketData["title"].toString()
+                            type.value = basketData["type"].toString()
+                            photo1.value = basketData["photo1"].toString()
+                            discount.value = basketData["discount"].toString()
+                            oldPrice.value = basketData["oldPrice"].toString()
+                            price.value = basketData["price"].toString()
+                            basketList.add(BasketProducts(title.value,photo1.value,price.value,oldPrice.value,discount.value,type.value))
+                        }
+                    }
+                    .addOnFailureListener {
+                        println(it)
+                    }
+            }
+        }
+
 
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
             val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
@@ -163,6 +226,10 @@ fun BasketScreen(navController: NavHostController) {
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
+                LazyColumn  {
+
+
+                }
             }
 
         }

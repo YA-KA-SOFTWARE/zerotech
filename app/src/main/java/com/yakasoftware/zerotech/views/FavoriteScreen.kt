@@ -224,12 +224,7 @@ fun FavoriteScreen(navController: NavHostController) {
                     val favListData = favList[firstSpeakerIndex]
                     val secondSpeakerData = favList.getOrNull(secondSpeakerIndex)
                     Column {
-                        val isFavoriteFirst = remember {
-                            mutableStateOf(false)
-                        }
-                        val isFavoriteSecond = remember {
-                            mutableStateOf(false)
-                        }
+
                         //ürün çeşitlerine göre favListData.type üzerinden if else ile doğru detail sayfasına yönlendirme yapmayı düşünüyorum ona göre ayarlamanızı yapın M.K.
                         val painter = rememberAsyncImagePainter(model = favListData.photo1)
                         Box(modifier = Modifier
