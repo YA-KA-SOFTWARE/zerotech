@@ -1,6 +1,5 @@
 package com.yakasoftware.zerotech.views
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,14 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -245,6 +241,11 @@ fun FavoriteScreen(navController: NavHostController) {
                                             MaterialTheme.colorScheme.secondary,
                                             RoundedCornerShape(14.dp)
                                         )
+                                        .clickable {
+                                            if (favListData.type == "speakers") {
+                                                navController.navigate("speaker_detail_screen/${favListData.title}")
+                                            }
+                                        }
                                         .padding(4.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
@@ -397,6 +398,11 @@ fun FavoriteScreen(navController: NavHostController) {
                                                 MaterialTheme.colorScheme.secondary,
                                                 RoundedCornerShape(14.dp)
                                             )
+                                            .clickable {
+                                                if (secondSpeakerData.type == "speakers") {
+                                                    navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
+                                                }
+                                            }
                                             .padding(4.dp),
                                         verticalArrangement = Arrangement.SpaceBetween
                                     ) {
@@ -439,7 +445,7 @@ fun FavoriteScreen(navController: NavHostController) {
                                                                 .collection("fav")
                                                                 .document(userEmail)
                                                                 .collection(userEmail)
-                                                                .document(favListData.title)
+                                                                .document(secondSpeakerData.title)
                                                             docRef
                                                                 .delete()
                                                                 .addOnSuccessListener {
