@@ -30,6 +30,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.CompareArrows
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
@@ -446,6 +447,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             )
                         }
                     }
+
+                    Text(text = "${commentList.size} Değerlendirme", color = MaterialTheme.colorScheme.secondary)
+
                     Spacer(modifier = Modifier.weight(1f))
 
 
@@ -831,7 +835,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.CompareArrows, // İkonun türünü ve rengini ayarlayın
+                                        imageVector = Icons.Default.FilterList, // İkonun türünü ve rengini ayarlayın
                                         contentDescription = "Detay Belirtme",
                                         tint = MaterialTheme.colorScheme.primary
                                     )
@@ -948,7 +952,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     ) {
                         Icon(
                             imageVector = Icons.Default.StarBorder,
-                            contentDescription = "Sepetim",
+                            contentDescription = "Yıldızlar",
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
@@ -969,14 +973,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 }
             }
 
-
-
             //LazyColumn Dışında kalacak FİYAT BİLGİSİ - SATIN ALMA - SEPETE EKLEME
 
-
-
-
         }
+        val fontSizeIcon = 20.dp
+        val fontSizeIconText = 24.dp
         Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom) {
             val shoppingBarFontSize = 20.dp
@@ -1032,16 +1033,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             .width(120.dp)
                             .height(45.dp)
                             .border(
-                                BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                CircleShape
+                                BorderStroke(
+                                    2.dp, MaterialTheme.colorScheme.primary
+                                ),
+                                RoundedCornerShape(20.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
 
                         ) {
                         Spacer(modifier = Modifier.weight(0.2f))
                         Box(modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(20.dp))
                             .background(
                                 MaterialTheme.colorScheme.primary
                             )
@@ -1051,7 +1054,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             contentAlignment = Alignment.CenterStart){
 
                             Text(text = "-",
-                                fontSize = 30.sp,
+                                fontSize = with(LocalDensity.current) {fontSizeIcon.toSp()},
                                 modifier = Modifier
                                     .align(Alignment.Center))
 
@@ -1060,13 +1063,14 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                         Text(
                             text = sepetSayisi.value.toString(),
+                            fontSize = with(LocalDensity.current) {fontSizeIcon.toSp()},
                             color = MaterialTheme.colorScheme.onPrimary
                         )
 
                         Spacer(modifier = Modifier.weight(0.5f))
                         Box(modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(20.dp))
                             .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 sepetSayisi.value += 1
@@ -1074,7 +1078,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             contentAlignment = Alignment.CenterEnd){
 
                             Text(text = "+",
-                                fontSize = 30.sp,
+                                fontSize = with(LocalDensity.current) {fontSizeIcon.toSp()},
                                 modifier = Modifier
                                     .align(Alignment.Center))
 

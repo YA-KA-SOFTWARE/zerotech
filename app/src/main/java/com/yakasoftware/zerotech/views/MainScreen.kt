@@ -133,6 +133,21 @@ fun MainScreen(navController: NavHostController) {
 
             }
     }
+    val basketCount = remember {
+        mutableStateOf(0)
+    }
+    if (auth.currentUser!= null) {
+       val collectionRef = db.collection("basket").document(email!!)
+            .collection(email)
+            collectionRef.get()
+                .addOnSuccessListener { documents ->
+                    basketCount.value = documents.size()
+
+                }
+                .addOnFailureListener {
+                    println(it)
+                }
+    }
     val pagerLoading = remember {
         mutableStateOf(true)
     }
@@ -258,19 +273,27 @@ fun MainScreen(navController: NavHostController) {
                     }
                 }
                 //Sepetim
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "Sepetim",
-                    tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            if (!isMenuVisible.value) {
-                                navController.navigate("basket_screen")
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "Sepetim",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                if (!isMenuVisible.value) {
+                                    navController.navigate("basket_screen")
+                                }
+                                //Sepet işlemleri
                             }
-                            //Sepet işlemleri
-                        }
-                )
+                    )
+                    Text(
+                        text = basketCount.value.toString(),
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
 
                 Spacer(modifier = Modifier.padding(end = 4.dp))
 
@@ -309,7 +332,9 @@ fun MainScreen(navController: NavHostController) {
                             .height(150.dp)
                             .clip(RoundedCornerShape(33.dp))
                             .border(
-                                width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(30.dp)
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = RoundedCornerShape(30.dp)
                             )
                     ) {
 
@@ -550,7 +575,8 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
                                 navController.navigate("band_screen") {
                                     popUpTo("profile_screen") {
@@ -607,7 +633,8 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
                                 navController.navigate("accesories_screen") {
                                     popUpTo("profile_screen") {
