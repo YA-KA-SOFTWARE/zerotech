@@ -469,7 +469,8 @@ fun HeadPhonesScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
                             navController.navigate("band_screen") {
                                 popUpTo("profile_screen") {
@@ -526,7 +527,8 @@ fun HeadPhonesScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
                             navController.navigate("accesories_screen") {
                                 popUpTo("profile_screen") {
@@ -723,6 +725,9 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
     val title = remember {
         mutableStateOf("")
     }
+    val type = remember {
+        mutableStateOf("")
+    }
 
     val speakerList = remember { mutableStateListOf<SpeakerData>() }
     val isSpeakerLoading = remember { mutableStateOf(true) }
@@ -745,7 +750,8 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                     price.value = speakerDataBigVal["price"].toString()
                     title.value = speakerDataBigVal["title"].toString()
                     discount.value = speakerDataBigVal["discount"].toString()
-                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value))
+                    type.value = speakerDataBigVal["type"].toString()
+                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value,type.value))
 
                 }
                 isSpeakerLoading.value = false
@@ -894,10 +900,15 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                                             println(it)
                                                         }
                                                     isFavoriteFirst.value = true
-                                                }
-                                                else {
+                                                } else {
                                                     navController.navigate("login_screen")
-                                                    Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Oturum açmanız gerekiyor.",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
                                                 }
                                             }
 
@@ -1089,9 +1100,15 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                                                 println(it)
                                                             }
                                                         isFavoriteSecond.value = true
-                                                    }else {
+                                                    } else {
                                                         navController.navigate("login_screen")
-                                                        Toast.makeText(context,"Oturum açmanız gerekiyor.",Toast.LENGTH_SHORT).show()
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Oturum açmanız gerekiyor.",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
                                                     }
                                                 }
 

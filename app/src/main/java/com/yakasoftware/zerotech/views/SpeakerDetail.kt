@@ -94,22 +94,22 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     }
     val detail5 = remember {
         mutableStateOf("")
-    } 
+    }
     val detail6 = remember {
         mutableStateOf("")
-    } 
+    }
     val detail7 = remember {
         mutableStateOf("")
-    } 
+    }
     val detail8 = remember {
         mutableStateOf("")
-    } 
+    }
     val detail9 = remember {
         mutableStateOf("")
-    } 
+    }
     val detail10 = remember {
         mutableStateOf("")
-    } 
+    }
     val detail11 = remember {
         mutableStateOf("")
     }
@@ -134,11 +134,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val price = remember { mutableStateOf("") }
     val oldPrice = remember { mutableStateOf("") }
     val discount = remember { mutableStateOf("") }
+
     val pagerLoading = remember {
         mutableStateOf(true)
     }
 
     val coroutineScope = rememberCoroutineScope()
+    
 
     val photoUrls = mutableListOf<String>()
 
@@ -332,14 +334,14 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                             val painter = rememberAsyncImagePainter(model = photoUrls[page])
 
-                                Image(
-                                    painter = painter,
-                                    contentDescription = "Hoparlör Detayları",
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(20.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
+                            Image(
+                                painter = painter,
+                                contentDescription = "Hoparlör Detayları",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(20.dp)),
+                                contentScale = ContentScale.Crop
+                            )
                         }
                         Box(
                             modifier = Modifier
@@ -851,7 +853,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     )
                 }
             }
-            
+
 
 
             //LazyColumn Dışında kalacak FİYAT BİLGİSİ - SATIN ALMA - SEPETE EKLEME
@@ -920,24 +922,24 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             ),
                         verticalAlignment = Alignment.CenterVertically,
 
-                    ) {
+                        ) {
                         Spacer(modifier = Modifier.weight(0.2f))
-                       Box(modifier = Modifier
-                           .size(48.dp)
-                           .clip(CircleShape)
-                           .background(MaterialTheme.colorScheme.primary
-                           )
-                           .clickable {
-                               sepetSayisi.value -= 1
-                           },
-                           contentAlignment = Alignment.CenterStart){
+                        Box(modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary
+                            )
+                            .clickable {
+                                sepetSayisi.value -= 1
+                            },
+                            contentAlignment = Alignment.CenterStart){
 
-                           Text(text = "-",
-                               fontSize = 30.sp,
-                               modifier = Modifier
-                                   .align(Alignment.Center))
+                            Text(text = "-",
+                                fontSize = 30.sp,
+                                modifier = Modifier
+                                    .align(Alignment.Center))
 
-                       }
+                        }
                         Spacer(modifier = Modifier.weight(0.5f))
 
                         Text(

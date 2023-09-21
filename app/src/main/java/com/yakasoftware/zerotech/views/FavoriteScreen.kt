@@ -556,6 +556,5 @@ fun FavoriteScreen(navController: NavHostController) {
             }
         }
     }
-
 }
 
