@@ -29,18 +29,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.CompareArrows
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -300,7 +308,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(350.dp)
+                    .height(335.dp)
                     .border(BorderStroke(5.dp, MaterialTheme.colorScheme.onSecondary)),
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.Center
@@ -786,9 +794,105 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                 //yorum kısmı veri çekme dahil tamam fakat layout ile ilgili bi sıkıntı var front-endciler sizde yargılanacaksınız M.K.
 
-                items(commentList.size) { index ->
-                    val commentData = commentList[index]
-                    Column(modifier = Modifier
+                item(1) {
+                    val buyult = remember { mutableStateOf(false) }
+                    val dpValue = 225
+                    val enLarge = if(buyult.value) commentList.size*60 else 0
+                    val large = enLarge + dpValue
+                    Column (Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+
+
+                        OutlinedCard(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                            ),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                            modifier = Modifier
+                                .fillMaxWidth(0.85f)
+                                .height(large.dp),
+
+                            ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .background(MaterialTheme.colorScheme.primary),
+                                verticalAlignment = Alignment.Top,
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .background(MaterialTheme.colorScheme.secondary),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CompareArrows, // İkonun türünü ve rengini ayarlayın
+                                        contentDescription = "Detay Belirtme",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth().height(50.dp),
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                if (buyult.value) {
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardDoubleArrowUp, // İkonun türünü ve rengini ayarlayın
+                                        contentDescription = "Detay Belirtme",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .clickable {
+                                                buyult.value = !buyult.value
+                                            }
+                                    )
+                                } else
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardDoubleArrowDown, // İkonun türünü ve rengini ayarlayın
+                                        contentDescription = "Detay Belirtme",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .clickable {
+                                                buyult.value = !buyult.value
+                                            }
+                                    )
+
+                            }
+                            for (i in 0 until commentList.size) {
+                            Column(modifier = Modifier.fillMaxWidth().height(50.dp)) {
+                                    Row(Modifier.fillMaxWidth().height(50.dp)) {
+
+                                            val commentData = commentList[i]
+                                            Text(
+                                                text = commentData.senderName,
+                                                color = MaterialTheme.colorScheme.secondary
+                                            )
+                                            Spacer(modifier = Modifier.padding(5.dp))
+                                            Text(
+                                                text = commentData.senderSurName,
+                                                color = MaterialTheme.colorScheme.secondary
+                                            )
+                                            Spacer(modifier = Modifier.padding(5.dp))
+                                            Text(
+                                                text = commentData.description,
+                                                color = MaterialTheme.colorScheme.secondary
+                                            )
+                                        }
+
+                                    }
+                                 Spacer(modifier = Modifier.height(15.dp))
+                                }
+
+                        }
+
+                           }
+
+
+
+
+                   /* Column(modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)) {
                         Row(
@@ -812,7 +916,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                         }
                         Spacer(modifier = Modifier.height(15.dp))
-                    }
+                    } */
                 }
                 item {
                     Spacer(modifier = Modifier.height(105.dp))
@@ -927,7 +1031,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         Box(modifier = Modifier
                             .size(48.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary
+                            .background(
+                                MaterialTheme.colorScheme.primary
                             )
                             .clickable {
                                 sepetSayisi.value -= 1
