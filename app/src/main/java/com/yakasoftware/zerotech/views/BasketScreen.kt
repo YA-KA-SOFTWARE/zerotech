@@ -1,5 +1,7 @@
 package com.yakasoftware.zerotech.views
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,11 +36,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun BasketScreen(navController: NavHostController) {
 
@@ -70,66 +77,6 @@ fun BasketScreen(navController: NavHostController) {
                 }
 
         }
-
-        val isLoading = remember {
-            mutableStateOf(true)
-        }
-        val title = remember {
-            mutableStateOf("")
-        }
-        val oldPrice = remember {
-            mutableStateOf("")
-        }
-        val price = remember {
-            mutableStateOf("")
-        }
-        val discount = remember {
-            mutableStateOf("")
-        }
-        val type = remember {
-            mutableStateOf("")
-        }
-        val amount = remember {
-            mutableStateOf(0)
-        }
-        val photo1 = remember {
-            mutableStateOf("")
-        }
-        data class BasketProducts (
-            val title: String,
-            val photo1: String,
-            val price: String,
-            val oldPrice: String,
-            val discount: String,
-            val type: String
-        )
-        val basketList = remember{ mutableStateListOf<BasketProducts>() }
-        if (currentUser != null) {
-            LaunchedEffect(Unit) {
-                isLoading.value = true
-                db.collection("basket")
-                    .document(currentUser.email!!)
-                    .collection(currentUser.email!!)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        basketList.clear()
-                        for (document in documents) {
-                            val basketData: Map<String,Any> = document.data
-                            title.value = basketData["title"].toString()
-                            type.value = basketData["type"].toString()
-                            photo1.value = basketData["photo1"].toString()
-                            discount.value = basketData["discount"].toString()
-                            oldPrice.value = basketData["oldPrice"].toString()
-                            price.value = basketData["price"].toString()
-                            basketList.add(BasketProducts(title.value,photo1.value,price.value,oldPrice.value,discount.value,type.value))
-                        }
-                    }
-                    .addOnFailureListener {
-                        println(it)
-                    }
-            }
-        }
-
 
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
             val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
@@ -226,9 +173,76 @@ fun BasketScreen(navController: NavHostController) {
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
-                LazyColumn  {
+                data class BasketProduct(
+                    val title: String,
+                    val photo1: String,
+                    val price: String,
+                    val oldPrice: String,
+                    val discount: String,
+                    val type: String,
+                    val amount: String,
+                    val date: com.google.firebase.Timestamp?,
+                    val onay: Boolean
+                )
+                val oldPrice = remember { mutableStateOf("") }
+                val price = remember { mutableStateOf("") }
+                val photo1 = remember { mutableStateOf("") }
+                val discount = remember { mutableStateOf("") }
+                val type = remember { mutableStateOf("") }
+                val title = remember { mutableStateOf("") }
+                val amount = remember { mutableStateOf("") }
+                val date = remember { mutableStateOf<com.google.firebase.Timestamp?>(null) }
+                val onay = remember { mutableStateOf(false) }
 
+                val basList = remember{ mutableStateListOf<BasketProduct>() }
 
+                db.collection("basket").whereEqualTo("email",email).get().addOnSuccessListener { documents ->
+                    for (document in documents){
+                        basList.clear()
+                        val basketData: Map<String,Any> = document.data
+                        title.value = basketData["title"].toString()
+                        oldPrice.value = basketData["oldPrice"].toString()
+                        price.value = basketData["price"].toString()
+                        photo1.value = basketData["photo1"].toString()
+                        discount.value = basketData["discount"].toString()
+                        type.value = basketData["type"].toString()
+                        val dateValue = basketData["date"]
+                        date.value = if (dateValue is com.google.firebase.Timestamp) {
+                            dateValue
+                        } else {
+                            null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                        }
+                        amount.value = basketData["amount"].toString()
+                        onay.value = basketData["onay"] as? Boolean ?: false
+                        basList.add(BasketProduct(title.value,photo1.value,price.value,oldPrice.value,discount.value,type.value,amount.value,
+                            date.value,onay.value))
+                    }
+
+                }
+
+                LazyColumn{
+                    items(basList.size){index ->
+                        val baskets = basList[index]
+
+                        Column() {
+                            Text(text = baskets.title, color = MaterialTheme.colorScheme.secondary)
+                            Text(text = baskets.amount, color = MaterialTheme.colorScheme.secondary)
+                            Text(text = baskets.discount, color = MaterialTheme.colorScheme.secondary)
+                            Text(text = baskets.oldPrice, color = MaterialTheme.colorScheme.secondary)
+                            Text(text = baskets.price, color = MaterialTheme.colorScheme.secondary)
+                            Text(text = baskets.type, color = MaterialTheme.colorScheme.secondary)
+                            val painter = rememberAsyncImagePainter(model = baskets.photo1)
+                            Image(painter = painter, contentDescription = null,Modifier.size(50.dp) )
+
+                            val dateFormat = SimpleDateFormat("dd/MM/yyyy (HH:mm)",Locale.getDefault())
+                            val date = baskets.date?.toDate()
+                            val formattedDate = dateFormat.format(date)
+
+                            Text(text = formattedDate ,color = MaterialTheme.colorScheme.secondary )
+
+                        }
+
+                    }
                 }
             }
 

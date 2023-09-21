@@ -334,7 +334,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
         val para = floatPrice*sepetSayisi.value.toFloat()
         val oldPara =  floatOldPrice*sepetSayisi.value.toFloat()
-
+        val onay = remember {
+            mutableStateOf(false)
+        }
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
@@ -1189,6 +1191,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Spacer(modifier = Modifier.width(5.dp))
                     OutlinedButton(
                         onClick = {
+                            val calendar = Calendar.getInstance()
+
                             val currentUserEmailBasket = Firebase.auth.currentUser?.email
                             val dataBasket = hashMapOf(
                                 "oldPrice" to oldPara.toString(),
@@ -1197,14 +1201,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 "discount" to discount.value,
                                 "type" to type.value,
                                 "title" to productTitle,
-                                "amount" to sepetSayisi.value.toString()
+                                "amount" to sepetSayisi.value.toString(),
+                                "email" to currentUserEmailBasket,
+                                "date" to calendar.time,
+                                "onay" to onay.value
+
                             )
                             if(currentUserEmailBasket != null) {
                                 val docrefBasket = db.collection("basket")
-                                    .document(currentUserEmailBasket)
-                                    .collection(currentUserEmailBasket)
-                                    .document(productTitle)
-                                docrefBasket.set(dataBasket)
+                                docrefBasket.add(dataBasket)
                                     .addOnSuccessListener {
                                         Toast.makeText(context,"Ürün sepete eklendi.",Toast.LENGTH_SHORT).show()
                                     }

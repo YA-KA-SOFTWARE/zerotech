@@ -215,7 +215,6 @@ fun FavoriteScreen(navController: NavHostController) {
                     type.value = favData["type"].toString()
                     favList.add(FavProduct(title.value,photo1.value,price.value,oldPrice.value,discount.value,type.value))
                 }
-                println("favList.size = ${favList.size}")
             }
             LazyColumn{
                 items(if(favList.size%2==0)favList.size/2 else favList.size/2 + 1) { rowIndex ->
