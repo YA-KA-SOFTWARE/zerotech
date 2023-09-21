@@ -1151,7 +1151,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 MaterialTheme.colorScheme.primary
                             )
                             .clickable {
-                                sepetSayisi.value -= 1
+                                if (sepetSayisi.value > 1) {
+                                    sepetSayisi.value -= 1
+
+                                }
                             },
                             contentAlignment = Alignment.CenterStart){
 

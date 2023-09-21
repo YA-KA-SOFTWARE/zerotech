@@ -197,8 +197,8 @@ fun BasketScreen(navController: NavHostController) {
                 val basList = remember{ mutableStateListOf<BasketProduct>() }
 
                 db.collection("basket").whereEqualTo("email",email).get().addOnSuccessListener { documents ->
+                   basList.clear()
                     for (document in documents){
-                        basList.clear()
                         val basketData: Map<String,Any> = document.data
                         title.value = basketData["title"].toString()
                         oldPrice.value = basketData["oldPrice"].toString()
@@ -217,7 +217,6 @@ fun BasketScreen(navController: NavHostController) {
                         basList.add(BasketProduct(title.value,photo1.value,price.value,oldPrice.value,discount.value,type.value,amount.value,
                             date.value,onay.value))
                     }
-
                 }
 
                 LazyColumn{
@@ -236,9 +235,10 @@ fun BasketScreen(navController: NavHostController) {
 
                             val dateFormat = SimpleDateFormat("dd/MM/yyyy (HH:mm)",Locale.getDefault())
                             val date = baskets.date?.toDate()
-                            val formattedDate = dateFormat.format(date)
+                            val formattedDate = date?.let { dateFormat.format(it) }
 
-                            Text(text = formattedDate ,color = MaterialTheme.colorScheme.secondary )
+
+                            Text(text = formattedDate.toString() ,color = MaterialTheme.colorScheme.secondary )
 
                         }
 

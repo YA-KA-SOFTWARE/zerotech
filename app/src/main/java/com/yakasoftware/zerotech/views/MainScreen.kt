@@ -136,10 +136,10 @@ fun MainScreen(navController: NavHostController) {
     val basketCount = remember {
         mutableStateOf(0)
     }
-
     if (auth.currentUser!= null) {
-       val collectionRef = db.collection("basket").document(email!!)
-            .collection(email)
+
+       val collectionRef = db.collection("basket")
+           .whereEqualTo("email",currentUser!!.email)
             collectionRef.get()
                 .addOnSuccessListener { documents ->
                     basketCount.value = documents.size()
