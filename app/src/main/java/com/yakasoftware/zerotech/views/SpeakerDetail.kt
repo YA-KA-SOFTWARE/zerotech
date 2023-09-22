@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -875,6 +876,28 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         val userSurName = remember {
                             mutableStateOf("")
                         }
+
+                        val currentRating = remember { mutableStateOf(0) }
+
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(5) { index ->
+                                val isSelected = index < currentRating.value
+                                Icon(
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = "Star",
+                                    tint = if (isSelected) Color.Yellow else Color.Gray,
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .padding(4.dp)
+                                        .clickable {
+                                            currentRating.value = index + 1
+                                        }
+                                )
+                            }
+                        }
+
                         OutlinedTextField(value = comments.value,
                             onValueChange = {
                                 comments.value = it
