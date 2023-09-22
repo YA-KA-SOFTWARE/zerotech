@@ -137,16 +137,16 @@ fun MainScreen(navController: NavHostController) {
         mutableStateOf(0)
     }
     if (auth.currentUser!= null) {
-       val collectionRef = db.collection("basket").document(email!!)
-            .collection(email)
-            collectionRef.get()
-                .addOnSuccessListener { documents ->
-                    basketCount.value = documents.size()
+        val collectionRef = db.collection("basket")
+            .whereEqualTo("email",currentUser!!.email)
+        collectionRef.get()
+            .addOnSuccessListener { documents ->
+                basketCount.value = documents.size()
 
-                }
-                .addOnFailureListener {
-                    println(it)
-                }
+            }
+            .addOnFailureListener {
+                println(it)
+            }
     }
     val pagerLoading = remember {
         mutableStateOf(true)
