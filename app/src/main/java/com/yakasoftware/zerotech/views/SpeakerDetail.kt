@@ -1016,30 +1016,30 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                             }
                                         }
                                     }
-                                    
+
                                     Spacer(modifier = Modifier.padding(5.dp))
 
-                                 Row(
-                                     Modifier
-                                         .fillMaxSize(),
-                                     verticalAlignment = Alignment.CenterVertically,
-                                     horizontalArrangement = Arrangement.Center
-                                 ) {
-
-                                    Column(
+                                    Row(
                                         Modifier
-                                            .fillMaxWidth(0.8f)
-                                            .wrapContentHeight()
-                                            .defaultMinSize(minHeight = 50.dp)
-                                    )
-                                    {
-                                        Text(
-                                            text = commentData.description,
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            textAlign = TextAlign.Start
+                                            .fillMaxSize(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
 
+                                        Column(
+                                            Modifier
+                                                .fillMaxWidth(0.8f)
+                                                .wrapContentHeight()
+                                                .defaultMinSize(minHeight = 50.dp)
                                         )
-                                    }
+                                        {
+                                            Text(
+                                                text = commentData.description,
+                                                color = MaterialTheme.colorScheme.secondary,
+                                                textAlign = TextAlign.Start
+
+                                            )
+                                        }
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
@@ -1299,8 +1299,16 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             if(currentUserEmailBasket != null) {
                                 val docrefBasket = db.collection("basket")
                                 docrefBasket.add(dataBasket)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(context,"Ürün sepete eklendi.",Toast.LENGTH_SHORT).show()
+                                    .addOnSuccessListener { documentReference ->
+                                        val addedDocumentId = documentReference.id
+                                        docrefBasket.document(addedDocumentId)
+                                            .update("docId", addedDocumentId)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(context, "Ürün sepete eklendi.", Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener {
+                                                Toast.makeText(context, "Ürün eklenirken hata oluştu.", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                                     .addOnFailureListener {
                                         Toast.makeText(context,"Ürün eklenirken hata oluştu.",Toast.LENGTH_SHORT).show()
