@@ -155,6 +155,22 @@ fun SpeakerScreen(navController: NavHostController) {
             }
     }
 
+    val basketCount = remember {
+        mutableStateOf(0)
+    }
+
+    if (auth.currentUser!= null) {
+        val collectionRef = db.collection("basket")
+            .whereEqualTo("email",currentUser!!.email)
+        collectionRef.get()
+            .addOnSuccessListener { documents ->
+                basketCount.value = documents.size()
+
+            }
+            .addOnFailureListener {
+                println(it)
+            }
+    }
 
     val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
@@ -248,19 +264,26 @@ fun SpeakerScreen(navController: NavHostController) {
                     }
                 }
                 //Sepetim
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "Sepetim",
-                    tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            if (!isMenuVisible.value) {
-                                navController.navigate("basket_screen")
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "Sepetim",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                if (!isMenuVisible.value) {
+                                    navController.navigate("basket_screen")
+                                }
+                                //Sepet işlemleri
                             }
-                            //Sepet işlemleri
-                        }
-                )
+                    )
+                    Text(
+                        text = basketCount.value.toString(),
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(modifier = Modifier.padding(end = 4.dp))
             }
             Box(
@@ -892,7 +915,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 211, 181, 255), CircleShape)
+                                            .background(Color(255, 255, 255, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -939,7 +962,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         modifier = Modifier
                                             .size(34.dp * sizeState.value)
                                             .align(alignment = Alignment.TopEnd)
-                                            .background(Color(255, 211, 181, 255), CircleShape)
+                                            .background(Color(255, 255, 255, 255), CircleShape)
                                             .clickable {
                                                 val favDb = Firebase.firestore
                                                 val userEmail = Firebase.auth.currentUser?.email
@@ -1092,7 +1115,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 211, 181, 255), CircleShape)
+                                                .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
@@ -1140,7 +1163,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(34.dp * sizeState2.value)
                                                 .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 211, 181, 255), CircleShape)
+                                                .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
                                                     val favDb = Firebase.firestore
                                                     val userEmail = Firebase.auth.currentUser?.email
