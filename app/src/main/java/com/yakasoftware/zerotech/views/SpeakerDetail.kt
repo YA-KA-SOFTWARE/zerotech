@@ -3,6 +3,9 @@ package com.yakasoftware.zerotech.views
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,23 +25,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.ArrowDropDownCircle
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.CompareArrows
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,8 +51,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,8 +61,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -69,6 +74,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -136,6 +142,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     }
     val context = LocalContext.current
 
+
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -150,8 +157,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val pagerLoading = remember {
         mutableStateOf(true)
     }
-
-    val coroutineScope = rememberCoroutineScope()
 
 
     val photoUrls = mutableListOf<String>()
@@ -213,59 +218,59 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         photo3.value = document.getString("photo3")!!
                         photo4.value = document.getString("photo4")!!
                         val detail1Value = document.getString("detail1")
-                        if (detail1Value != null && detail1Value != ""){
+                        if (detail1Value != null && detail1Value != "") {
                             detail1.value = detail1Value
                         }
                         val detail2Value = document.getString("detail2")
-                        if (detail2Value != null && detail2Value != ""){
+                        if (detail2Value != null && detail2Value != "") {
                             detail2.value = detail2Value
                         }
                         val detail3Value = document.getString("detail3")
-                        if (detail3Value != null && detail3Value != ""){
+                        if (detail3Value != null && detail3Value != "") {
                             detail3.value = detail3Value
                         }
                         val detail4Value = document.getString("detail4")
-                        if (detail4Value != null && detail4Value != ""){
+                        if (detail4Value != null && detail4Value != "") {
                             detail4.value = detail4Value
                         }
                         val detail5Value = document.getString("detail5")
-                        if (detail5Value != null && detail5Value != ""){
+                        if (detail5Value != null && detail5Value != "") {
                             detail5.value = detail5Value
                         }
                         val detail6Value = document.getString("detail6")
-                        if (detail6Value != null && detail6Value != ""){
+                        if (detail6Value != null && detail6Value != "") {
                             detail6.value = detail6Value
                         }
                         val detail7Value = document.getString("detail7")
-                        if (detail7Value != null && detail7Value != ""){
+                        if (detail7Value != null && detail7Value != "") {
                             detail7.value = detail7Value
                         }
                         val detail8Value = document.getString("detail8")
-                        if (detail8Value != null && detail8Value != ""){
+                        if (detail8Value != null && detail8Value != "") {
                             detail8.value = detail8Value
                         }
                         val detail9Value = document.getString("detail9")
-                        if (detail9Value != null && detail9Value != ""){
+                        if (detail9Value != null && detail9Value != "") {
                             detail9.value = detail9Value
                         }
                         val detail10Value = document.getString("detail10")
-                        if (detail10Value != null && detail10Value != ""){
+                        if (detail10Value != null && detail10Value != "") {
                             detail10.value = detail10Value
                         }
                         val detail11Value = document.getString("detail11")
-                        if (detail11Value != null && detail11Value != ""){
+                        if (detail11Value != null && detail11Value != "") {
                             detail11.value = detail11Value
                         }
                         val detail12Value = document.getString("detail12")
-                        if (detail12Value != null && detail12Value != ""){
+                        if (detail12Value != null && detail12Value != "") {
                             detail12.value = detail12Value
                         }
                         val detail13Value = document.getString("detail13")
-                        if (detail13Value != null && detail13Value != ""){
+                        if (detail13Value != null && detail13Value != "") {
                             detail13.value = detail13Value
                         }
                         val detail14Value = document.getString("detail14")
-                        if (detail14Value != null && detail14Value != ""){
+                        if (detail14Value != null && detail14Value != "") {
                             detail14.value = detail14Value
                         }
                         val detail15Value = document.getString("detail15")
@@ -306,25 +311,29 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         val floatPrice = price.value.toFloatOrNull() ?: 0.0f
         val floatOldPrice = oldPrice.value.toFloatOrNull() ?: 0.0f
 
-        val para = floatPrice*sepetSayisi.value.toFloat()
-        val oldPara =  floatOldPrice*sepetSayisi.value.toFloat()
+        val para = floatPrice * sepetSayisi.value.toFloat()
+        val oldPara = floatOldPrice * sepetSayisi.value.toFloat()
+
+
+        val isAtTop = remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
+        val targetHeight = animateDpAsState(
+            if (isAtTop.value) 0.dp else 335.dp,
+            animationSpec = spring(), label = ""
+        )
 
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(335.dp)
-                    .border(BorderStroke(5.dp, MaterialTheme.colorScheme.onSecondary)),
+                    .height(targetHeight.value)
+                    .animateContentSize(),
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .border(
-                            5.dp, MaterialTheme.colorScheme.onSecondary,
-                            shape = RoundedCornerShape(20.dp)
-                        )
                         .clip(RoundedCornerShape(20.dp))
 
                 ) {
@@ -351,11 +360,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 painter = painter,
                                 contentDescription = "Hoparlör Detayları",
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(20.dp)),
+                                    .fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
                         }
+
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -364,13 +373,48 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         colors = listOf(
                                             Color.Transparent,
                                             Color.Transparent,// Başlangıç rengi
-                                            MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                            MaterialTheme.colorScheme.primary    // Bitiş rengi
                                         ),
-                                        startY = 0f,
-                                        endY = 1000f // Yüksekliği ayarlayın
+                                        startY = 300f,
+                                        endY = 900f // Yüksekliği ayarlayın
                                     )
                                 )
                         ) {
+
+                        }
+                        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Start) {
+                            repeat(4) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = "Yıldızlar",
+                                        tint = Color(255, 153, 102, 255)
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .size(18.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.StarBorder,
+                                    contentDescription = "Yıldızlar",
+                                    tint = Color(255, 153, 102, 255)
+                                )
+                            }
+
+                            Text(
+                                text = "${commentList.size} Değerlendirme",
+                                color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.ExtraLight
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
 
                         }
                         Row(
@@ -385,8 +429,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowLeft,
                                     contentDescription = "Sola gitme",
-                                    tint = MaterialTheme.colorScheme.onSecondary
-                                    , modifier = Modifier
+                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier
                                         .size(36.dp)
                                         .clickable {
                                             coroutineScope.launch {
@@ -400,8 +444,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowRight,
                                     contentDescription = "Sağa gitme",
-                                    tint = MaterialTheme.colorScheme.onSecondary
-                                    , modifier = Modifier
+                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier
                                         .size(36.dp)
                                         .clickable {
                                             coroutineScope.launch {
@@ -422,7 +466,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(20.dp),
+                        .wrapContentHeight(),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -432,27 +476,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp
                     )
-                }
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    repeat(5) {
-                        Box(
-                            modifier = Modifier
-                                .size(25.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.StarBorder,
-                                contentDescription = "Yıldızlar",
-                                tint = MaterialTheme.colorScheme.onSecondary
-                            )
-                        }
-                    }
-
-                    Text(text = "${commentList.size} Değerlendirme", color = MaterialTheme.colorScheme.secondary)
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-
                 }
 
             }
@@ -466,17 +489,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     text = "Ürün Detayları",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 20.sp,
+                    fontWeight = FontWeight.Light,
                     modifier = Modifier
-                        .border(
-                            width = 2.dp,
-                            color = MaterialTheme.colorScheme.secondary,
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .padding(12.dp)
+                        .padding(8.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.padding(6.dp))
+            Spacer(modifier = Modifier.padding(3.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Row(modifier = Modifier.fillMaxWidth(0.650f)) {
                     Spacer(modifier = Modifier.weight(1f))
@@ -484,11 +503,16 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
-            //Özellikler
-            LazyColumn() {
+
+
+
+            LazyColumn (
+                modifier = Modifier.disabledVerticalPointerInputScroll(disabled = !isAtTop.value)
+            ){
                 item {
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Spacer(modifier = Modifier.padding(top = 32.dp))
@@ -706,9 +730,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
-                        Text(text = "Yorumları Çekicez Buraya ")
-                    }
+
                     Row(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -757,7 +779,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         db.collection("users").document(email!!).get()
                                             .addOnSuccessListener {
                                                 val data = it.data
-                                                userName.value = data?.get("name") as? String ?: ""
+                                                userName.value =
+                                                    data?.get("name") as? String ?: ""
                                                 userSurName.value =
                                                     data?.get("surname") as? String ?: ""
                                                 println(userName.value)
@@ -797,114 +820,105 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(105.dp))
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
 
                 //yorum kısmı veri çekme dahil tamam fakat layout ile ilgili bi sıkıntı var front-endciler sizde yargılanacaksınız M.K.
+                //yorum kısmı tasarım dahil tamam fakat BENİM SİZİNLE ilgili sorunum var gardaş back-endciler sizde yargılanacaksınız A.Ç.
 
                 item(1) {
-                    val buyult = remember { mutableStateOf(false) }
-                    val dpValue = 225
-                    val enLarge = if(buyult.value) commentList.size*60 else 0
-                    val large = enLarge + dpValue
-                    Column (Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-
-                        OutlinedCard(
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                            ),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth(0.85f)
-                                .height(large.dp),
+                                .wrapContentHeight(),
+                        ) {
 
-                            ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp)
-                                    .background(MaterialTheme.colorScheme.primary),
-                                verticalAlignment = Alignment.Top,
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .background(MaterialTheme.colorScheme.secondary),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.FilterList, // İkonun türünü ve rengini ayarlayın
-                                        contentDescription = "Detay Belirtme",
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                }
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp),
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                if (buyult.value) {
-                                    Icon(
-                                        imageVector = Icons.Default.KeyboardDoubleArrowUp, // İkonun türünü ve rengini ayarlayın
-                                        contentDescription = "Detay Belirtme",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier
-                                            .clickable {
-                                                buyult.value = !buyult.value
-                                            }
-                                    )
-                                } else
-                                    Icon(
-                                        imageVector = Icons.Default.KeyboardDoubleArrowDown, // İkonun türünü ve rengini ayarlayın
-                                        contentDescription = "Detay Belirtme",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier
-                                            .clickable {
-                                                buyult.value = !buyult.value
-                                            }
-                                    )
-
-                            }
                             for (i in 0 until commentList.size) {
-                                Column(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp)) {
-                                    Row(
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .height(50.dp)) {
 
-                                        val commentData = commentList[i]
+                                val commentData = commentList[i]
+
+                                OutlinedCard(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.onPrimary,
+                                    ),
+                                    border = BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.onSecondary
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .wrapContentHeight()
+                                        .align(Alignment.CenterHorizontally),
+                                )
+                                {
+                                    Row(
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .height(20.dp),
+                                        verticalAlignment = Alignment.Top,
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Spacer(modifier = Modifier.padding(2.dp))
+                                        Spacer(modifier = Modifier.height(2.dp))
                                         Text(
-                                            text = commentData.senderName,
-                                            color = MaterialTheme.colorScheme.secondary
+                                            text = commentData.senderName + " " + commentData.senderSurName,
+                                            color = Color.LightGray,
+                                            fontSize = 14.sp
                                         )
-                                        Spacer(modifier = Modifier.padding(5.dp))
-                                        Text(
-                                            text = commentData.senderSurName,
-                                            color = MaterialTheme.colorScheme.secondary
-                                        )
-                                        Spacer(modifier = Modifier.padding(5.dp))
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        repeat(5) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(14.dp),
+                                                contentAlignment = Alignment.TopCenter
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Star,
+                                                    contentDescription = "Yıldızlar",
+                                                    tint = MaterialTheme.colorScheme.onSecondary
+                                                )
+                                            }
+                                        }
+                                    }
+                                    
+                                    Spacer(modifier = Modifier.padding(5.dp))
+
+                                 Row(
+                                     Modifier
+                                         .fillMaxSize(),
+                                     verticalAlignment = Alignment.CenterVertically,
+                                     horizontalArrangement = Arrangement.Center
+                                 ) {
+
+                                    Column(
+                                        Modifier
+                                            .fillMaxWidth(0.8f)
+                                            .wrapContentHeight()
+                                            .defaultMinSize(minHeight = 50.dp)
+                                    )
+                                    {
                                         Text(
                                             text = commentData.description,
-                                            color = MaterialTheme.colorScheme.secondary
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            textAlign = TextAlign.Start
+
                                         )
                                     }
-
+                                    }
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
+
                             }
 
                         }
 
                     }
-
-
 
 
                     /* Column(modifier = Modifier
@@ -977,12 +991,49 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
         }
         val fontSizeIcon = 20.dp
-        val fontSizeIconText = 24.dp
-        Column(modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
             val shoppingBarFontSize = 20.dp
             val oldPriceFontSize = 18.dp
             Spacer(modifier = Modifier.padding(start = 8.dp))
+            Row(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent, // Başlangıç rengi
+                                MaterialTheme.colorScheme.primary  // Bitiş rengi
+                            ),
+                            startY = 10f,
+                            endY = 100f // Yüksekliği ayarlayın
+                        )
+                    )
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .clickable {
+                        coroutineScope.launch {
+                            isAtTop.value = !isAtTop.value
+                        }
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
+
+                Text(
+                    text = if(!isAtTop.value) "Daha Fazlası.." else "Küçült..",
+                    fontSize = 20.sp,   fontWeight = FontWeight.W800,
+                    color = Color(255, 207, 184, 255),
+                    textDecoration = TextDecoration.Underline
+                )
+
+                Icon(
+                    imageVector = if (!isAtTop.value)Icons.Default.ArrowDropDownCircle else Icons.Default.ArrowCircleUp ,
+                    contentDescription = "Sola gitme",
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .size(20.dp))
+            }
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
@@ -1006,15 +1057,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Column {
                         Text(
                             text = String.format("%.2f", oldPara) + "₺",
-                            color = Color(100,100,100,255),
-                            fontSize = with(LocalDensity.current) {oldPriceFontSize.toSp()},
+                            color = Color(100, 100, 100, 255),
+                            fontSize = with(LocalDensity.current) { oldPriceFontSize.toSp() },
                             textDecoration = TextDecoration.LineThrough
                         )
                         Spacer(modifier = Modifier.padding(top = 2.dp))
                         Text(
                             text = String.format("%.2f", para) + "₺",
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = with(LocalDensity.current) {shoppingBarFontSize.toSp()},
+                            fontSize = with(LocalDensity.current) { shoppingBarFontSize.toSp() },
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -1042,45 +1093,53 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                         ) {
                         Spacer(modifier = Modifier.weight(0.2f))
-                        Box(modifier = Modifier
-                            .size(38.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(
-                                MaterialTheme.colorScheme.primary
-                            )
-                            .clickable {
-                                sepetSayisi.value -= 1
-                            },
-                            contentAlignment = Alignment.CenterStart){
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(
+                                    MaterialTheme.colorScheme.primary
+                                )
+                                .clickable {
+                                    sepetSayisi.value -= 1
+                                },
+                            contentAlignment = Alignment.CenterStart
+                        ) {
 
-                            Text(text = "-",
-                                fontSize = with(LocalDensity.current) {fontSizeIcon.toSp()},
+                            Text(
+                                text = "-",
+                                fontSize = with(LocalDensity.current) { fontSizeIcon.toSp() },
                                 modifier = Modifier
-                                    .align(Alignment.Center))
+                                    .align(Alignment.Center)
+                            )
 
                         }
                         Spacer(modifier = Modifier.weight(0.5f))
 
                         Text(
                             text = sepetSayisi.value.toString(),
-                            fontSize = with(LocalDensity.current) {fontSizeIcon.toSp()},
+                            fontSize = with(LocalDensity.current) { fontSizeIcon.toSp() },
                             color = MaterialTheme.colorScheme.onPrimary
                         )
 
                         Spacer(modifier = Modifier.weight(0.5f))
-                        Box(modifier = Modifier
-                            .size(38.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colorScheme.primary)
-                            .clickable {
-                                sepetSayisi.value += 1
-                            },
-                            contentAlignment = Alignment.CenterEnd){
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .clickable {
+                                    sepetSayisi.value += 1
+                                },
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
 
-                            Text(text = "+",
-                                fontSize = with(LocalDensity.current) {fontSizeIcon.toSp()},
+                            Text(
+                                text = "+",
+                                fontSize = with(LocalDensity.current) { fontSizeIcon.toSp() },
                                 modifier = Modifier
-                                    .align(Alignment.Center))
+                                    .align(Alignment.Center)
+                            )
 
                         }
                         Spacer(modifier = Modifier.weight(0.2f))
@@ -1099,22 +1158,34 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 "title" to productTitle,
                                 "amount" to sepetSayisi.value.toString()
                             )
-                            if(currentUserEmailBasket != null) {
+                            if (currentUserEmailBasket != null) {
                                 val docrefBasket = db.collection("basket")
                                     .document(currentUserEmailBasket)
                                     .collection(currentUserEmailBasket)
                                     .document(productTitle)
                                 docrefBasket.set(dataBasket)
                                     .addOnSuccessListener {
-                                        Toast.makeText(context,"Ürün sepete eklendi.",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Ürün sepete eklendi.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                     .addOnFailureListener {
-                                        Toast.makeText(context,"Ürün eklenirken hata oluştu.",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Ürün eklenirken hata oluştu.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
-                            }else {
-                                Toast.makeText(context,"Oturum açmanız gerekli.",Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Oturum açmanız gerekli.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                                  },
+                        },
                         modifier = Modifier
                             .width(120.dp)
                             .height(60.dp)
@@ -1127,7 +1198,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         Text(
                             text = "Sepete Ekle",
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = with(LocalDensity.current) {oldPriceFontSize.toSp()},
+                            fontSize = with(LocalDensity.current) { oldPriceFontSize.toSp() },
                             textAlign = TextAlign.Center
                         )
                     }
@@ -1136,3 +1207,12 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         }
     }
 }
+private val disableScrolll = object : NestedScrollConnection {
+    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
+    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
+}
+
+
+fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
+    if (disabled) this.nestedScroll(disableScrolll) else this
+
