@@ -1,5 +1,6 @@
 package com.yakasoftware.zerotech.views
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
@@ -89,6 +90,7 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
@@ -137,16 +139,16 @@ fun MainScreen(navController: NavHostController) {
         mutableStateOf(0)
     }
     if (auth.currentUser!= null) {
-        val collectionRef = db.collection("basket")
-            .whereEqualTo("email",currentUser!!.email)
-        collectionRef.get()
-            .addOnSuccessListener { documents ->
-                basketCount.value = documents.size()
+       val collectionRef = db.collection("basket").document(email!!)
+            .collection(email)
+            collectionRef.get()
+                .addOnSuccessListener { documents ->
+                    basketCount.value = documents.size()
 
-            }
-            .addOnFailureListener {
-                println(it)
-            }
+                }
+                .addOnFailureListener {
+                    println(it)
+                }
     }
     val pagerLoading = remember {
         mutableStateOf(true)

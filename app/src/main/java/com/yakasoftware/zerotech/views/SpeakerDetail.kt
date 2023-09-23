@@ -35,9 +35,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowDropDownCircle
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FilterAltOff
@@ -45,10 +47,12 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -68,6 +72,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -174,6 +179,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
     val isDialogVisible = remember { mutableStateOf(false) }
 
+    val isDialogVisible2 = remember { mutableStateOf(false) }
+
 
     Surface(Modifier.fillMaxSize()) {
         data class CommentData(
@@ -232,59 +239,59 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         photo3.value = document.getString("photo3")!!
                         photo4.value = document.getString("photo4")!!
                         val detail1Value = document.getString("detail1")
-                        if (detail1Value != null && detail1Value != ""){
+                        if (detail1Value != null && detail1Value != "") {
                             detail1.value = detail1Value
                         }
                         val detail2Value = document.getString("detail2")
-                        if (detail2Value != null && detail2Value != ""){
+                        if (detail2Value != null && detail2Value != "") {
                             detail2.value = detail2Value
                         }
                         val detail3Value = document.getString("detail3")
-                        if (detail3Value != null && detail3Value != ""){
+                        if (detail3Value != null && detail3Value != "") {
                             detail3.value = detail3Value
                         }
                         val detail4Value = document.getString("detail4")
-                        if (detail4Value != null && detail4Value != ""){
+                        if (detail4Value != null && detail4Value != "") {
                             detail4.value = detail4Value
                         }
                         val detail5Value = document.getString("detail5")
-                        if (detail5Value != null && detail5Value != ""){
+                        if (detail5Value != null && detail5Value != "") {
                             detail5.value = detail5Value
                         }
                         val detail6Value = document.getString("detail6")
-                        if (detail6Value != null && detail6Value != ""){
+                        if (detail6Value != null && detail6Value != "") {
                             detail6.value = detail6Value
                         }
                         val detail7Value = document.getString("detail7")
-                        if (detail7Value != null && detail7Value != ""){
+                        if (detail7Value != null && detail7Value != "") {
                             detail7.value = detail7Value
                         }
                         val detail8Value = document.getString("detail8")
-                        if (detail8Value != null && detail8Value != ""){
+                        if (detail8Value != null && detail8Value != "") {
                             detail8.value = detail8Value
                         }
                         val detail9Value = document.getString("detail9")
-                        if (detail9Value != null && detail9Value != ""){
+                        if (detail9Value != null && detail9Value != "") {
                             detail9.value = detail9Value
                         }
                         val detail10Value = document.getString("detail10")
-                        if (detail10Value != null && detail10Value != ""){
+                        if (detail10Value != null && detail10Value != "") {
                             detail10.value = detail10Value
                         }
                         val detail11Value = document.getString("detail11")
-                        if (detail11Value != null && detail11Value != ""){
+                        if (detail11Value != null && detail11Value != "") {
                             detail11.value = detail11Value
                         }
                         val detail12Value = document.getString("detail12")
-                        if (detail12Value != null && detail12Value != ""){
+                        if (detail12Value != null && detail12Value != "") {
                             detail12.value = detail12Value
                         }
                         val detail13Value = document.getString("detail13")
-                        if (detail13Value != null && detail13Value != ""){
+                        if (detail13Value != null && detail13Value != "") {
                             detail13.value = detail13Value
                         }
                         val detail14Value = document.getString("detail14")
-                        if (detail14Value != null && detail14Value != ""){
+                        if (detail14Value != null && detail14Value != "") {
                             detail14.value = detail14Value
                         }
                         val detail15Value = document.getString("detail15")
@@ -317,7 +324,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
         val controlEmail = Firebase.auth.currentUser?.email
         val controlFavDb = Firebase.firestore
-        LaunchedEffect(isFavorite.value){
+        LaunchedEffect(isFavorite.value) {
             if (controlEmail != null) {
                 val controlDocRef = controlFavDb.collection("fav").document(controlEmail)
                     .collection(controlEmail)
@@ -346,6 +353,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         val para = floatPrice * sepetSayisi.value.toFloat()
         val oldPara = floatOldPrice * sepetSayisi.value.toFloat()
 
+        val isClickFiltre = remember { mutableStateOf(0) }
 
         val isAtTop = remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
@@ -358,7 +366,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             mutableStateOf(false)
         }
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(if (isDialogVisible.value || isDialogVisible2.value) 10.dp else 0.dp)
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -418,7 +430,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         ) {
 
                         }
-                        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Start) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
                             repeat(4) {
                                 Box(
                                     modifier = Modifier
@@ -465,8 +481,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowLeft,
                                     contentDescription = "Sola gitme",
-                                    tint = MaterialTheme.colorScheme.onSecondary
-                                    , modifier = Modifier
+                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier
                                         .size(36.dp)
                                         .clickable {
                                             coroutineScope.launch {
@@ -480,8 +496,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowRight,
                                     contentDescription = "Sağa gitme",
-                                    tint = MaterialTheme.colorScheme.onSecondary
-                                    , modifier = Modifier
+                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier
                                         .size(36.dp)
                                         .clickable {
                                             coroutineScope.launch {
@@ -505,9 +521,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     1f
                                 )
                             }
-                            Row(Modifier.fillMaxSize(),
+                            Row(
+                                Modifier.fillMaxSize(),
                                 horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.Top) {
+                                verticalAlignment = Alignment.Top
+                            ) {
 
                                 if (!isFavorite.value) {
                                     LaunchedEffect(!isFavorite.value) {
@@ -554,7 +572,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                                     )
 
-                                }else {
+                                } else {
                                     LaunchedEffect(isFavorite.value) {
                                         if (isFavorite.value) {
                                             sizeState.animateTo(1.2f)
@@ -644,9 +662,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
 
 
-            LazyColumn (
+            LazyColumn(
                 modifier = Modifier.disabledVerticalPointerInputScroll(disabled = !isAtTop.value)
-            ){
+            ) {
                 item {
                     Column(
                         modifier = Modifier
@@ -874,17 +892,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val comments = remember {
-                            mutableStateOf("")
-                        }
-                        val userName = remember {
-                            mutableStateOf("")
-                        }
-                        val userSurName = remember {
-                            mutableStateOf("")
-                        }
-
-                        val currentRating = remember { mutableStateOf(0) }
 /*
                         LazyRow(
                             modifier = Modifier.fillMaxWidth()
@@ -906,106 +913,71 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         }
 
  */
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        OutlinedCard(
+                            modifier = Modifier.fillMaxWidth(0.75f).height(75.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(121, 75, 61, 255),
+                            ),
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.onSecondary
+                            ),
+                        )
+                        {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        isDialogVisible2.value = true
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
 
-                        OutlinedTextField(value = comments.value,
-                            onValueChange = {
-                                comments.value = it
-                            },
-                            modifier = Modifier.fillMaxWidth(0.9f),
-                            label = {
                                 Text(
-                                    text = "Yorum Yap!",
+                                    text = "Yorum yaparak değerlendirin",
                                     color = MaterialTheme.colorScheme.secondary
                                 )
-                            },
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                cursorColor = MaterialTheme.colorScheme.secondary
-                            ),
-                            shape = RoundedCornerShape(16.dp),
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Send
-                            ),
-                            trailingIcon = {
+                                Spacer(modifier = Modifier.padding(5.dp))
                                 Icon(
-                                    imageVector = Icons.Default.Send,
+                                    imageVector = Icons.Default.AdsClick,
                                     contentDescription = "Yorum Yapma",
                                     tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.clickable {
-                                        val auth = Firebase.auth
-                                        val currentUser = auth.currentUser!!
-                                        val email = currentUser.email
-                                        db.collection("users").document(email!!).get()
-                                            .addOnSuccessListener {
-                                                val data = it.data
-                                                userName.value =
-                                                    data?.get("name") as? String ?: ""
-                                                userSurName.value =
-                                                    data?.get("surname") as? String ?: ""
-                                                println(userName.value)
-                                                println(userSurName.value)
-                                                val calendar = Calendar.getInstance()
-
-                                                val commentData = hashMapOf(
-                                                    "senderName" to userName.value,
-                                                    "senderSurName" to userSurName.value,
-                                                    "description" to comments.value,
-                                                    "date" to calendar.time,
-                                                    "productTitle" to productTitle
-                                                )
-                                                if (comments.value.isNotEmpty()) {
-                                                    db.collection("comments").add(commentData)
-                                                        .addOnSuccessListener {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Yorum Başarıyla Gönderildi",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
-                                                            comments.value = ""
-                                                        }
-                                                } else {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Yorum Alanı Boş Bırakılamaz",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            }
-
-
-                                    }
                                 )
-                            })
+                            }
+                        }
                     }
                     Spacer(modifier = Modifier.padding(top = 18.dp))
 
                     val filterFontSize = 18.dp
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End) {
-                        Row(modifier = Modifier
-                            .fillMaxWidth(0.3f)
-                            .border(
-                                width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                shape = RoundedCornerShape(20.dp)
-                            )
-                            .padding(6.dp)
-                            .clickable {
-                                isDialogVisible.value = true
-                            },
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(0.3f)
+                                .border(
+                                    width = 2.dp, color = MaterialTheme.colorScheme.secondary,
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                                .padding(6.dp)
+                                .clickable {
+                                    isDialogVisible.value = true
+                                },
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center) {
-                            Text(text = "Filtrele", color = MaterialTheme.colorScheme.secondary,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "Sırala", color = MaterialTheme.colorScheme.secondary,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) {filterFontSize.toSp()}
+                                fontSize = with(LocalDensity.current) { filterFontSize.toSp() }
                             )
                             Spacer(modifier = Modifier.padding(start = 4.dp))
                             Icon(
                                 imageVector = Icons.Default.FilterList,
-                                contentDescription = "Filtreleme",
+                                contentDescription = "Sırala",
                                 tint = MaterialTheme.colorScheme.secondary,
                                 modifier = Modifier.size(28.dp)
                             )
@@ -1018,7 +990,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 item {
                     Spacer(modifier = Modifier.height(15.dp))
                 }
-
                 //yorum kısmı veri çekme dahil tamam fakat layout ile ilgili bi sıkıntı var front-endciler sizde yargılanacaksınız M.K.
                 //yorum kısmı tasarım dahil tamam fakat BENİM SİZİNLE ilgili sorunum var gardaş back-endciler sizde yargılanacaksınız A.Ç.
 
@@ -1035,11 +1006,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Henüz yorum yok ilk yorumu sen yap!", color = MaterialTheme.colorScheme.secondary)
+                            Text(
+                                text = "Henüz yorum yok ilk yorumu sen yap!",
+                                color = MaterialTheme.colorScheme.secondary
+                            )
 
                         }
-                    }
-                    else {
+                    } else {
                         Column(
                             Modifier
                                 .fillMaxWidth()
@@ -1058,7 +1031,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     .fillMaxWidth(0.85f)
                                     .wrapContentHeight(),
                             ) {
-
                                 for (i in 0 until commentList.size) {
 
                                     val commentData = commentList[i]
@@ -1135,12 +1107,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     Spacer(modifier = Modifier.height(15.dp))
 
                                 }
-
                             }
 
                         }
                     }
-                  
 
 
                     /* Column(modifier = Modifier
@@ -1240,21 +1210,23 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         }
                     },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
+                horizontalArrangement = Arrangement.Center
+            ) {
 
                 Text(
-                    text = if(!isAtTop.value) "Daha Fazlası.." else "Küçült..",
-                    fontSize = 20.sp,   fontWeight = FontWeight.W800,
+                    text = if (!isAtTop.value) "Daha Fazlası.." else "Küçült..",
+                    fontSize = 20.sp, fontWeight = FontWeight.W800,
                     color = Color(255, 207, 184, 255),
                     textDecoration = TextDecoration.Underline
                 )
 
                 Icon(
-                    imageVector = if (!isAtTop.value)Icons.Default.ArrowDropDownCircle else Icons.Default.ArrowCircleUp ,
+                    imageVector = if (!isAtTop.value) Icons.Default.ArrowDropDownCircle else Icons.Default.ArrowCircleUp,
                     contentDescription = "Sola gitme",
                     tint = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier
-                        .size(20.dp))
+                        .size(20.dp)
+                )
             }
             Row(
                 modifier = Modifier
@@ -1388,7 +1360,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 "onay" to onay.value
 
                             )
-                            if(currentUserEmailBasket != null) {
+                            if (currentUserEmailBasket != null) {
                                 val docrefBasket = db.collection("basket")
                                 docrefBasket.add(dataBasket)
                                     .addOnSuccessListener { documentReference ->
@@ -1396,17 +1368,33 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         docrefBasket.document(addedDocumentId)
                                             .update("docId", addedDocumentId)
                                             .addOnSuccessListener {
-                                                Toast.makeText(context, "Ürün sepete eklendi.", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    context,
+                                                    "Ürün sepete eklendi.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                             .addOnFailureListener {
-                                                Toast.makeText(context, "Ürün eklenirken hata oluştu.", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    context,
+                                                    "Ürün eklenirken hata oluştu.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                     }
                                     .addOnFailureListener {
-                                        Toast.makeText(context,"Ürün eklenirken hata oluştu.",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Ürün eklenirken hata oluştu.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
-                            }else {
-                                Toast.makeText(context,"Oturum açmanız gerekli.",Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Oturum açmanız gerekli.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         modifier = Modifier
@@ -1427,8 +1415,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     }
                 }
             }
+
         }
+
         if (isDialogVisible.value) {
+
             AlertDialog(
                 onDismissRequest = { isDialogVisible.value = false },
                 title = {
@@ -1437,65 +1428,247 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.FilterAltOff,
+                            imageVector = Icons.Default.Sort,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )
-                        Text(text = "Text1")
+                        Text(
+                            text = "Sıralama",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
                     }
                 },
                 text = {
                     Column(
                         modifier = Modifier.size(150.dp),
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.Start
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FilterAltOff,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Text(text = "Text1")
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FilterAltOff,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Text(text = "Text2")
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.clickable {
+                                isClickFiltre.value = if (isClickFiltre.value == 0) 1 else 0
+                            }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Circle,
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
+                                tint = if (isClickFiltre.value == 1) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
                             )
-                            Text(text = "Text3")
+                            Text(text = "En Yeni Yorum")
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.clickable {
+                                isClickFiltre.value = if (isClickFiltre.value == 0) 2 else 0
+                            }
+                        ) {
+
+                            Icon(
+                                imageVector = Icons.Default.Circle,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (isClickFiltre.value == 2) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+
+                            )
+                            Text(text = "En Eski Yorum")
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.clickable {
+                                isClickFiltre.value = if (isClickFiltre.value == 0) 3 else 0
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Circle,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (isClickFiltre.value == 3) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+                            )
+                            Text(text = "En Yüksek Yıldız")
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.clickable {
+                                isClickFiltre.value = if (isClickFiltre.value == 0) 4 else 0
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Circle,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (isClickFiltre.value == 4) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+                            )
+                            Text(text = "En Düşük Yıldız")
                         }
                     }
                 },
                 confirmButton = {
-                    // Onay düğmesi
+                    Button(
+                        onClick = { isDialogVisible.value = false },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
+                    ) {
+                        Text(text = "Onayla")
+                    }
                 },
                 dismissButton = {
                     // Kapat düğmesi
                 }
             )
         }
+        if (isDialogVisible2.value) {
 
+            AlertDialog(
+                onDismissRequest = { isDialogVisible2.value = false },
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Comment,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(
+                            text = "Yorum Yapma",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .border(
+                                    BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+                                    RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            val currentRating = remember { mutableStateOf(0) }
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                items(5) { index ->
+                                    val isSelected = index < currentRating.value
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = "Star",
+                                        tint = if (isSelected) MaterialTheme.colorScheme.onSecondary else Color.Gray,
+                                        modifier = Modifier
+                                            .size(35.dp)
+                                            .padding(4.dp)
+                                            .clickable {
+                                                currentRating.value = index + 1
+                                            }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    val comments = remember {
+                        mutableStateOf("")
+                    }
+                    val userName = remember {
+                        mutableStateOf("")
+                    }
+                    val userSurName = remember {
+                        mutableStateOf("")
+                    }
+
+
+                    OutlinedTextField(
+                        value = comments.value,
+                        onValueChange = {
+                            comments.value = it
+                        },
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                        label = {
+                            Text(
+                                text = "Yorum yaparak değerlendirin",
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            cursorColor = MaterialTheme.colorScheme.secondary
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    Button(
+                        onClick = {
+                            val auth = Firebase.auth
+                            val currentUser = auth.currentUser!!
+                            val email = currentUser.email
+                            db.collection("users").document(email!!).get()
+                                .addOnSuccessListener {
+                                    val data = it.data
+                                    userName.value =
+                                        data?.get("name") as? String ?: ""
+                                    userSurName.value =
+                                        data?.get("surname") as? String ?: ""
+                                    println(userName.value)
+                                    println(userSurName.value)
+                                    val calendar = Calendar.getInstance()
+
+                                    val commentData = hashMapOf(
+                                        "senderName" to userName.value,
+                                        "senderSurName" to userSurName.value,
+                                        "description" to comments.value,
+                                        "date" to calendar.time,
+                                        "productTitle" to productTitle
+                                    )
+                                    if (comments.value.isNotEmpty()) {
+                                        db.collection("comments").add(commentData)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Yorum Başarıyla Gönderildi",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                comments.value = ""
+                                            }
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Yorum Alanı Boş Bırakılamaz",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            isDialogVisible2.value = false
+                        },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
+                    )
+                    {
+                        Text(text = "Gönder")
+                    }
+                },
+                dismissButton = {
+                    // Kapat düğmesi
+                }
+            )
+        }
     }
 }
 private val disableScrolll = object : NestedScrollConnection {
@@ -1506,4 +1679,3 @@ private val disableScrolll = object : NestedScrollConnection {
 
 fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
     if (disabled) this.nestedScroll(disableScrolll) else this
-
