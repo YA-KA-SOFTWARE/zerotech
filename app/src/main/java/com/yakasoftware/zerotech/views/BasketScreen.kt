@@ -1,8 +1,11 @@
 package com.yakasoftware.zerotech.views
 
 import android.annotation.SuppressLint
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -246,6 +251,8 @@ fun BasketScreen(navController: NavHostController) {
                     items(basList.size) { index ->
                         val baskets = basList[index]
                         val painter = rememberAsyncImagePainter(model = baskets.photo1)
+                        val sepetSayisi =
+                            remember { mutableStateOf(baskets.amount.toInt()) }
 
                         Box(
                             modifier = Modifier
@@ -273,8 +280,7 @@ fun BasketScreen(navController: NavHostController) {
                                             if (baskets.type == "speakers") {
                                                 navController.navigate("speaker_detail_screen/${baskets.title}")
                                             }
-                                        }
-                                    ,
+                                        },
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
 
@@ -306,24 +312,35 @@ fun BasketScreen(navController: NavHostController) {
                                                 .align(alignment = Alignment.TopEnd)
                                                 .background(Color(255, 255, 255, 255), CircleShape)
                                                 .clickable {
-                                                    val controlEmail = Firebase.auth.currentUser?.email
+                                                    val controlEmail =
+                                                        Firebase.auth.currentUser?.email
                                                     val controlDb = Firebase.firestore
                                                     if (controlEmail != null) {
-                                                        val query = controlDb.collection("basket").whereEqualTo("email", controlEmail)
-                                                        query.get()
+                                                        val query = controlDb
+                                                            .collection("basket")
+                                                            .whereEqualTo("email", controlEmail)
+                                                        query
+                                                            .get()
                                                             .addOnSuccessListener { documents ->
                                                                 for (document in documents) {
-                                                                    val docEmail = document.getString("email")
+                                                                    val docEmail =
+                                                                        document.getString("email")
                                                                     if (docEmail == controlEmail) {
                                                                         // Oturum açmış kullanıcıya ait belgeyi silme işlemi
-                                                                        val docIdDelete = baskets.docId
-                                                                        controlDb.collection("basket").document(docIdDelete)
+                                                                        val docIdDelete =
+                                                                            baskets.docId
+                                                                        controlDb
+                                                                            .collection("basket")
+                                                                            .document(docIdDelete)
                                                                             .delete()
                                                                             .addOnSuccessListener {
                                                                                 // Belge başarıyla silindi
-                                                                                navController.navigate("basket_screen"){
-                                                                                    popUpTo("basket_screen"){
-                                                                                        inclusive = true
+                                                                                navController.navigate(
+                                                                                    "basket_screen"
+                                                                                ) {
+                                                                                    popUpTo("basket_screen") {
+                                                                                        inclusive =
+                                                                                            true
                                                                                     }
                                                                                 }
                                                                                 println("Belge silindi: $docIdDelete")
@@ -345,17 +362,20 @@ fun BasketScreen(navController: NavHostController) {
                                                     }
                                                 }
                                         )
-                                            Text(text = baskets.amount, color = Color.Black,
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = with(LocalDensity.current) {fontSize.toSp()},
-                                                modifier = Modifier
-                                                    .background(
-                                                        Color.White,
-                                                        shape = CircleShape
-                                                    )
-                                                    .align(Alignment.TopStart)
-                                                    .padding(8.dp)
-                                            )
+
+
+                                        Text(
+                                            text = sepetSayisi.value.toString() + " " + "adet", color = Color.Black,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                            modifier = Modifier
+                                                .background(
+                                                    Color.White,
+                                                    shape = CircleShape
+                                                )
+                                                .align(Alignment.TopStart)
+                                                .padding(8.dp)
+                                        )
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxSize()
@@ -389,11 +409,13 @@ fun BasketScreen(navController: NavHostController) {
 
                                     ) {
                                         Row(
-                                            modifier = Modifier.fillMaxWidth(),
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
                                             horizontalArrangement = Arrangement.Start
                                         ) {
                                             Column(
-                                                modifier = Modifier.fillMaxSize(),
+                                                modifier = Modifier
+                                                    .fillMaxSize(),
                                                 verticalArrangement = Arrangement.Center
                                             ) {
                                                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -412,10 +434,18 @@ fun BasketScreen(navController: NavHostController) {
                                                     )
                                                 }
                                                 Spacer(modifier = Modifier.weight(1f))
+                                                Row(
+                                                    Modifier.fillMaxWidth(),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+
+
                                                 Column(
-                                                    modifier = Modifier.fillMaxSize(),
+                                                    modifier = Modifier
+                                                        .wrapContentSize(),
                                                     verticalArrangement = Arrangement.Center,
-                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                    horizontalAlignment = Alignment.Start
                                                 ) {
                                                     Text(
                                                         text = baskets.oldPrice,
@@ -432,7 +462,66 @@ fun BasketScreen(navController: NavHostController) {
                                                         textAlign = TextAlign.Center
                                                     )
                                                 }
+
                                                 Spacer(modifier = Modifier.weight(1f))
+
+
+                                                    Spacer(modifier = Modifier.weight(0.2f))
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(20.dp)
+                                                            .clip(RoundedCornerShape(20.dp))
+                                                            .background(
+                                                                MaterialTheme.colorScheme.onSecondary
+                                                            )
+                                                            .clickable {
+                                                                if (sepetSayisi.value > 1) {
+                                                                    sepetSayisi.value -= 1
+                                                                }
+                                                            },
+                                                        contentAlignment = Alignment.CenterStart
+                                                    ) {
+
+                                                        Text(
+                                                            text = "-",
+                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                            modifier = Modifier
+                                                                .align(Alignment.Center)
+                                                        )
+
+                                                    }
+                                                    Spacer(modifier = Modifier.weight(0.5f))
+
+                                                    Text(
+                                                        text = sepetSayisi.value.toString(),
+                                                        fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                        color = MaterialTheme.colorScheme.secondary
+                                                    )
+
+                                                    Spacer(modifier = Modifier.weight(0.5f))
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(20.dp)
+                                                            .clip(RoundedCornerShape(20.dp))
+                                                            .background(MaterialTheme.colorScheme.onSecondary)
+                                                            .clickable {
+                                                                sepetSayisi.value += 1
+                                                            },
+                                                        contentAlignment = Alignment.CenterEnd
+                                                    ) {
+
+                                                        Text(
+                                                            text = "+",
+                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                            modifier = Modifier
+                                                                .align(Alignment.Center)
+                                                        )
+
+                                                    }
+                                                    Spacer(modifier = Modifier.weight(0.2f))
+
+
+                                                }
 
                                             }
 
@@ -443,11 +532,10 @@ fun BasketScreen(navController: NavHostController) {
                                 }
 
                             }
-
                         }
                     }
-                }
 
+                }
             }
         }
     }
