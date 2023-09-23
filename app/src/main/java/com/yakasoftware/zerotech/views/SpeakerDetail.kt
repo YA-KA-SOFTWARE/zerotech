@@ -33,6 +33,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
@@ -41,9 +42,11 @@ import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -81,6 +84,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Velocity
@@ -89,6 +93,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
@@ -150,6 +155,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         mutableStateOf("")
     }
     val context = LocalContext.current
+    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -184,8 +190,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             val senderName: String,
             val date: Date?,
             val description: String,
-            val senderSurName: String,
-            val point: Number
+            val senderSurName: String
         )
 
         val name = remember {
@@ -203,30 +208,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         val commentList = remember {
             mutableStateListOf<CommentData>()
         }
-
-        db.collection("comments").whereEqualTo("productTitle", productTitle)
-            .get()
-            .addOnSuccessListener { documents ->
-                commentList.clear()
-                for (document in documents) {
-                    val commentDt: Map<String, Any> = document.data
-                    name.value = commentDt["senderName"].toString()
-                    surName.value = commentDt["senderSurName"].toString()
-                    date.value = commentDt["date"] as? Timestamp
-                    description.value = commentDt["description"].toString()
-                    commentList.add(
-                        CommentData(
-                            productTitle,
-                            name.value,
-                            date.value,
-                            description.value,
-                            surName.value,
-                            currentRating.value
-                        )
-                    )
-
-                }
-            }
 
         LaunchedEffect(Unit) {
             pagerLoading.value = true
@@ -642,7 +623,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "Özellikler",
+                    text = "Teknik Özellikler",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Light,
@@ -860,8 +841,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
 
+                    val commentsLoading = remember {
+                        mutableStateOf(true)
+                    }
                     if (isDialogVisible.value) {
 
+                        val alertDialogFontSize = 16.dp
+                        val alertDialogFontSizeTitle = 20.dp
                         AlertDialog(
                             onDismissRequest = { isDialogVisible.value = false },
                             title = {
@@ -871,28 +857,53 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Sort,
-                                        contentDescription = "Filtreleme",
+                                        contentDescription = "Genel Filtre",
                                         modifier = Modifier.size(24.dp)
                                     )
                                     Text(
                                         text = "Sıralama",
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.secondary
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        fontSize = with(LocalDensity.current) {alertDialogFontSizeTitle.toSp()}
                                     )
                                 }
                             },
                             text = {
                                 Column(
-                                    modifier = Modifier.size(150.dp),
+                                    modifier = Modifier.size(190.dp),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
-                                        modifier = Modifier.clickable {
-                                            isClickFiltre.value = 1
-                                        }
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                isClickFiltre.value = 0
+                                            }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Circle,
+                                            contentDescription = "Filtereleme",
+                                            modifier = Modifier.size(24.dp),
+                                            tint = if (isClickFiltre.value == 0) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+                                        )
+                                        Spacer(modifier = Modifier.padding(start = 6.dp))
+                                        Text(text = "Varsayılan",
+                                            fontSize = with(LocalDensity.current) {alertDialogFontSize.toSp()}
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(5.dp))
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                isClickFiltre.value = 1
+                                            }
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Circle,
@@ -900,15 +911,20 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                             modifier = Modifier.size(24.dp),
                                             tint = if (isClickFiltre.value == 1) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
                                         )
-                                        Text(text = "En Yeni Yorum")
+                                        Spacer(modifier = Modifier.padding(start = 6.dp))
+                                        Text(text = "En yüksek puana göre",
+                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                        )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
-                                        modifier = Modifier.clickable {
-                                            isClickFiltre.value = 2
-                                        }
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                isClickFiltre.value = 2
+                                            }
                                     ) {
 
                                         Icon(
@@ -918,15 +934,20 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                             tint = if (isClickFiltre.value == 2) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
 
                                         )
-                                        Text(text = "En Eski Yorum")
+                                        Spacer(modifier = Modifier.padding(start = 6.dp))
+                                        Text(text = "En düşük puana göre",
+                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                        )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
-                                        modifier = Modifier.clickable {
-                                            isClickFiltre.value = 3
-                                        }
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                isClickFiltre.value = 3
+                                            }
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Circle,
@@ -934,15 +955,20 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                             modifier = Modifier.size(24.dp),
                                             tint = if (isClickFiltre.value == 3) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
                                         )
-                                        Text(text = "En Yüksek Yıldız")
+                                        Spacer(modifier = Modifier.padding(start = 6.dp))
+                                        Text(text = "En yeni yorumlar",
+                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                        )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
-                                        modifier = Modifier.clickable {
-                                            isClickFiltre.value = 4
-                                        }
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                isClickFiltre.value = 4
+                                            }
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Circle,
@@ -950,7 +976,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                             modifier = Modifier.size(24.dp),
                                             tint = if (isClickFiltre.value == 4) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
                                         )
-                                        Text(text = "En Düşük Yıldız")
+                                        Spacer(modifier = Modifier.padding(start = 6.dp))
+                                        Text(text = "En eski yorumlar",
+                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                        )
                                     }
                                 }
                             },
@@ -959,7 +988,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     onClick = { isDialogVisible.value = false },
                                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
                                 ) {
-                                    Text(text = "Onayla")
+                                    Text(text = "Uygula")
                                 }
                             },
                             dismissButton = {
@@ -967,6 +996,135 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             }
                         )
                     }
+
+                    LaunchedEffect(isClickFiltre.value) {
+                        if (isClickFiltre.value == 0) {
+                            db.collection("comments").whereEqualTo("productTitle", productTitle)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    commentList.clear()
+                                    for (document in documents) {
+                                        val commentDt: Map<String, Any> = document.data
+                                        name.value = commentDt["senderName"].toString()
+                                        surName.value = commentDt["senderSurName"].toString()
+                                        date.value = commentDt["date"] as? Timestamp
+                                        description.value = commentDt["description"].toString()
+                                        commentList.add(
+                                            CommentData(
+                                                productTitle,
+                                                name.value,
+                                                date.value,
+                                                description.value,
+                                                surName.value
+                                            )
+                                        )
+
+                                    }
+                                }
+                        }
+                        if (isClickFiltre.value == 1) {
+                            db.collection("comments").whereEqualTo("productTitle", productTitle)
+                                .orderBy("point", Query.Direction.DESCENDING)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    commentList.clear()
+                                    for (document in documents) {
+                                        val commentDt: Map<String, Any> = document.data
+                                        name.value = commentDt["senderName"].toString()
+                                        surName.value = commentDt["senderSurName"].toString()
+                                        date.value = commentDt["date"] as? Timestamp
+                                        description.value = commentDt["description"].toString()
+                                        commentList.add(
+                                            CommentData(
+                                                productTitle,
+                                                name.value,
+                                                date.value,
+                                                description.value,
+                                                surName.value
+                                            )
+                                        )
+
+                                    }
+                                }
+                        }
+                        if (isClickFiltre.value == 2) {
+                            db.collection("comments").whereEqualTo("productTitle", productTitle)
+                                .orderBy("point", Query.Direction.ASCENDING)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    commentList.clear()
+                                    for (document in documents) {
+                                        val commentDt: Map<String, Any> = document.data
+                                        name.value = commentDt["senderName"].toString()
+                                        surName.value = commentDt["senderSurName"].toString()
+                                        date.value = commentDt["date"] as? Timestamp
+                                        description.value = commentDt["description"].toString()
+                                        commentList.add(
+                                            CommentData(
+                                                productTitle,
+                                                name.value,
+                                                date.value,
+                                                description.value,
+                                                surName.value
+                                            )
+                                        )
+
+                                    }
+                                }
+                        }
+                        if (isClickFiltre.value == 3) {
+                            db.collection("comments").whereEqualTo("productTitle", productTitle)
+                                .orderBy("date", Query.Direction.DESCENDING)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    commentList.clear()
+                                    for (document in documents) {
+                                        val commentDt: Map<String, Any> = document.data
+                                        name.value = commentDt["senderName"].toString()
+                                        surName.value = commentDt["senderSurName"].toString()
+                                        date.value = commentDt["date"] as? Timestamp
+                                        description.value = commentDt["description"].toString()
+                                        commentList.add(
+                                            CommentData(
+                                                productTitle,
+                                                name.value,
+                                                date.value,
+                                                description.value,
+                                                surName.value
+                                            )
+                                        )
+
+                                    }
+                                }
+                        }
+                        if (isClickFiltre.value == 4) {
+                            db.collection("comments").whereEqualTo("productTitle", productTitle)
+                                .orderBy("date", Query.Direction.ASCENDING)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    commentList.clear()
+                                    for (document in documents) {
+                                        val commentDt: Map<String, Any> = document.data
+                                        name.value = commentDt["senderName"].toString()
+                                        surName.value = commentDt["senderSurName"].toString()
+                                        date.value = commentDt["date"] as? Timestamp
+                                        description.value = commentDt["description"].toString()
+                                        commentList.add(
+                                            CommentData(
+                                                productTitle,
+                                                name.value,
+                                                date.value,
+                                                description.value,
+                                                surName.value
+                                            )
+                                        )
+
+                                    }
+                                }
+                        }
+                    }
+
+
 
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Spacer(modifier = Modifier.weight(1f))
@@ -984,7 +1142,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         )
                         Spacer(modifier = Modifier.weight(1f))
                     }
-                    Spacer(modifier = Modifier.padding(6.dp))
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
@@ -995,33 +1153,12 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
-
+                    Spacer(modifier = Modifier.padding(top = 6.dp))
                     Row(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-/*
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            items(5) { index ->
-                                val isSelected = index < currentRating.value
-                                Icon(
-                                    imageVector = Icons.Default.Star,
-                                    contentDescription = "Star",
-                                    tint = if (isSelected) Color.Yellow else Color.Gray,
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .padding(4.dp)
-                                        .clickable {
-                                            currentRating.value = index + 1
-                                        }
-                                )
-                            }
-                        }
-
- */
                         Spacer(modifier = Modifier.padding(5.dp))
                         OutlinedCard(
                             modifier = Modifier
@@ -1118,137 +1255,512 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Henüz yorum yok ilk yorumu sen yap!",
-                                color = MaterialTheme.colorScheme.secondary
+                                text = "İlk yorumu siz yapın...",
+                                color = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier.padding(6.dp)
                             )
 
                         }
                     } else {
-                        Column(
-                            Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(20.dp)
-                                ),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
 
-                            Spacer(modifier = Modifier.padding(top = 20.dp))
-
+                        if (isClickFiltre.value == 0) {
                             Column(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.85f)
-                                    .wrapContentHeight(),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                for (i in 0 until commentList.size) {
 
-                                    val commentData = commentList[i]
+                                Spacer(modifier = Modifier.padding(top = 20.dp))
 
-                                    OutlinedCard(
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                                        ),
-                                        border = BorderStroke(
-                                            1.dp,
-                                            MaterialTheme.colorScheme.onSecondary
-                                        ),
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.85f)
-                                            .wrapContentHeight()
-                                            .align(Alignment.CenterHorizontally),
-                                    )
-                                    {
-                                        Row(
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .wrapContentHeight(),
+                                ) {
+                                    for (i in 0 until commentList.size) {
+
+                                        val commentData = commentList[i]
+
+                                        OutlinedCard(
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                            ),
+                                            border = BorderStroke(
+                                                1.dp,
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
                                             modifier = Modifier
-                                                .wrapContentWidth()
-                                                .height(20.dp),
-                                            verticalAlignment = Alignment.Top,
-                                            horizontalArrangement = Arrangement.Start
-                                        ) {
-                                            Spacer(modifier = Modifier.padding(2.dp))
-                                            Spacer(modifier = Modifier.height(2.dp))
-                                            Text(
-                                                text = commentData.senderName + " " + commentData.senderSurName,
-                                                color = Color.LightGray,
-                                                fontSize = 14.sp
-                                            )
-                                            Spacer(modifier = Modifier.weight(1f))
-                                            repeat(5) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(14.dp),
-                                                    contentAlignment = Alignment.TopCenter
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Default.Star,
-                                                        contentDescription = "Yıldızlar",
-                                                        tint = MaterialTheme.colorScheme.onSecondary
+                                                .fillMaxWidth(0.85f)
+                                                .wrapContentHeight()
+                                                .align(Alignment.CenterHorizontally),
+                                        )
+                                        {
+                                            Row(
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .height(20.dp),
+                                                verticalAlignment = Alignment.Top,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Spacer(modifier = Modifier.padding(2.dp))
+                                                Spacer(modifier = Modifier.height(2.dp))
+                                                Text(
+                                                    text = commentData.senderName + " " + commentData.senderSurName,
+                                                    color = Color.LightGray,
+                                                    fontSize = 14.sp
+                                                )
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                repeat(5) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(14.dp),
+                                                        contentAlignment = Alignment.TopCenter
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Star,
+                                                            contentDescription = "Yıldızlar",
+                                                            tint = MaterialTheme.colorScheme.onSecondary
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.padding(5.dp))
+
+                                            Row(
+                                                Modifier
+                                                    .fillMaxSize(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+
+                                                Column(
+                                                    Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)
+                                                )
+                                                {
+                                                    Text(
+                                                        text = commentData.description,
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        textAlign = TextAlign.Start
+
                                                     )
                                                 }
                                             }
                                         }
+                                        Spacer(modifier = Modifier.height(15.dp))
 
-                                        Spacer(modifier = Modifier.padding(5.dp))
+                                    }
+                                }
 
-                                        Row(
-                                            Modifier
-                                                .fillMaxSize(),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
+                            }
+                        }
+                        if (isClickFiltre.value == 1) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
 
-                                            Column(
-                                                Modifier
-                                                    .fillMaxWidth(0.8f)
-                                                    .wrapContentHeight()
-                                                    .defaultMinSize(minHeight = 50.dp)
-                                            )
-                                            {
+                                Spacer(modifier = Modifier.padding(top = 20.dp))
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .wrapContentHeight(),
+                                ) {
+                                    for (i in 0 until commentList.size) {
+
+                                        val commentData = commentList[i]
+
+                                        OutlinedCard(
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                            ),
+                                            border = BorderStroke(
+                                                1.dp,
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.85f)
+                                                .wrapContentHeight()
+                                                .align(Alignment.CenterHorizontally),
+                                        )
+                                        {
+                                            Row(
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .height(20.dp),
+                                                verticalAlignment = Alignment.Top,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Spacer(modifier = Modifier.padding(2.dp))
+                                                Spacer(modifier = Modifier.height(2.dp))
                                                 Text(
-                                                    text = commentData.description,
-                                                    color = MaterialTheme.colorScheme.secondary,
-                                                    textAlign = TextAlign.Start
-
+                                                    text = commentData.senderName + " " + commentData.senderSurName,
+                                                    color = Color.LightGray,
+                                                    fontSize = 14.sp
                                                 )
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                repeat(5) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(14.dp),
+                                                        contentAlignment = Alignment.TopCenter
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Star,
+                                                            contentDescription = "Yıldızlar",
+                                                            tint = MaterialTheme.colorScheme.onSecondary
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.padding(5.dp))
+
+                                            Row(
+                                                Modifier
+                                                    .fillMaxSize(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+
+                                                Column(
+                                                    Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)
+                                                )
+                                                {
+                                                    Text(
+                                                        text = commentData.description,
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        textAlign = TextAlign.Start
+
+                                                    )
+                                                }
                                             }
                                         }
+                                        Spacer(modifier = Modifier.height(15.dp))
+
                                     }
-                                    Spacer(modifier = Modifier.height(15.dp))
-
                                 }
-                            }
 
+                            }
                         }
+                        if (isClickFiltre.value == 2) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+
+                                Spacer(modifier = Modifier.padding(top = 20.dp))
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .wrapContentHeight(),
+                                ) {
+                                    for (i in 0 until commentList.size) {
+
+                                        val commentData = commentList[i]
+
+                                        OutlinedCard(
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                            ),
+                                            border = BorderStroke(
+                                                1.dp,
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.85f)
+                                                .wrapContentHeight()
+                                                .align(Alignment.CenterHorizontally),
+                                        )
+                                        {
+                                            Row(
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .height(20.dp),
+                                                verticalAlignment = Alignment.Top,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Spacer(modifier = Modifier.padding(2.dp))
+                                                Spacer(modifier = Modifier.height(2.dp))
+                                                Text(
+                                                    text = commentData.senderName + " " + commentData.senderSurName,
+                                                    color = Color.LightGray,
+                                                    fontSize = 14.sp
+                                                )
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                repeat(5) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(14.dp),
+                                                        contentAlignment = Alignment.TopCenter
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Star,
+                                                            contentDescription = "Yıldızlar",
+                                                            tint = MaterialTheme.colorScheme.onSecondary
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.padding(5.dp))
+
+                                            Row(
+                                                Modifier
+                                                    .fillMaxSize(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+
+                                                Column(
+                                                    Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)
+                                                )
+                                                {
+                                                    Text(
+                                                        text = commentData.description,
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        textAlign = TextAlign.Start
+
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(15.dp))
+
+                                    }
+                                }
+
+                            }
+                        }
+                        if (isClickFiltre.value == 3) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+
+                                Spacer(modifier = Modifier.padding(top = 20.dp))
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .wrapContentHeight(),
+                                ) {
+                                    for (i in 0 until commentList.size) {
+
+                                        val commentData = commentList[i]
+
+                                        OutlinedCard(
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                            ),
+                                            border = BorderStroke(
+                                                1.dp,
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.85f)
+                                                .wrapContentHeight()
+                                                .align(Alignment.CenterHorizontally),
+                                        )
+                                        {
+                                            Row(
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .height(20.dp),
+                                                verticalAlignment = Alignment.Top,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Spacer(modifier = Modifier.padding(2.dp))
+                                                Spacer(modifier = Modifier.height(2.dp))
+                                                Text(
+                                                    text = commentData.senderName + " " + commentData.senderSurName,
+                                                    color = Color.LightGray,
+                                                    fontSize = 14.sp
+                                                )
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                repeat(5) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(14.dp),
+                                                        contentAlignment = Alignment.TopCenter
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Star,
+                                                            contentDescription = "Yıldızlar",
+                                                            tint = MaterialTheme.colorScheme.onSecondary
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.padding(5.dp))
+
+                                            Row(
+                                                Modifier
+                                                    .fillMaxSize(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+
+                                                Column(
+                                                    Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)
+                                                )
+                                                {
+                                                    Text(
+                                                        text = commentData.description,
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        textAlign = TextAlign.Start
+
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(15.dp))
+
+                                    }
+                                }
+
+                            }
+                        }
+                        if (isClickFiltre.value == 4) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(20.dp)
+                                    ),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+
+                                Spacer(modifier = Modifier.padding(top = 20.dp))
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .wrapContentHeight(),
+                                ) {
+                                    for (i in 0 until commentList.size) {
+
+                                        val commentData = commentList[i]
+
+                                        OutlinedCard(
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                            ),
+                                            border = BorderStroke(
+                                                1.dp,
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.85f)
+                                                .wrapContentHeight()
+                                                .align(Alignment.CenterHorizontally),
+                                        )
+                                        {
+                                            Row(
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .height(20.dp),
+                                                verticalAlignment = Alignment.Top,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Spacer(modifier = Modifier.padding(2.dp))
+                                                Spacer(modifier = Modifier.height(2.dp))
+                                                Text(
+                                                    text = commentData.senderName + " " + commentData.senderSurName,
+                                                    color = Color.LightGray,
+                                                    fontSize = 14.sp
+                                                )
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                repeat(5) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(14.dp),
+                                                        contentAlignment = Alignment.TopCenter
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Star,
+                                                            contentDescription = "Yıldızlar",
+                                                            tint = MaterialTheme.colorScheme.onSecondary
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.padding(5.dp))
+
+                                            Row(
+                                                Modifier
+                                                    .fillMaxSize(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+
+                                                Column(
+                                                    Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)
+                                                )
+                                                {
+                                                    Text(
+                                                        text = commentData.description,
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        textAlign = TextAlign.Start
+
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(15.dp))
+
+                                    }
+                                }
+
+                            }
+                        }
+
                     }
 
-
-                    /* Column(modifier = Modifier
-                         .fillMaxWidth()
-                         .height(50.dp)) {
-                         Row(
-                             Modifier
-                                 .fillMaxWidth()
-                                 .height(50.dp)) {
-                             Text(
-                                 text = commentData.senderName,
-                                 color = MaterialTheme.colorScheme.secondary
-                             )
-                             Spacer(modifier = Modifier.padding(5.dp))
-                             Text(
-                                 text = commentData.senderSurName,
-                                 color = MaterialTheme.colorScheme.secondary
-                             )
-                             Spacer(modifier = Modifier.padding(5.dp))
-                             Text(
-                                 text = commentData.description,
-                                 color = MaterialTheme.colorScheme.secondary
-                             )
-
-                         }
-                         Spacer(modifier = Modifier.height(15.dp))
-                     } */
                 }
                 item {
                     Spacer(modifier = Modifier.height(300.dp))
@@ -1644,15 +2156,20 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         "productTitle" to productTitle
                                     )
                                     if (comments.value.isNotEmpty()) {
-                                        db.collection("comments").add(commentData)
-                                            .addOnSuccessListener {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Yorum Başarıyla Gönderildi",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                comments.value = ""
-                                            }
+                                        if (currentRating.value != 0) {
+                                            db.collection("comments").add(commentData)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Yorum Başarıyla Gönderildi",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                    comments.value = ""
+                                                }
+                                        }else {
+                                            Toast.makeText(context,"Puan alanı boş bırakılamaz.",Toast.LENGTH_SHORT).show()
+                                        }
+
                                     } else {
                                         Toast.makeText(
                                             context,
