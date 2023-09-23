@@ -93,6 +93,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
@@ -154,7 +155,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         mutableStateOf("")
     }
     val context = LocalContext.current
-
+    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -180,6 +181,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val isDialogVisible = remember { mutableStateOf(false) }
 
     val isDialogVisible2 = remember { mutableStateOf(false) }
+    val currentRating = remember { mutableStateOf(0) }
 
 
     Surface(Modifier.fillMaxSize()) {
@@ -188,7 +190,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             val senderName: String,
             val date: Date?,
             val description: String,
-            val senderSurName: String
+            val senderSurName: String,
+            val point: Number
         )
 
         val name = remember {
@@ -206,6 +209,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         val commentList = remember {
             mutableStateListOf<CommentData>()
         }
+
         db.collection("comments").whereEqualTo("productTitle", productTitle)
             .get()
             .addOnSuccessListener { documents ->
@@ -222,12 +226,14 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             name.value,
                             date.value,
                             description.value,
-                            surName.value
+                            surName.value,
+                            currentRating.value
                         )
                     )
 
                 }
             }
+
         LaunchedEffect(Unit) {
             pagerLoading.value = true
             docRef.whereEqualTo("title", productTitle)
@@ -859,6 +865,127 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     }
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
+
+                    val commentsLoading = remember {
+                        mutableStateOf(true)
+                    }
+                    if (isDialogVisible.value) {
+
+                        AlertDialog(
+                            onDismissRequest = { isDialogVisible.value = false },
+                            title = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Sort,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Text(
+                                        text = "Sıralama",
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary
+                                    )
+                                }
+                            },
+                            text = {
+                                Column(
+                                    modifier = Modifier.size(150.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start,
+                                        modifier = Modifier.clickable {
+                                            isClickFiltre.value = if (isClickFiltre.value == 0) 1 else 0
+                                            commentsLoading.value =  true
+                                            coroutineScopeComment.launch {
+                                                db.collection("comments").whereEqualTo("productTitle",productTitle)
+                                                    .orderBy("point", Query.Direction.DESCENDING)
+                                                    .get()
+                                                    .addOnSuccessListener {
+
+                                                    }
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Circle,
+                                            contentDescription = "Filtereleme",
+                                            modifier = Modifier.size(24.dp),
+                                            tint = if (isClickFiltre.value == 1) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+                                        )
+                                        Text(text = "En Yeni Yorum")
+                                    }
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start,
+                                        modifier = Modifier.clickable {
+                                            isClickFiltre.value = if (isClickFiltre.value == 0) 2 else 0
+                                        }
+                                    ) {
+
+                                        Icon(
+                                            imageVector = Icons.Default.Circle,
+                                            contentDescription = "Filtereleme",
+                                            modifier = Modifier.size(24.dp),
+                                            tint = if (isClickFiltre.value == 2) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+
+                                        )
+                                        Text(text = "En Eski Yorum")
+                                    }
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start,
+                                        modifier = Modifier.clickable {
+                                            isClickFiltre.value = if (isClickFiltre.value == 0) 3 else 0
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Circle,
+                                            contentDescription = "Filtereleme",
+                                            modifier = Modifier.size(24.dp),
+                                            tint = if (isClickFiltre.value == 3) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+                                        )
+                                        Text(text = "En Yüksek Yıldız")
+                                    }
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start,
+                                        modifier = Modifier.clickable {
+                                            isClickFiltre.value = if (isClickFiltre.value == 0) 4 else 0
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Circle,
+                                            contentDescription = "Filtereleme",
+                                            modifier = Modifier.size(24.dp),
+                                            tint = if (isClickFiltre.value == 4) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
+                                        )
+                                        Text(text = "En Düşük Yıldız")
+                                    }
+                                }
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = { isDialogVisible.value = false },
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
+                                ) {
+                                    Text(text = "Onayla")
+                                }
+                            },
+                            dismissButton = {
+                                // Kapat düğmesi
+                            }
+                        )
+                    }
+
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
@@ -915,7 +1042,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
  */
                         Spacer(modifier = Modifier.padding(5.dp))
                         OutlinedCard(
-                            modifier = Modifier.fillMaxWidth(0.75f).height(75.dp),
+                            modifier = Modifier
+                                .fillMaxWidth(0.75f)
+                                .height(75.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = Color(121, 75, 61, 255),
                             ),
@@ -1418,113 +1547,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
         }
 
-        if (isDialogVisible.value) {
 
-            AlertDialog(
-                onDismissRequest = { isDialogVisible.value = false },
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Sort,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Text(
-                            text = "Sıralama",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-                    }
-                },
-                text = {
-                    Column(
-                        modifier = Modifier.size(150.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.clickable {
-                                isClickFiltre.value = if (isClickFiltre.value == 0) 1 else 0
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Circle,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = if (isClickFiltre.value == 1) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
-                            )
-                            Text(text = "En Yeni Yorum")
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.clickable {
-                                isClickFiltre.value = if (isClickFiltre.value == 0) 2 else 0
-                            }
-                        ) {
-
-                            Icon(
-                                imageVector = Icons.Default.Circle,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = if (isClickFiltre.value == 2) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
-
-                            )
-                            Text(text = "En Eski Yorum")
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.clickable {
-                                isClickFiltre.value = if (isClickFiltre.value == 0) 3 else 0
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Circle,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = if (isClickFiltre.value == 3) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
-                            )
-                            Text(text = "En Yüksek Yıldız")
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.clickable {
-                                isClickFiltre.value = if (isClickFiltre.value == 0) 4 else 0
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Circle,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = if (isClickFiltre.value == 4) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.tertiary
-                            )
-                            Text(text = "En Düşük Yıldız")
-                        }
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = { isDialogVisible.value = false },
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
-                    ) {
-                        Text(text = "Onayla")
-                    }
-                },
-                dismissButton = {
-                    // Kapat düğmesi
-                }
-            )
-        }
         if (isDialogVisible2.value) {
 
             AlertDialog(
@@ -1562,7 +1585,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     RoundedCornerShape(10.dp)
                                 )
                         ) {
-                            val currentRating = remember { mutableStateOf(0) }
+
                             LazyRow(modifier = Modifier.fillMaxWidth()) {
                                 items(5) { index ->
                                     val isSelected = index < currentRating.value
@@ -1592,7 +1615,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     val userSurName = remember {
                         mutableStateOf("")
                     }
-
 
                     OutlinedTextField(
                         value = comments.value,
@@ -1636,6 +1658,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         "senderSurName" to userSurName.value,
                                         "description" to comments.value,
                                         "date" to calendar.time,
+                                        "point" to currentRating.value,
                                         "productTitle" to productTitle
                                     )
                                     if (comments.value.isNotEmpty()) {
