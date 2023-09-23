@@ -33,7 +33,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
@@ -42,11 +41,9 @@ import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -84,7 +81,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Velocity
@@ -93,7 +89,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
@@ -155,7 +150,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         mutableStateOf("")
     }
     val context = LocalContext.current
-    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -648,7 +642,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "Ürün Detayları",
+                    text = "Özellikler",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Light,
@@ -866,9 +860,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
 
-                    val commentsLoading = remember {
-                        mutableStateOf(true)
-                    }
                     if (isDialogVisible.value) {
 
                         AlertDialog(
@@ -880,7 +871,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Sort,
-                                        contentDescription = null,
+                                        contentDescription = "Filtreleme",
                                         modifier = Modifier.size(24.dp)
                                     )
                                     Text(
@@ -900,16 +891,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
                                         modifier = Modifier.clickable {
-                                            isClickFiltre.value = if (isClickFiltre.value == 0) 1 else 0
-                                            commentsLoading.value =  true
-                                            coroutineScopeComment.launch {
-                                                db.collection("comments").whereEqualTo("productTitle",productTitle)
-                                                    .orderBy("point", Query.Direction.DESCENDING)
-                                                    .get()
-                                                    .addOnSuccessListener {
-
-                                                    }
-                                            }
+                                            isClickFiltre.value = 1
                                         }
                                     ) {
                                         Icon(
@@ -925,7 +907,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
                                         modifier = Modifier.clickable {
-                                            isClickFiltre.value = if (isClickFiltre.value == 0) 2 else 0
+                                            isClickFiltre.value = 2
                                         }
                                     ) {
 
@@ -943,7 +925,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
                                         modifier = Modifier.clickable {
-                                            isClickFiltre.value = if (isClickFiltre.value == 0) 3 else 0
+                                            isClickFiltre.value = 3
                                         }
                                     ) {
                                         Icon(
@@ -959,7 +941,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start,
                                         modifier = Modifier.clickable {
-                                            isClickFiltre.value = if (isClickFiltre.value == 0) 4 else 0
+                                            isClickFiltre.value = 4
                                         }
                                     ) {
                                         Icon(
