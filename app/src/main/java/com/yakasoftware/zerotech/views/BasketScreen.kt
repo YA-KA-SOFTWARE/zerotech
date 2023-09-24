@@ -246,6 +246,7 @@ fun BasketScreen(navController: NavHostController) {
                         }
                     }
 
+
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     val fontSize = 12.dp
                     val fontSizePrice = 16.dp
@@ -449,14 +450,14 @@ fun BasketScreen(navController: NavHostController) {
                                                     horizontalAlignment = Alignment.Start
                                                 ) {
                                                     Text(
-                                                        text = baskets.oldPrice,
+                                                        text = String.format("%.2f", baskets.oldPrice.toFloat()*sepetSayisi.value)+"₺",
                                                         color = Color(100, 100, 100, 255),
                                                         fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                         textAlign = TextAlign.Center,
                                                         textDecoration = TextDecoration.LineThrough
                                                     )
                                                     Text(
-                                                        text = baskets.price,
+                                                        text = String.format("%.2f", baskets.price.toFloat()*sepetSayisi.value)+"₺",
                                                         color = MaterialTheme.colorScheme.secondary,
                                                         fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                         fontWeight = FontWeight.Bold,
@@ -478,10 +479,11 @@ fun BasketScreen(navController: NavHostController) {
                                                             .clickable {
                                                                 if (sepetSayisi.value > 1) {
                                                                     sepetSayisi.value -= 1
-                                                                    val documentReference = db.collection("basket").document(docId.value)
-
-                                                                    documentReference.update("amount", sepetSayisi.value.toString())
                                                                 }
+                                                                val documentReference = db.collection("basket").document(baskets.docId)
+
+                                                                documentReference.update("amount", sepetSayisi.value.toString())
+                                                                println(baskets.docId)
                                                             },
                                                         contentAlignment = Alignment.CenterStart
                                                     ) {
@@ -494,7 +496,7 @@ fun BasketScreen(navController: NavHostController) {
                                                         )
 
                                                     }
-                                                    Spacer(modifier = Modifier.weight(0.5f))
+                                                    Spacer(modifier = Modifier.weight(0.2f))
 
                                                     Text(
                                                         text = sepetSayisi.value.toString(),
@@ -502,7 +504,7 @@ fun BasketScreen(navController: NavHostController) {
                                                         color = MaterialTheme.colorScheme.secondary
                                                     )
 
-                                                    Spacer(modifier = Modifier.weight(0.5f))
+                                                    Spacer(modifier = Modifier.weight(0.2f))
                                                     Box(
                                                         modifier = Modifier
                                                             .size(20.dp)
@@ -510,9 +512,10 @@ fun BasketScreen(navController: NavHostController) {
                                                             .background(MaterialTheme.colorScheme.onSecondary)
                                                             .clickable {
                                                                 sepetSayisi.value += 1
-                                                                val documentReference = db.collection("basket").document(docId.value)
+                                                                val documentReference = db.collection("basket").document(baskets.docId)
 
                                                                 documentReference.update("amount", sepetSayisi.value.toString())
+                                                                println(baskets.docId)
 
                                                             }
                                                                    ,

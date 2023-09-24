@@ -433,27 +433,27 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.End
                             ){
-                            Text(
-                                text = "${commentList.size} Değerlendirme | ${ortalamaPuan}",
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontWeight = FontWeight.ExtraLight,
-                                textDecoration = TextDecoration.Underline,
-                                modifier = Modifier.clickable { isAtTop.value = true }
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .size(18.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Star,
-                                    contentDescription = "Yıldızlar",
-                                    tint = Color(255, 153, 102, 255)
+                                Text(
+                                    text = "${commentList.size} Değerlendirme | ${ortalamaPuan}",
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontWeight = FontWeight.ExtraLight,
+                                    textDecoration = TextDecoration.Underline,
+                                    modifier = Modifier.clickable { isAtTop.value = true }
                                 )
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = "Yıldızlar",
+                                        tint = Color(255, 153, 102, 255)
+                                    )
+                                }
+
+
                             }
-
-
-                        }
                         }
                         Row(
                             modifier = Modifier
@@ -1347,10 +1347,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 Box(
                                                     modifier = Modifier
                                                         .size(5.dp),
-                                                contentAlignment = Alignment.TopCenter
+                                                    contentAlignment = Alignment.TopCenter
                                                 ) {
 
-                                            }
+                                                }
                                             }
 
                                             Spacer(modifier = Modifier.padding(5.dp))
@@ -2249,11 +2249,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     }
 }
 
-    private val disableScrolll = object : NestedScrollConnection {
-        override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
-        override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
-    }
+private val disableScrolll = object : NestedScrollConnection {
+    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
+    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
+}
 
 
-    fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
-        if (disabled) this.nestedScroll(disableScrolll) else this
+fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
+    if (disabled) this.nestedScroll(disableScrolll) else this
