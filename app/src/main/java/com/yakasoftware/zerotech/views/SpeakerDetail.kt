@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -190,7 +191,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             val senderName: String,
             val date: Date?,
             val description: String,
-            val senderSurName: String
+            val senderSurName: String,
+            val point: Int
         )
 
         val name = remember {
@@ -207,6 +209,9 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         }
         val commentList = remember {
             mutableStateListOf<CommentData>()
+        }
+        val starNumber = remember {
+            mutableStateOf(0)
         }
 
         LaunchedEffect(Unit) {
@@ -343,6 +348,16 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             animationSpec = spring(), label = ""
         )
 
+        //yıldızlar puanı
+        val toplamPuan = commentList.sumBy { it.point }
+        val ortalamaPuan = if (commentList.isNotEmpty()) {
+            val ortalama = toplamPuan.toDouble() / commentList.size
+            String.format("%.1f", ortalama)
+        } else {
+            "0.0" // Liste boşsa, ortalama puanı 0.0 olarak ayarla
+        }
+
+
         val onay = remember {
             mutableStateOf(false)
         }
@@ -363,7 +378,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(20.dp))
 
                 ) {
 
@@ -413,42 +427,33 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         }
                         Row(
                             modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.Start
+                            verticalAlignment = Alignment.Bottom
                         ) {
-                            repeat(4) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Star,
-                                        contentDescription = "Yıldızlar",
-                                        tint = Color(255, 153, 102, 255)
-                                    )
-                                }
-                            }
+                            Row (Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
+                            ){
+                            Text(
+                                text = "${commentList.size} Değerlendirme | ${ortalamaPuan}",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontWeight = FontWeight.ExtraLight,
+                                textDecoration = TextDecoration.Underline,
+                                modifier = Modifier.clickable { isAtTop.value = true }
+                            )
 
                             Box(
                                 modifier = Modifier
                                     .size(18.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.StarBorder,
+                                    imageVector = Icons.Default.Star,
                                     contentDescription = "Yıldızlar",
                                     tint = Color(255, 153, 102, 255)
                                 )
                             }
 
-                            Text(
-                                text = "${commentList.size} Değerlendirme",
-                                color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.ExtraLight
-                            )
 
-                            Spacer(modifier = Modifier.weight(1f))
-
-
+                        }
                         }
                         Row(
                             modifier = Modifier
@@ -1009,13 +1014,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         surName.value = commentDt["senderSurName"].toString()
                                         date.value = commentDt["date"] as? Timestamp
                                         description.value = commentDt["description"].toString()
+                                        starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
                                             CommentData(
                                                 productTitle,
                                                 name.value,
                                                 date.value,
                                                 description.value,
-                                                surName.value
+                                                surName.value,
+                                                starNumber.value,
                                             )
                                         )
 
@@ -1034,13 +1041,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         surName.value = commentDt["senderSurName"].toString()
                                         date.value = commentDt["date"] as? Timestamp
                                         description.value = commentDt["description"].toString()
+                                        starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
                                             CommentData(
                                                 productTitle,
                                                 name.value,
                                                 date.value,
                                                 description.value,
-                                                surName.value
+                                                surName.value,
+                                                starNumber.value,
                                             )
                                         )
 
@@ -1059,13 +1068,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         surName.value = commentDt["senderSurName"].toString()
                                         date.value = commentDt["date"] as? Timestamp
                                         description.value = commentDt["description"].toString()
+                                        starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
                                             CommentData(
                                                 productTitle,
                                                 name.value,
                                                 date.value,
                                                 description.value,
-                                                surName.value
+                                                surName.value,
+                                                starNumber.value,
                                             )
                                         )
 
@@ -1084,13 +1095,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         surName.value = commentDt["senderSurName"].toString()
                                         date.value = commentDt["date"] as? Timestamp
                                         description.value = commentDt["description"].toString()
+                                        starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
                                             CommentData(
                                                 productTitle,
                                                 name.value,
                                                 date.value,
                                                 description.value,
-                                                surName.value
+                                                surName.value,
+                                                starNumber.value,
                                             )
                                         )
 
@@ -1109,13 +1122,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         surName.value = commentDt["senderSurName"].toString()
                                         date.value = commentDt["date"] as? Timestamp
                                         description.value = commentDt["description"].toString()
+                                        starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
                                             CommentData(
                                                 productTitle,
                                                 name.value,
                                                 date.value,
                                                 description.value,
-                                                surName.value
+                                                surName.value,
+                                                starNumber.value,
                                             )
                                         )
 
@@ -1315,7 +1330,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                     fontSize = 14.sp
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
-                                                repeat(5) {
+                                                repeat(commentData.point) {
                                                     Box(
                                                         modifier = Modifier
                                                             .size(14.dp),
@@ -1414,7 +1429,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                     fontSize = 14.sp
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
-                                                repeat(5) {
+                                                repeat(commentData.point) {
                                                     Box(
                                                         modifier = Modifier
                                                             .size(14.dp),
@@ -1513,7 +1528,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                     fontSize = 14.sp
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
-                                                repeat(5) {
+                                                repeat(commentData.point) {
                                                     Box(
                                                         modifier = Modifier
                                                             .size(14.dp),
@@ -1612,7 +1627,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                     fontSize = 14.sp
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
-                                                repeat(5) {
+                                                repeat(commentData.point) {
                                                     Box(
                                                         modifier = Modifier
                                                             .size(14.dp),
@@ -1711,7 +1726,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                     fontSize = 14.sp
                                                 )
                                                 Spacer(modifier = Modifier.weight(1f))
-                                                repeat(5) {
+                                                repeat(commentData.point) {
                                                     Box(
                                                         modifier = Modifier
                                                             .size(14.dp),
@@ -2193,11 +2208,12 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         }
     }
 }
-private val disableScrolll = object : NestedScrollConnection {
-    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
-    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
-}
+
+    private val disableScrolll = object : NestedScrollConnection {
+        override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
+        override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
+    }
 
 
-fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
-    if (disabled) this.nestedScroll(disableScrolll) else this
+    fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
+        if (disabled) this.nestedScroll(disableScrolll) else this
