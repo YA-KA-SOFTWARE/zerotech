@@ -478,7 +478,7 @@ fun BasketScreen(navController: NavHostController) {
                                                             .clickable {
                                                                 if (sepetSayisi.value > 1) {
                                                                     sepetSayisi.value -= 1
-                                                                    val documentReference = db.collection("basket").document(docId.value)
+                                                                    val documentReference = db.collection("basket").document(baskets.docId)
 
                                                                     documentReference.update("amount", sepetSayisi.value.toString())
                                                                 }
@@ -510,7 +510,7 @@ fun BasketScreen(navController: NavHostController) {
                                                             .background(MaterialTheme.colorScheme.onSecondary)
                                                             .clickable {
                                                                 sepetSayisi.value += 1
-                                                                val documentReference = db.collection("basket").document(docId.value)
+                                                                val documentReference = db.collection("basket").document(baskets.docId)
 
                                                                 documentReference.update("amount", sepetSayisi.value.toString())
 
