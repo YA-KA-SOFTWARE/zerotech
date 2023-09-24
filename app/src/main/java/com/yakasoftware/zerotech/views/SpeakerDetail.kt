@@ -2191,46 +2191,47 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             val auth = Firebase.auth
                             val currentUser = auth.currentUser!!
                             val email = currentUser.email
-                            db.collection("users").document(email!!).get()
-                                .addOnSuccessListener {
-                                    val data = it.data
-                                    userName.value =
-                                        data?.get("name") as? String ?: ""
-                                    userSurName.value =
-                                        data?.get("surname") as? String ?: ""
-                                    println(userName.value)
-                                    println(userSurName.value)
-                                    val calendar = Calendar.getInstance()
+                            db.collection("yorumlar")
+                                .whereEqualTo("userEmail", email)
+                                .get()
+                                .addOnSuccessListener { querySnapshot ->
+                                    if (querySnapshot.isEmpty) {
+                                        // Müminim aynı kişi bir daha yorum yapmasın diye şey ettim
+                                        val calendar = Calendar.getInstance()
+                                        val commentData = hashMapOf(
+                                            "senderName" to userName.value,
+                                            "senderSurName" to userSurName.value,
+                                            "description" to comments.value,
+                                            "date" to calendar.time,
+                                            "point" to currentRating.value,
+                                            "productTitle" to productTitle,
+                                            "userEmail" to email // Kullanıcının e-postasını kaydet
+                                        )
 
-                                    val commentData = hashMapOf(
-                                        "senderName" to userName.value,
-                                        "senderSurName" to userSurName.value,
-                                        "description" to comments.value,
-                                        "date" to calendar.time,
-                                        "point" to currentRating.value,
-                                        "productTitle" to productTitle
-                                    )
-                                    if (comments.value.isNotEmpty()) {
-                                        if (currentRating.value != 0) {
-                                            db.collection("comments").add(commentData)
-                                                .addOnSuccessListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Yorum Başarıyla Gönderildi",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                    comments.value = ""
-                                                }
-                                        }else {
-                                            Toast.makeText(context,"Puan alanı boş bırakılamaz.",Toast.LENGTH_SHORT).show()
+                                        if (comments.value.isNotEmpty()) {
+                                            if (currentRating.value != 0) {
+                                                db.collection("yorumlar").add(commentData)
+                                                    .addOnSuccessListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Yorum Başarıyla Gönderildi",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        comments.value = ""
+                                                    }
+                                            } else {
+                                                Toast.makeText(context,"Puan alanı boş bırakılamaz.",Toast.LENGTH_SHORT).show()
+                                            }
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Yorum Alanı Boş Bırakılamaz",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
-
                                     } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Yorum Alanı Boş Bırakılamaz",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        // Kullanıcı daha önce bir yorum eklemiş, hata mesajı göster
+                                        Toast.makeText(context,"Zaten bir yorum yapmışsınız.",Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             isDialogVisible2.value = false
