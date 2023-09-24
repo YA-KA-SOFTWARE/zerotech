@@ -52,6 +52,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
+import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 @Composable
@@ -441,29 +442,29 @@ fun BasketScreen(navController: NavHostController) {
                                                 ) {
 
 
-                                                Column(
-                                                    modifier = Modifier
-                                                        .wrapContentSize(),
-                                                    verticalArrangement = Arrangement.Center,
-                                                    horizontalAlignment = Alignment.Start
-                                                ) {
-                                                    Text(
-                                                        text = baskets.oldPrice,
-                                                        color = Color(100, 100, 100, 255),
-                                                        fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                        textAlign = TextAlign.Center,
-                                                        textDecoration = TextDecoration.LineThrough
-                                                    )
-                                                    Text(
-                                                        text = baskets.price,
-                                                        color = MaterialTheme.colorScheme.secondary,
-                                                        fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
-                                                        fontWeight = FontWeight.Bold,
-                                                        textAlign = TextAlign.Center
-                                                    )
-                                                }
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        verticalArrangement = Arrangement.Center,
+                                                        horizontalAlignment = Alignment.Start
+                                                    ) {
+                                                        Text(
+                                                            text = baskets.oldPrice,
+                                                            color = Color(100, 100, 100, 255),
+                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                            textAlign = TextAlign.Center,
+                                                            textDecoration = TextDecoration.LineThrough
+                                                        )
+                                                        Text(
+                                                            text = baskets.price,
+                                                            color = MaterialTheme.colorScheme.secondary,
+                                                            fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                            fontWeight = FontWeight.Bold,
+                                                            textAlign = TextAlign.Center
+                                                        )
+                                                    }
 
-                                                Spacer(modifier = Modifier.weight(1f))
+                                                    Spacer(modifier = Modifier.weight(1f))
 
 
                                                     Spacer(modifier = Modifier.weight(0.2f))
@@ -477,6 +478,9 @@ fun BasketScreen(navController: NavHostController) {
                                                             .clickable {
                                                                 if (sepetSayisi.value > 1) {
                                                                     sepetSayisi.value -= 1
+                                                                    val documentReference = db.collection("basket").document(docId.value)
+
+                                                                    documentReference.update("amount", sepetSayisi.value.toString())
                                                                 }
                                                             },
                                                         contentAlignment = Alignment.CenterStart
@@ -506,7 +510,12 @@ fun BasketScreen(navController: NavHostController) {
                                                             .background(MaterialTheme.colorScheme.onSecondary)
                                                             .clickable {
                                                                 sepetSayisi.value += 1
-                                                            },
+                                                                val documentReference = db.collection("basket").document(docId.value)
+
+                                                                documentReference.update("amount", sepetSayisi.value.toString())
+
+                                                            }
+                                                        ,
                                                         contentAlignment = Alignment.CenterEnd
                                                     ) {
 
