@@ -1178,7 +1178,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         OutlinedCard(
                             modifier = Modifier
                                 .fillMaxWidth(0.75f)
-                                .height(75.dp),
+                                .height(75.dp)
+                                .clickable {
+                                    isDialogVisible2.value = true
+                                },
                             colors = CardDefaults.cardColors(
                                 containerColor = Color(121, 75, 61, 255),
                             ),
@@ -1190,16 +1193,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         {
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        isDialogVisible2.value = true
-                                    },
+                                    .fillMaxSize(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
 
                                 Text(
-                                    text = "Yorum yaparak değerlendirin",
+                                    text = "Yorum yapmak için tıkla",
                                     color = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(modifier = Modifier.padding(5.dp))
@@ -1342,7 +1342,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                             tint = MaterialTheme.colorScheme.onSecondary
                                                         )
                                                     }
+
                                                 }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(5.dp),
+                                                contentAlignment = Alignment.TopCenter
+                                                ) {
+
+                                            }
                                             }
 
                                             Spacer(modifier = Modifier.padding(5.dp))
@@ -1363,7 +1371,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 {
                                                     Text(
                                                         text = commentData.description,
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = Color(255, 162, 118, 255),
                                                         textAlign = TextAlign.Start
 
                                                     )
@@ -1442,6 +1450,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         )
                                                     }
                                                 }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(5.dp),
+                                                    contentAlignment = Alignment.TopCenter
+                                                ) {
+
+                                                }
                                             }
 
                                             Spacer(modifier = Modifier.padding(5.dp))
@@ -1462,7 +1477,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 {
                                                     Text(
                                                         text = commentData.description,
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = Color(255, 162, 118, 255),
                                                         textAlign = TextAlign.Start
 
                                                     )
@@ -1541,6 +1556,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         )
                                                     }
                                                 }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(5.dp),
+                                                    contentAlignment = Alignment.TopCenter
+                                                ) {
+
+                                                }
                                             }
 
                                             Spacer(modifier = Modifier.padding(5.dp))
@@ -1561,7 +1583,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 {
                                                     Text(
                                                         text = commentData.description,
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = Color(255, 162, 118, 255),
                                                         textAlign = TextAlign.Start
 
                                                     )
@@ -1640,6 +1662,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         )
                                                     }
                                                 }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(5.dp),
+                                                    contentAlignment = Alignment.TopCenter
+                                                ) {
+
+                                                }
                                             }
 
                                             Spacer(modifier = Modifier.padding(5.dp))
@@ -1660,7 +1689,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 {
                                                     Text(
                                                         text = commentData.description,
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = Color(255, 162, 118, 255),
                                                         textAlign = TextAlign.Start
 
                                                     )
@@ -1739,6 +1768,13 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         )
                                                     }
                                                 }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(5.dp),
+                                                    contentAlignment = Alignment.TopCenter
+                                                ) {
+
+                                                }
                                             }
 
                                             Spacer(modifier = Modifier.padding(5.dp))
@@ -1759,7 +1795,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 {
                                                     Text(
                                                         text = commentData.description,
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = Color(255, 162, 118, 255),
                                                         textAlign = TextAlign.Start
 
                                                     )
@@ -2058,7 +2094,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
 
         if (isDialogVisible2.value) {
-
+            val comments = remember {
+                mutableStateOf("")
+            }
+            val userName = remember {
+                mutableStateOf("")
+            }
+            val userSurName = remember {
+                mutableStateOf("")
+            }
             AlertDialog(
                 onDismissRequest = { isDialogVisible2.value = false },
                 title = {
@@ -2088,64 +2132,60 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .border(
-                                    BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
-                                    RoundedCornerShape(10.dp)
-                                )
+                                .fillMaxWidth()
                         ) {
 
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                            LazyRow(modifier = Modifier.fillMaxWidth(),  verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                                 items(5) { index ->
                                     val isSelected = index < currentRating.value
-                                    Icon(
-                                        imageVector = Icons.Default.Star,
-                                        contentDescription = "Star",
-                                        tint = if (isSelected) MaterialTheme.colorScheme.onSecondary else Color.Gray,
+                                    Box(
                                         modifier = Modifier
-                                            .size(35.dp)
-                                            .padding(4.dp)
-                                            .clickable {
-                                                currentRating.value = index + 1
-                                            }
-                                    )
+                                            .size(30.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Star,
+                                            contentDescription = "Star",
+                                            tint = if (isSelected) MaterialTheme.colorScheme.onSecondary else Color.Gray,
+                                            modifier = Modifier
+                                                .clickable {
+                                                    currentRating.value = index + 1
+                                                }
+                                        )
+                                    }
                                 }
                             }
+
                         }
+                        Text(text = "Lütfen puanlamak için yıldız seçiniz", color = Color.Gray, fontWeight = FontWeight.Light, fontSize = 10.sp)
+
+                        Spacer(modifier = Modifier.padding(top = 10.dp))
+
+                        OutlinedTextField(
+                            value = comments.value,
+                            onValueChange = {
+                                comments.value = it
+                            },
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            label = {
+                                Text(
+                                    text = "Bu ürüne bayıldım..",
+                                    color = Color.LightGray
+                                )
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = Color.LightGray,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                cursorColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                        )
                     }
                 },
                 confirmButton = {
-                    val comments = remember {
-                        mutableStateOf("")
-                    }
-                    val userName = remember {
-                        mutableStateOf("")
-                    }
-                    val userSurName = remember {
-                        mutableStateOf("")
-                    }
 
-                    OutlinedTextField(
-                        value = comments.value,
-                        onValueChange = {
-                            comments.value = it
-                        },
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        label = {
-                            Text(
-                                text = "Yorum yaparak değerlendirin",
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            cursorColor = MaterialTheme.colorScheme.secondary
-                        ),
-                        shape = RoundedCornerShape(16.dp),
-                    )
                     Button(
                         onClick = {
                             val auth = Firebase.auth
