@@ -245,6 +245,12 @@ fun FavoriteScreen(navController: NavHostController) {
                                             if (favListData.type == "speakers") {
                                                 navController.navigate("speaker_detail_screen/${favListData.title}")
                                             }
+                                            if (favListData.type == "accesories") {
+                                                navController.navigate("accesories_detail_screen/${favListData.title}")
+                                            }
+                                            if (favListData.type == "headphones") {
+                                                navController.navigate("headphones_detail_screen/${favListData.title}")
+                                            }
                                         }
                                         .padding(4.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
@@ -401,6 +407,12 @@ fun FavoriteScreen(navController: NavHostController) {
                                             .clickable {
                                                 if (secondSpeakerData.type == "speakers") {
                                                     navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
+                                                }
+                                                if (secondSpeakerData.type == "accesories") {
+                                                    navController.navigate("accesories_detail_screen/${secondSpeakerData.title}")
+                                                }
+                                                if (secondSpeakerData.type == "headphones") {
+                                                    navController.navigate("headphones_detail_screen/${secondSpeakerData.title}")
                                                 }
                                             }
                                             .padding(4.dp),

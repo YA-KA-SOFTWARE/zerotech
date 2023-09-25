@@ -1,6 +1,5 @@
 package com.yakasoftware.zerotech.views
 
-
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
@@ -100,10 +99,10 @@ import java.util.Locale
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
+fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
     val db = Firebase.firestore
-    val proCollection = db.collection("products").document("accesories")
-    val docRef = proCollection.collection("accesories")
+    val proCollection = db.collection("products").document("headphones")
+    val docRef = proCollection.collection("AirPod")
     val detail1 = remember {
         mutableStateOf("")
     }

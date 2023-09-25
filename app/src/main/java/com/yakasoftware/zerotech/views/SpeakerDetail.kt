@@ -155,6 +155,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
     val photo4 = remember { mutableStateOf("") }
+    val photo5 = remember { mutableStateOf("") }
     val price = remember { mutableStateOf("") }
     val oldPrice = remember { mutableStateOf("") }
     val discount = remember { mutableStateOf("") }
@@ -225,6 +226,10 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         val controlPhoto4 = document.getString("photo4")
                         if (controlPhoto4 != null && controlPhoto4 != "") {
                             photo4.value = controlPhoto4
+                        }
+                        val controlPhoto5 = document.getString("photo5")
+                        if (controlPhoto5 != null && controlPhoto4 != "") {
+                            photo5.value = controlPhoto5
                         }
                         val detail1Value = document.getString("detail1")
                         if (detail1Value != null && detail1Value != "") {
