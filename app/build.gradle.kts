@@ -119,4 +119,8 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-insets:0.31.5-beta")
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.16.0")
 
+    //location
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+
+
 }
