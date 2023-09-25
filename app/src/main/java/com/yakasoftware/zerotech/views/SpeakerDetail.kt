@@ -1382,12 +1382,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         .defaultMinSize(minHeight = 50.dp)
                                                 )
                                                 {
-                                                    Text(
-                                                        text = commentData.description,
-                                                        color = Color(255, 162, 118, 255),
-                                                        textAlign = TextAlign.Start
+                                                    Row( Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)) {
+                                                        Text(
+                                                            text = commentData.description,
+                                                            color = Color(255, 162, 118, 255),
+                                                            textAlign = TextAlign.Start
 
-                                                    )
+                                                        )
+                                                    }
+
                                                 }
                                             }
                                         }
@@ -1401,11 +1407,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         if (isClickFiltre.value == 1) {
                             Column(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                        shape = RoundedCornerShape(20.dp)
-                                    ),
+                                    .fillMaxWidth(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -1421,9 +1423,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                                         val commentData = commentList[i]
 
+                                        val backgroundColor = if (i % 2 == 0) {
+                                            MaterialTheme.colorScheme.onTertiary
+                                        } else {
+                                            MaterialTheme.colorScheme.primary
+                                        }
+
                                         OutlinedCard(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                                containerColor = backgroundColor
                                             ),
                                             border = BorderStroke(
                                                 1.dp,
@@ -1435,42 +1443,56 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 .align(Alignment.CenterHorizontally),
                                         )
                                         {
-                                            Row(
-                                                modifier = Modifier
-                                                    .wrapContentWidth()
-                                                    .height(20.dp),
-                                                verticalAlignment = Alignment.Top,
-                                                horizontalArrangement = Arrangement.Start
-                                            ) {
-                                                Spacer(modifier = Modifier.padding(2.dp))
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                Text(
-                                                    text = commentData.senderName + " " + commentData.senderSurName,
-                                                    color = Color.LightGray,
-                                                    fontSize = 14.sp
-                                                )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                repeat(commentData.point) {
+                                            Spacer(modifier = Modifier.padding(top = 8.dp))
+                                            Column(modifier = Modifier
+                                                .fillMaxWidth()
+                                                .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp),
+                                                    verticalAlignment = Alignment.Top,
+                                                    horizontalArrangement = Arrangement.Start
+                                                ) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Text(
+                                                        text = commentData.senderName + " " + commentData.senderSurName,
+                                                        color = MaterialTheme.colorScheme.tertiary,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    repeat(commentData.point) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(14.dp),
+                                                            contentAlignment = Alignment.TopCenter
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Default.Star,
+                                                                contentDescription = "Yıldızlar",
+                                                                tint = MaterialTheme.colorScheme.onSecondary
+                                                            )
+                                                        }
+
+                                                    }
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(14.dp),
+                                                            .size(5.dp),
                                                         contentAlignment = Alignment.TopCenter
                                                     ) {
-                                                        Icon(
-                                                            imageVector = Icons.Default.Star,
-                                                            contentDescription = "Yıldızlar",
-                                                            tint = MaterialTheme.colorScheme.onSecondary
-                                                        )
+
                                                     }
                                                 }
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(5.dp),
-                                                    contentAlignment = Alignment.TopCenter
-                                                ) {
-
+                                                Row(modifier = Modifier.fillMaxWidth()) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Row(modifier = Modifier.fillMaxWidth(0.4f)) {
+                                                        SimpleLine()
+                                                    }
                                                 }
                                             }
+
 
                                             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -1488,12 +1510,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         .defaultMinSize(minHeight = 50.dp)
                                                 )
                                                 {
-                                                    Text(
-                                                        text = commentData.description,
-                                                        color = Color(255, 162, 118, 255),
-                                                        textAlign = TextAlign.Start
+                                                    Row( Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)) {
+                                                        Text(
+                                                            text = commentData.description,
+                                                            color = Color(255, 162, 118, 255),
+                                                            textAlign = TextAlign.Start
 
-                                                    )
+                                                        )
+                                                    }
+
                                                 }
                                             }
                                         }
@@ -1507,11 +1535,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         if (isClickFiltre.value == 2) {
                             Column(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                        shape = RoundedCornerShape(20.dp)
-                                    ),
+                                    .fillMaxWidth(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -1527,9 +1551,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                                         val commentData = commentList[i]
 
+                                        val backgroundColor = if (i % 2 == 0) {
+                                            MaterialTheme.colorScheme.onTertiary
+                                        } else {
+                                            MaterialTheme.colorScheme.primary
+                                        }
+
                                         OutlinedCard(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                                containerColor = backgroundColor
                                             ),
                                             border = BorderStroke(
                                                 1.dp,
@@ -1541,42 +1571,56 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 .align(Alignment.CenterHorizontally),
                                         )
                                         {
-                                            Row(
-                                                modifier = Modifier
-                                                    .wrapContentWidth()
-                                                    .height(20.dp),
-                                                verticalAlignment = Alignment.Top,
-                                                horizontalArrangement = Arrangement.Start
-                                            ) {
-                                                Spacer(modifier = Modifier.padding(2.dp))
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                Text(
-                                                    text = commentData.senderName + " " + commentData.senderSurName,
-                                                    color = Color.LightGray,
-                                                    fontSize = 14.sp
-                                                )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                repeat(commentData.point) {
+                                            Spacer(modifier = Modifier.padding(top = 8.dp))
+                                            Column(modifier = Modifier
+                                                .fillMaxWidth()
+                                                .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp),
+                                                    verticalAlignment = Alignment.Top,
+                                                    horizontalArrangement = Arrangement.Start
+                                                ) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Text(
+                                                        text = commentData.senderName + " " + commentData.senderSurName,
+                                                        color = MaterialTheme.colorScheme.tertiary,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    repeat(commentData.point) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(14.dp),
+                                                            contentAlignment = Alignment.TopCenter
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Default.Star,
+                                                                contentDescription = "Yıldızlar",
+                                                                tint = MaterialTheme.colorScheme.onSecondary
+                                                            )
+                                                        }
+
+                                                    }
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(14.dp),
+                                                            .size(5.dp),
                                                         contentAlignment = Alignment.TopCenter
                                                     ) {
-                                                        Icon(
-                                                            imageVector = Icons.Default.Star,
-                                                            contentDescription = "Yıldızlar",
-                                                            tint = MaterialTheme.colorScheme.onSecondary
-                                                        )
+
                                                     }
                                                 }
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(5.dp),
-                                                    contentAlignment = Alignment.TopCenter
-                                                ) {
-
+                                                Row(modifier = Modifier.fillMaxWidth()) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Row(modifier = Modifier.fillMaxWidth(0.4f)) {
+                                                        SimpleLine()
+                                                    }
                                                 }
                                             }
+
 
                                             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -1594,12 +1638,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         .defaultMinSize(minHeight = 50.dp)
                                                 )
                                                 {
-                                                    Text(
-                                                        text = commentData.description,
-                                                        color = Color(255, 162, 118, 255),
-                                                        textAlign = TextAlign.Start
+                                                    Row( Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)) {
+                                                        Text(
+                                                            text = commentData.description,
+                                                            color = Color(255, 162, 118, 255),
+                                                            textAlign = TextAlign.Start
 
-                                                    )
+                                                        )
+                                                    }
+
                                                 }
                                             }
                                         }
@@ -1613,11 +1663,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         if (isClickFiltre.value == 3) {
                             Column(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                        shape = RoundedCornerShape(20.dp)
-                                    ),
+                                    .fillMaxWidth(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -1633,9 +1679,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                                         val commentData = commentList[i]
 
+                                        val backgroundColor = if (i % 2 == 0) {
+                                            MaterialTheme.colorScheme.onTertiary
+                                        } else {
+                                            MaterialTheme.colorScheme.primary
+                                        }
+
                                         OutlinedCard(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                                containerColor = backgroundColor
                                             ),
                                             border = BorderStroke(
                                                 1.dp,
@@ -1647,42 +1699,56 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 .align(Alignment.CenterHorizontally),
                                         )
                                         {
-                                            Row(
-                                                modifier = Modifier
-                                                    .wrapContentWidth()
-                                                    .height(20.dp),
-                                                verticalAlignment = Alignment.Top,
-                                                horizontalArrangement = Arrangement.Start
-                                            ) {
-                                                Spacer(modifier = Modifier.padding(2.dp))
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                Text(
-                                                    text = commentData.senderName + " " + commentData.senderSurName,
-                                                    color = Color.LightGray,
-                                                    fontSize = 14.sp
-                                                )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                repeat(commentData.point) {
+                                            Spacer(modifier = Modifier.padding(top = 8.dp))
+                                            Column(modifier = Modifier
+                                                .fillMaxWidth()
+                                                .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp),
+                                                    verticalAlignment = Alignment.Top,
+                                                    horizontalArrangement = Arrangement.Start
+                                                ) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Text(
+                                                        text = commentData.senderName + " " + commentData.senderSurName,
+                                                        color = MaterialTheme.colorScheme.tertiary,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    repeat(commentData.point) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(14.dp),
+                                                            contentAlignment = Alignment.TopCenter
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Default.Star,
+                                                                contentDescription = "Yıldızlar",
+                                                                tint = MaterialTheme.colorScheme.onSecondary
+                                                            )
+                                                        }
+
+                                                    }
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(14.dp),
+                                                            .size(5.dp),
                                                         contentAlignment = Alignment.TopCenter
                                                     ) {
-                                                        Icon(
-                                                            imageVector = Icons.Default.Star,
-                                                            contentDescription = "Yıldızlar",
-                                                            tint = MaterialTheme.colorScheme.onSecondary
-                                                        )
+
                                                     }
                                                 }
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(5.dp),
-                                                    contentAlignment = Alignment.TopCenter
-                                                ) {
-
+                                                Row(modifier = Modifier.fillMaxWidth()) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Row(modifier = Modifier.fillMaxWidth(0.4f)) {
+                                                        SimpleLine()
+                                                    }
                                                 }
                                             }
+
 
                                             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -1700,12 +1766,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         .defaultMinSize(minHeight = 50.dp)
                                                 )
                                                 {
-                                                    Text(
-                                                        text = commentData.description,
-                                                        color = Color(255, 162, 118, 255),
-                                                        textAlign = TextAlign.Start
+                                                    Row( Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)) {
+                                                        Text(
+                                                            text = commentData.description,
+                                                            color = Color(255, 162, 118, 255),
+                                                            textAlign = TextAlign.Start
 
-                                                    )
+                                                        )
+                                                    }
+
                                                 }
                                             }
                                         }
@@ -1719,11 +1791,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         if (isClickFiltre.value == 4) {
                             Column(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                        shape = RoundedCornerShape(20.dp)
-                                    ),
+                                    .fillMaxWidth(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -1739,9 +1807,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                                         val commentData = commentList[i]
 
+                                        val backgroundColor = if (i % 2 == 0) {
+                                            MaterialTheme.colorScheme.onTertiary
+                                        } else {
+                                            MaterialTheme.colorScheme.primary
+                                        }
+
                                         OutlinedCard(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                                containerColor = backgroundColor
                                             ),
                                             border = BorderStroke(
                                                 1.dp,
@@ -1753,42 +1827,56 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 .align(Alignment.CenterHorizontally),
                                         )
                                         {
-                                            Row(
-                                                modifier = Modifier
-                                                    .wrapContentWidth()
-                                                    .height(20.dp),
-                                                verticalAlignment = Alignment.Top,
-                                                horizontalArrangement = Arrangement.Start
-                                            ) {
-                                                Spacer(modifier = Modifier.padding(2.dp))
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                Text(
-                                                    text = commentData.senderName + " " + commentData.senderSurName,
-                                                    color = Color.LightGray,
-                                                    fontSize = 14.sp
-                                                )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                repeat(commentData.point) {
+                                            Spacer(modifier = Modifier.padding(top = 8.dp))
+                                            Column(modifier = Modifier
+                                                .fillMaxWidth()
+                                                .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp),
+                                                    verticalAlignment = Alignment.Top,
+                                                    horizontalArrangement = Arrangement.Start
+                                                ) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Text(
+                                                        text = commentData.senderName + " " + commentData.senderSurName,
+                                                        color = MaterialTheme.colorScheme.tertiary,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    repeat(commentData.point) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(14.dp),
+                                                            contentAlignment = Alignment.TopCenter
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Default.Star,
+                                                                contentDescription = "Yıldızlar",
+                                                                tint = MaterialTheme.colorScheme.onSecondary
+                                                            )
+                                                        }
+
+                                                    }
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(14.dp),
+                                                            .size(5.dp),
                                                         contentAlignment = Alignment.TopCenter
                                                     ) {
-                                                        Icon(
-                                                            imageVector = Icons.Default.Star,
-                                                            contentDescription = "Yıldızlar",
-                                                            tint = MaterialTheme.colorScheme.onSecondary
-                                                        )
+
                                                     }
                                                 }
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(5.dp),
-                                                    contentAlignment = Alignment.TopCenter
-                                                ) {
-
+                                                Row(modifier = Modifier.fillMaxWidth()) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Row(modifier = Modifier.fillMaxWidth(0.4f)) {
+                                                        SimpleLine()
+                                                    }
                                                 }
                                             }
+
 
                                             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -1806,12 +1894,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         .defaultMinSize(minHeight = 50.dp)
                                                 )
                                                 {
-                                                    Text(
-                                                        text = commentData.description,
-                                                        color = Color(255, 162, 118, 255),
-                                                        textAlign = TextAlign.Start
+                                                    Row( Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .wrapContentHeight()
+                                                        .defaultMinSize(minHeight = 50.dp)) {
+                                                        Text(
+                                                            text = commentData.description,
+                                                            color = Color(255, 162, 118, 255),
+                                                            textAlign = TextAlign.Start
 
-                                                    )
+                                                        )
+                                                    }
+
                                                 }
                                             }
                                         }
