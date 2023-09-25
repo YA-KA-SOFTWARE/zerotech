@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,7 +33,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
@@ -43,11 +41,9 @@ import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -85,7 +81,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Velocity
@@ -349,7 +344,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         )
 
         //yıldızlar puanı
-        val toplamPuan = commentList.sumBy { it.point }
+        val toplamPuan = commentList.sumOf { it.point }
         val ortalamaPuan = if (commentList.isNotEmpty()) {
             val ortalama = toplamPuan.toDouble() / commentList.size
             String.format("%.1f", ortalama)
@@ -493,6 +488,11 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 )
                             }
 
+
+                        }
+                        Row(modifier = Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.Top) {
                             val favData = hashMapOf(
                                 "oldPrice" to oldPrice.value,
                                 "price" to price.value,
@@ -1183,7 +1183,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                     isDialogVisible2.value = true
                                 },
                             colors = CardDefaults.cardColors(
-                                containerColor = Color(121, 75, 61, 255),
+                                containerColor = MaterialTheme.colorScheme.onTertiary,
                             ),
                             border = BorderStroke(
                                 1.dp,
@@ -1261,11 +1261,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     if (commentList.size == 0) {
                         Column(
                             Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(20.dp)
-                                ),
+                                .fillMaxWidth(),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -1274,6 +1270,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                 color = MaterialTheme.colorScheme.secondary,
                                 modifier = Modifier.padding(6.dp)
                             )
+                            Spacer(modifier = Modifier.padding(top = 4.dp))
+                            SimpleLine()
 
                         }
                     } else {
@@ -1281,11 +1279,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                         if (isClickFiltre.value == 0) {
                             Column(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 2.dp, color = MaterialTheme.colorScheme.secondary,
-                                        shape = RoundedCornerShape(20.dp)
-                                    ),
+                                    .fillMaxWidth(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -1301,9 +1295,15 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
 
                                         val commentData = commentList[i]
 
+                                        val backgroundColor = if (i % 2 == 0) {
+                                           MaterialTheme.colorScheme.onTertiary
+                                        } else {
+                                            MaterialTheme.colorScheme.primary
+                                        }
+
                                         OutlinedCard(
                                             colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                                containerColor = backgroundColor
                                             ),
                                             border = BorderStroke(
                                                 1.dp,
@@ -1315,43 +1315,56 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                 .align(Alignment.CenterHorizontally),
                                         )
                                         {
-                                            Row(
-                                                modifier = Modifier
-                                                    .wrapContentWidth()
-                                                    .height(20.dp),
-                                                verticalAlignment = Alignment.Top,
-                                                horizontalArrangement = Arrangement.Start
-                                            ) {
-                                                Spacer(modifier = Modifier.padding(2.dp))
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                Text(
-                                                    text = commentData.senderName + " " + commentData.senderSurName,
-                                                    color = Color.LightGray,
-                                                    fontSize = 14.sp
-                                                )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                repeat(commentData.point) {
+                                            Spacer(modifier = Modifier.padding(top = 8.dp))
+                                            Column(modifier = Modifier
+                                                .fillMaxWidth()
+                                                .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp),
+                                                    verticalAlignment = Alignment.Top,
+                                                    horizontalArrangement = Arrangement.Start
+                                                ) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Text(
+                                                        text = commentData.senderName + " " + commentData.senderSurName,
+                                                        color = MaterialTheme.colorScheme.tertiary,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    repeat(commentData.point) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(14.dp),
+                                                            contentAlignment = Alignment.TopCenter
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Default.Star,
+                                                                contentDescription = "Yıldızlar",
+                                                                tint = MaterialTheme.colorScheme.onSecondary
+                                                            )
+                                                        }
+
+                                                    }
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(14.dp),
+                                                            .size(5.dp),
                                                         contentAlignment = Alignment.TopCenter
                                                     ) {
-                                                        Icon(
-                                                            imageVector = Icons.Default.Star,
-                                                            contentDescription = "Yıldızlar",
-                                                            tint = MaterialTheme.colorScheme.onSecondary
-                                                        )
+
                                                     }
-
                                                 }
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(5.dp),
-                                                    contentAlignment = Alignment.TopCenter
-                                                ) {
-
+                                                Row(modifier = Modifier.fillMaxWidth()) {
+                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Row(modifier = Modifier.fillMaxWidth(0.4f)) {
+                                                        SimpleLine()
+                                                    }
                                                 }
                                             }
+
 
                                             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -2021,45 +2034,82 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             val calendar = Calendar.getInstance()
 
                             val currentUserEmailBasket = Firebase.auth.currentUser?.email
-                            val dataBasket = hashMapOf(
-                                "oldPrice" to oldPara.toString(),
-                                "price" to para.toString(),
-                                "photo1" to photo1.value,
-                                "discount" to discount.value,
-                                "type" to type.value,
-                                "title" to productTitle,
-                                "amount" to sepetSayisi.value.toString(),
-                                "email" to currentUserEmailBasket,
-                                "date" to calendar.time,
-                                "onay" to onay.value
+                            val newAmount = sepetSayisi.value 
 
-                            )
                             if (currentUserEmailBasket != null) {
-                                val docrefBasket = db.collection("basket")
-                                docrefBasket.add(dataBasket)
-                                    .addOnSuccessListener { documentReference ->
-                                        val addedDocumentId = documentReference.id
-                                        docrefBasket.document(addedDocumentId)
-                                            .update("docId", addedDocumentId)
-                                            .addOnSuccessListener {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Ürün sepete eklendi.",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            .addOnFailureListener {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Ürün eklenirken hata oluştu.",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
+                                val docRefBasket = db.collection("basket")
+                                docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                    .whereEqualTo("title", productTitle)
+                                    .get()
+                                    .addOnSuccessListener { documents ->
+                                        if (documents.isEmpty) {
+                                            // Ürün sepette yoksa, yeni bir döküman oluşturun
+                                            val dataBasket = hashMapOf(
+                                                "oldPrice" to oldPara.toString(),
+                                                "price" to para.toString(),
+                                                "photo1" to photo1.value,
+                                                "discount" to discount.value,
+                                                "type" to type.value,
+                                                "title" to productTitle,
+                                                "amount" to newAmount.toString(),
+                                                "email" to currentUserEmailBasket,
+                                                "date" to calendar.time,
+                                                "onay" to onay.value
+                                            )
+                                            docRefBasket.add(dataBasket)
+                                                .addOnSuccessListener { documentReference ->
+                                                    val addedDocumentId = documentReference.id
+                                                    docRefBasket.document(addedDocumentId)
+                                                        .update("docId", addedDocumentId)
+                                                        .addOnSuccessListener {
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Ürün sepete eklendi.",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                        .addOnFailureListener {
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Ürün eklenirken hata oluştu.",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Ürün eklenirken hata oluştu.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                        } else {
+                                            // Ürün sepette varsa, miktarı güncelleyin
+                                            val docId = documents.documents[0].id
+                                            val currentAmount = documents.documents[0].get("amount") as String
+                                            val updatedAmount = currentAmount.toInt() + newAmount
+                                            docRefBasket.document(docId)
+                                                .update("amount", updatedAmount.toString())
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Ürün miktarı güncellendi.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Ürün miktarı güncellenirken hata oluştu.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                        }
                                     }
                                     .addOnFailureListener {
                                         Toast.makeText(
                                             context,
-                                            "Ürün eklenirken hata oluştu.",
+                                            "Sepet sorgulanırken hata oluştu.",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -2220,6 +2270,8 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     comments.value = ""
+                                                    currentRating.value = 0
+                                                    isDialogVisible2.value = false
                                                 }
                                         }else {
                                             Toast.makeText(context,"Puan alanı boş bırakılamaz.",Toast.LENGTH_SHORT).show()
@@ -2233,7 +2285,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         ).show()
                                     }
                                 }
-                            isDialogVisible2.value = false
                         },
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
                     )

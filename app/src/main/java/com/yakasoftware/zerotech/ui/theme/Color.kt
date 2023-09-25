@@ -14,6 +14,7 @@ val beyaz = Color(255, 255, 255, 255)
 val turuncu = Color(255, 165, 0, 255)
 val aciksiyah = Color(46, 46, 46, 255)
 val acikturuncu = Color(255, 153, 102, 255)
+val krem = Color(230, 230, 230, 255)
 
 //Koyu Tema
 val siyah = Color(31,  31, 31, 255)

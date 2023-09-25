@@ -12,6 +12,7 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = beyaz,
     onPrimary = koyusiyah,
     onSecondary = koyuturuncu,
+    onTertiary = koyusiyah
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -20,6 +21,7 @@ private val LightColorScheme = lightColorScheme(
     tertiary = siyah,
     onPrimary = aciksiyah ,
     onSecondary = acikturuncu,
+    onTertiary = krem
 
 
 
