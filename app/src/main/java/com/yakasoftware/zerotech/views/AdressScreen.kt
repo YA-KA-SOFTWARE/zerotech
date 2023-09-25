@@ -1,12 +1,14 @@
 package com.yakasoftware.zerotech.views
 
-import androidx.compose.foundation.BorderStroke
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+
+
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,19 +16,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.AddLocation
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -40,12 +51,19 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yakasoftware.zerotech.Lines.SheetBarLine
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdressScreen(navController: NavHostController) {
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+    val isClicked = remember {
+        mutableStateOf(false)
+    }
+    Surface(modifier = Modifier
+        .fillMaxSize()
+        .blur(radius = if (isClicked.value) 10.dp else 0.dp), color = MaterialTheme.colorScheme.primary) {
         val context = LocalContext.current
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -60,6 +78,16 @@ fun AdressScreen(navController: NavHostController) {
         val phoneNumber = remember {
             mutableStateOf("")
         }
+
+        val adresText = remember {
+            mutableStateOf("")
+        }
+        val numara = remember {
+            mutableStateOf("")
+        }
+
+
+
         if (currentUser != null) {
             db.collection("users").document(email.toString())
                 .get()
@@ -170,25 +198,262 @@ fun AdressScreen(navController: NavHostController) {
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.500f)
-                            .height(200.dp)
-                            .clip(CircleShape)
-                            .background(Color.DarkGray)
-                            .border(
-                                BorderStroke(10.dp, MaterialTheme.colorScheme.secondary),
-                                CircleShape
-                            )
-                    ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        SimpleLine()
+                    }
+                    Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                    LazyColumn() {
+                        items(5) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Spacer(modifier = Modifier.padding(start = 12.dp))
+                                Icon(
+                                    imageVector = Icons.Default.AddLocation, // Simgenizin adını buraya ekleyin
+                                    contentDescription = "İsim Simgesi",
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .background(
+                                            MaterialTheme.colorScheme.onPrimary,
+                                            RoundedCornerShape(5.dp)
+                                        )
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                Text(
+                                    text = "İsim: ${name.value} ",
+                                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() },
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+
+                            }
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                SimpleLine()
+                            }
+                            Spacer(modifier = Modifier.padding(top = 10.dp))
+                        }
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircleOutline, // Simgenizin adını buraya ekleyin
+                                    contentDescription = "İsim Simgesi",
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .size(40.dp)
+
+                                )
+                            }
+                        }
                     }
                 }
-                Spacer(modifier = Modifier.padding(top = 12.dp))
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
+                    modifier = Modifier.wrapContentSize(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    FloatingActionButton(
+                        onClick = { isClicked.value = !isClicked.value },
+                    ) {
+                        Icon(Icons.Filled.AddCircleOutline, "Localized description")
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+
+
             }
+
+        }
+
+    }
+    if (isClicked.value)
+        BottomSheet()
+}@ExperimentalMaterial3Api
+@Composable
+fun BottomSheet() {
+
+    Column(
+        Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.wrapContentSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Top
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.750f)
+            ) {
+                SheetBarLine()
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f)
+                .background(
+                    MaterialTheme.colorScheme.onPrimary,
+                    RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
+                ),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val comments = remember {
+                    mutableStateOf("")
+                }
+                val comments1 = remember {
+                    mutableStateOf("")
+                }
+                val comments2 = remember {
+                    mutableStateOf("")
+                }
+                val comments3 = remember {
+                    mutableStateOf("")
+                }
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    OutlinedTextField(
+                        value = comments.value,
+                        onValueChange = {
+                            comments.value = it
+                        },
+                        label = {
+                            Text(
+                                text = "Bu ürüne bayıldım..",
+                                color = Color.LightGray
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedLabelColor = Color.LightGray,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            cursorColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    OutlinedTextField(
+                        value = comments1.value,
+                        onValueChange = {
+                            comments1.value = it
+                        },
+                        label = {
+                            Text(
+                                text = "Bu ürüne bayıldım..",
+                                color = Color.LightGray
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedLabelColor = Color.LightGray,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            cursorColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.padding(top = 30.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    OutlinedTextField(
+                        value = comments2.value,
+                        onValueChange = {
+                            comments2.value = it
+                        },
+                        label = {
+                            Text(
+                                text = "Bu ürüne bayıldım..",
+                                color = Color.LightGray
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedLabelColor = Color.LightGray,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            cursorColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    OutlinedTextField(
+                        value = comments3.value,
+                        onValueChange = {
+                            comments3.value = it
+                        },
+                        label = {
+                            Text(
+                                text = "Bu ürüne bayıldım..",
+                                color = Color.LightGray
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedLabelColor = Color.LightGray,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            cursorColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                }
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    OutlinedTextField(
+                        value = comments2.value,
+                        onValueChange = {
+                            comments2.value = it
+                        },
+                        label = {
+                            Text(
+                                text = "Adres Tarifi",
+                                color = Color.LightGray
+                            )
+                        },
+                        modifier = Modifier.fillMaxSize(0.9f),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedLabelColor = Color.LightGray,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                            cursorColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                }
+            }
+
         }
     }
 }

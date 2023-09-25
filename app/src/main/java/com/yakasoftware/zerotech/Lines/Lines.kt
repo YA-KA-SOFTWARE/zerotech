@@ -12,6 +12,11 @@ fun SimpleLine() {
 }
 
 @Composable
+fun SheetBarLine() {
+    Divider(color = MaterialTheme.colorScheme.onSecondary, thickness = 3.dp)
+}
+
+@Composable
 fun SimpleLineWhite() {
     Divider(color = Color.White, thickness = 0.3.dp)
 }
