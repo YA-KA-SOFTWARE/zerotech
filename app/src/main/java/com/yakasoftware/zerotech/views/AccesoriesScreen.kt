@@ -857,7 +857,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                 )
                                 .padding(4.dp)
                                 .clickable {
-                                    navController.navigate("speaker_detail_screen/${firstSpeakerData.title}")
+                                    navController.navigate("accesories_detail_screen/${firstSpeakerData.title}")
                                 },
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -1057,7 +1057,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                     )
                                     .padding(4.dp)
                                     .clickable {
-                                        navController.navigate("speaker_detail_screen/${secondSpeakerData.title}")
+                                        navController.navigate("accesories_detail_screen/${secondSpeakerData.title}")
                                     },
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {

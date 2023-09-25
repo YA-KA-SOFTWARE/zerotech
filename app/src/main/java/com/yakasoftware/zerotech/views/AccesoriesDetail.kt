@@ -100,10 +100,10 @@ import java.util.Locale
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) {
+fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
     val db = Firebase.firestore
-    val proCollection = db.collection("products").document("speakers")
-    val docRef = proCollection.collection("Aggiy AG-S21 Bluetooth Hoparlör")
+    val proCollection = db.collection("products").document("accesories")
+    val docRef = proCollection.collection("accesories")
     val detail1 = remember {
         mutableStateOf("")
     }
@@ -1328,7 +1328,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                         val commentData = commentList[i]
 
                                         val backgroundColor = if (i % 2 == 0) {
-                                           MaterialTheme.colorScheme.onTertiary
+                                            MaterialTheme.colorScheme.onTertiary
                                         } else {
                                             MaterialTheme.colorScheme.primary
                                         }
@@ -1414,18 +1414,18 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                                                         .defaultMinSize(minHeight = 50.dp)
                                                 )
                                                 {
-                                                        Row(
-                                                            Modifier
-                                                                .fillMaxWidth(0.8f)
-                                                                .wrapContentHeight()
-                                                                .defaultMinSize(minHeight = 50.dp)) {
-                                                            Text(
-                                                                text = commentData.description,
-                                                                color = Color(255, 162, 118, 255),
-                                                                textAlign = TextAlign.Start
+                                                    Row(
+                                                        Modifier
+                                                            .fillMaxWidth(0.8f)
+                                                            .wrapContentHeight()
+                                                            .defaultMinSize(minHeight = 50.dp)) {
+                                                        Text(
+                                                            text = commentData.description,
+                                                            color = Color(255, 162, 118, 255),
+                                                            textAlign = TextAlign.Start
 
-                                                            )
-                                                        }
+                                                        )
+                                                    }
                                                     val dateFormat =
                                                         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                                                     val commentDate = commentData.date?.toDate()
@@ -2220,7 +2220,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                             val calendar = Calendar.getInstance()
 
                             val currentUserEmailBasket = Firebase.auth.currentUser?.email
-                            val newAmount = sepetSayisi.value 
+                            val newAmount = sepetSayisi.value
 
                             if (currentUserEmailBasket != null) {
                                 val docRefBasket = db.collection("basket")
@@ -2491,6 +2491,3 @@ private val disableScrolll = object : NestedScrollConnection {
     override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
 }
 
-
-fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean) =
-    if (disabled) this.nestedScroll(disableScrolll) else this

@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
 import com.yakasoftware.zerotech.views.AccesoiresScreen
+import com.yakasoftware.zerotech.views.AccesoriesDetail
 import com.yakasoftware.zerotech.views.AccountDetailScreen
 import com.yakasoftware.zerotech.views.AdressScreen
 import com.yakasoftware.zerotech.views.BandsScreen
@@ -97,6 +98,11 @@ class MainActivity : ComponentActivity() {
                     composable("speaker_detail_screen/{title}"){backStackEntry ->
                         backStackEntry.arguments?.getString("title")
                             ?.let { SpeakerDetailScreen(navController = navController, productTitle = it) }
+
+                    }
+                    composable("accesories_detail_screen/{title}"){backStackEntry ->
+                        backStackEntry.arguments?.getString("title")
+                            ?.let { AccesoriesDetail(navController = navController, productTitle = it) }
 
                     }
                     composable("RectanglesWithLinesSpeaker"){
