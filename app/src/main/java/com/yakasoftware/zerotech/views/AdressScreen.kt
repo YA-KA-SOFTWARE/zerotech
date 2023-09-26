@@ -1,10 +1,13 @@
 package com.yakasoftware.zerotech.views
 
 
+import android.widget.Button
 import android.widget.Space
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -26,6 +29,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +41,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.AddLocation
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,12 +57,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -70,6 +78,8 @@ import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SheetBarLine
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,9 +87,33 @@ fun AdressScreen(navController: NavHostController) {
     val isClicked = remember {
         mutableStateOf(false)
     }
-    Surface(modifier = Modifier
-        .fillMaxSize()
-        .blur(radius = if (isClicked.value) 10.dp else 0.dp), color = MaterialTheme.colorScheme.primary) {
+    val barVisible = remember {
+        mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
+    }
+    val sidebarHeight by animateFloatAsState(
+        targetValue = if (barVisible.value) 0.6f else 0f,
+        animationSpec = if (barVisible.value) {
+            tween(
+                durationMillis = 250,
+                easing = LinearOutSlowInEasing // Bu yavaşça kapanmasını sağlar
+            )
+        } else {
+            tween(
+                durationMillis = 250,
+                easing = LinearOutSlowInEasing // Yavaşça açılması için burada da kullanabilirsiniz
+            )
+        },
+        label = "Yan menü animasyonu"
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .blur(radius = if (barVisible.value) 10.dp else 0.dp),
+        color = MaterialTheme.colorScheme.primary
+    ) {
         val context = LocalContext.current
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -117,7 +151,22 @@ fun AdressScreen(navController: NavHostController) {
 
         }
 
-        Surface(modifier = Modifier.fillMaxSize().clickable (enabled = isClicked.value){ isClicked.value = false  }, color = MaterialTheme.colorScheme.primary) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(enabled = isClicked.value) {
+                    coroutineScope.launch {
+                        if (isClicked.value) {
+                            barVisible.value = false
+                            delay(timeMillis = 250) // Delay for 1000 milliseconds (1 second)
+                        }
+                        if (!barVisible.value) {
+                            isClicked.value = false
+                        }
+                    }
+                },
+            color = MaterialTheme.colorScheme.primary
+        ) {
             val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
             val gradientBrush = Brush.verticalGradient(
                 colors = listOf(
@@ -264,8 +313,11 @@ fun AdressScreen(navController: NavHostController) {
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     LargeFloatingActionButton(
-                        onClick = { isClicked.value = !isClicked.value },
-                        modifier = Modifier.clickable(enabled = !isClicked.value){},
+                        onClick = {
+                            isClicked.value = true
+                            barVisible.value = true
+                        },
+                        modifier = Modifier.clickable(enabled = !isClicked.value) {},
                     ) {
                         Icon(Icons.Filled.AddCircleOutline, "Localized description")
                     }
@@ -277,635 +329,683 @@ fun AdressScreen(navController: NavHostController) {
         }
 
     }
-    if (isClicked.value)
-        BottomSheet(isClicked.value)
-}@ExperimentalMaterial3Api
-@Composable
-fun BottomSheet(isClicked: Boolean) {
 
-    Column(
-        Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier.wrapContentSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Top
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(0.750f)
-            ) {
-                SheetBarLine()
-            }
-        }
+    if (isClicked.value) {
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.6f)
-                .background(
-                    MaterialTheme.colorScheme.primary,
-                    RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
-                )
-                .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
-                .border(
-                    BorderStroke(3.dp, MaterialTheme.colorScheme.onSecondary),
-                    RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
-                ),
-            verticalArrangement = Arrangement.Bottom,
+            Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LazyColumn(
-                Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
+            Row(
+                modifier = Modifier.wrapContentSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Top
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(0.750f)
+                ) {
+                    SheetBarLine()
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(sidebarHeight)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
+                    )
+                    .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
+                    .border(
+                        BorderStroke(3.dp, MaterialTheme.colorScheme.onSecondary),
+                        RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
+                    ),
+                verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                item {
-                    val comments = remember {
-                        mutableStateOf("")
-                    }
-                    val comments1 = remember {
-                        mutableStateOf("")
-                    }
-                    val comments2 = remember {
-                        mutableStateOf("")
-                    }
-                    val comments3 = remember {
-                        mutableStateOf("")
-                    }
-                    Spacer(modifier = Modifier.padding(top = 25.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                    ) {
-                        Spacer(modifier = Modifier.padding(start = 5.dp))
-                        Icon(
-                            imageVector = Icons.Default.DriveFileRenameOutline, // Simgenizin adını buraya ekleyin
-                            contentDescription = "İsim Simgesi",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(30.dp)
-                                .background(
-                                    MaterialTheme.colorScheme.onSecondary,
-                                    RoundedCornerShape(5.dp)
-                                )
-                        )
-                        Spacer(modifier = Modifier.padding(start =5.dp))
-                        Text(
-                            text = "Yeni Adres Ekle",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(top = 45.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
+Row(Modifier.wrapContentHeight().fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.End ) {
 
-                        Box(
-                            modifier = Modifier
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            MaterialTheme.colorScheme.onSecondary,
+                            RoundedCornerShape(5.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Yıldızlar",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .clickable {
+                                coroutineScope.launch {
+                                    if (isClicked.value) {
+                                        barVisible.value = false
+                                        delay(timeMillis = 250) // Delay for 1000 milliseconds (1 second)
+                                    }
+                                    if (!barVisible.value) {
+                                        isClicked.value = false
+                                    }
+                                }
+                            }
+
+                    )
+                } }
+
+                LazyColumn(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        val comments = remember {
+                            mutableStateOf("")
+                        }
+                        val comments1 = remember {
+                            mutableStateOf("")
+                        }
+                        val comments2 = remember {
+                            mutableStateOf("")
+                        }
+                        val comments3 = remember {
+                            mutableStateOf("")
+                        }
+                        Spacer(modifier = Modifier.padding(top = 25.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DriveFileRenameOutline, // Simgenizin adını buraya ekleyin
+                                contentDescription = "İsim Simgesi",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .background(
+                                        MaterialTheme.colorScheme.onSecondary,
+                                        RoundedCornerShape(5.dp)
+                                    )
+                            )
+                            Spacer(modifier = Modifier.padding(start = 5.dp))
+                            Text(
+                                text = "Yeni Adres Ekle",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 24.sp,
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 45.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Adres Başlığı: (örn: ev, yurt..)",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Şehir",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Semt",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Mahalle",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Sokak",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Apartman Adı",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Apartman Numarası",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Daire Numarası",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Posta Kodu",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Kat",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Şirket",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Telefon Numarası",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Row(
+                            Modifier
                                 .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-
+                                .fillMaxHeight(0.3f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Adres Başlığı: (örn: ev, yurt..)",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
 
-                                        )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                LazyRow {
+                                    item {
+                                        OutlinedTextField(
+                                            value = comments2.value,
+                                            onValueChange = {
+                                                comments2.value = it
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = "Adres Tarifi",
+                                                    color = Color.LightGray
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth(0.5f),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedLabelColor = Color.Transparent,
+                                                focusedBorderColor = Color.Transparent,
+                                                unfocusedLabelColor = Color.LightGray,
+                                                unfocusedBorderColor = Color.Transparent,
+                                                cursorColor = Color.White
+                                            ),
+                                            shape = RoundedCornerShape(16.dp),
+
+                                            )
+                                    }
                                 }
                             }
+                        }
+
+                    }
+                    item {
+                        Spacer(modifier = Modifier.padding(top = 40.dp))
+                        Row(
+                            Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = "Kaydet",
+                                fontSize = 30.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .background(
+                                        MaterialTheme.colorScheme.onSecondary,
+                                        RoundedCornerShape(10.dp)
+                                    )
+                                    )
                         }
                     }
-
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Şehir",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Semt",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Mahalle",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Sokak",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Apartman Adı",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Apartman Numarası",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Daire Numarası",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Posta Kodu",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Kat",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Şirket",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Telefon Numarası",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.3f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            LazyRow {
-                                item {
-                                    OutlinedTextField(
-                                        value = comments2.value,
-                                        onValueChange = {
-                                            comments2.value = it
-                                        },
-                                        label = {
-                                            Text(
-                                                text = "Adres Tarifi",
-                                                color = Color.LightGray
-                                            )
-                                        },
-                                        modifier = Modifier.fillMaxWidth(0.5f),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedLabelColor = Color.Transparent,
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedLabelColor = Color.LightGray,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            cursorColor = Color.White
-                                        ),
-                                        shape = RoundedCornerShape(16.dp),
-
-                                        )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
                 }
             }
         }
     }
 }
-
 
 
