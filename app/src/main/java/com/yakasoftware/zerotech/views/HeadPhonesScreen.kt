@@ -1065,7 +1065,7 @@ fun RectanglesWithLinesHeadPhones(navController: NavHostController) {
                                     )
                                     .padding(4.dp)
                                     .clickable {
-                                        navController.navigate("headphones_detail_screen/${firstSpeakerData.title}")
+                                        navController.navigate("headphones_detail_screen/${secondSpeakerData.title}")
                                     },
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {

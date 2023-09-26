@@ -258,7 +258,21 @@ fun BasketScreen(navController: NavHostController) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.primary),
+                                .background(MaterialTheme.colorScheme.primary)
+                                .clickable {
+                                    if (baskets.type == "speakers") {
+                                        navController.navigate("speaker_detail_screen/${baskets.title}")
+                                    }
+                                    if (baskets.type == "headphones") {
+                                        navController.navigate("headphones_detail_screen/${baskets.title}")
+                                    }
+                                    if (baskets.type == "accesories") {
+                                        navController.navigate("accesories_detail_screen/${baskets.title}")
+                                    }
+                                    if (baskets.type == "bands") {
+                                        navController.navigate("band_detail_screen/${baskets.title}")
+                                    }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Row(
@@ -276,12 +290,7 @@ fun BasketScreen(navController: NavHostController) {
                                             MaterialTheme.colorScheme.onSecondary,
                                             RoundedCornerShape(14.dp)
                                         )
-                                        .padding(4.dp)
-                                        .clickable {
-                                            if (baskets.type == "speakers") {
-                                                navController.navigate("speaker_detail_screen/${baskets.title}")
-                                            }
-                                        },
+                                        .padding(4.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
 

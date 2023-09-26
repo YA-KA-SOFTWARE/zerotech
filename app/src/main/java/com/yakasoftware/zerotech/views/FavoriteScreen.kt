@@ -251,6 +251,9 @@ fun FavoriteScreen(navController: NavHostController) {
                                             if (favListData.type == "headphones") {
                                                 navController.navigate("headphones_detail_screen/${favListData.title}")
                                             }
+                                            if (favListData.type == "bands") {
+                                                navController.navigate("band_detail_screen/${favListData.title}")
+                                            }
                                         }
                                         .padding(4.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
@@ -413,6 +416,9 @@ fun FavoriteScreen(navController: NavHostController) {
                                                 }
                                                 if (secondSpeakerData.type == "headphones") {
                                                     navController.navigate("headphones_detail_screen/${secondSpeakerData.title}")
+                                                }
+                                                if (secondSpeakerData.type == "bands") {
+                                                    navController.navigate("band_detail_screen/${secondSpeakerData.title}")
                                                 }
                                             }
                                             .padding(4.dp),
