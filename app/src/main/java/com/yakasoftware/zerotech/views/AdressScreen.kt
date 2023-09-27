@@ -130,8 +130,9 @@ fun AdressScreen(navController: NavHostController) {
         val street: String
     )
 
-
-
+    val adressList = remember {
+        mutableStateListOf<AdressData>()
+    }
 
     Surface(
         modifier = Modifier
@@ -282,45 +283,9 @@ fun AdressScreen(navController: NavHostController) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         SimpleLine()
                     }
-                    val city = remember {
-                        mutableStateOf("")
-                    }
-                    val adressTitle = remember {
-                        mutableStateOf("")
-                    }
-                    val direction = remember {
-                        mutableStateOf("")
-                    }
-                    val district = remember {
-                        mutableStateOf("")
-                    }
-                    val neighbourhood = remember {
-                        mutableStateOf("")
-                    }
-                    val street = remember {
-                        mutableStateOf("")
-                    }
-                    val adressList = remember {
-                        mutableStateListOf<AdressData>()
-                    }
-                    db.collection("adress").document(email!!).collection(email!!).get().addOnSuccessListener { documents ->
-                            adressList.clear()
-                        for (document in documents){
-                            val adressData: Map<String,Any> = document.data
-                            city.value = adressData["city"].toString()
-                            adressTitle.value = adressData["adresstitle"].toString()
-                            direction.value = adressData["direction"].toString()
-                            district.value = adressData["district"].toString()
-                            neighbourhood.value = adressData["neighbourhood"].toString()
-                            street.value = adressData["street"].toString()
-                            adressList.add(AdressData(city.value,adressTitle.value,direction.value,district.value,neighbourhood.value,street.value))
-                        }
-                    }
                     Spacer(modifier = Modifier.padding(bottom = 10.dp))
                     LazyColumn() {
-                        items(adressList.size) {index ->
-                            val adress = adressList[index]
-                            //gerekli veriler çekildi tarafımca test edildi istediğiniz bilgiyi çağırmak için adress.city şeklinde çağırmanız yeterlidir M.K.
+                        items(5) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -340,7 +305,7 @@ fun AdressScreen(navController: NavHostController) {
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 Text(
-                                    text = "Başlık: ${adress.adressTitle} ",
+                                    text = "İsim: ${name.value} ",
                                     fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() },
                                     color = MaterialTheme.colorScheme.secondary
                                 )
@@ -426,7 +391,7 @@ Row(
                         .size(40.dp)
                         .background(
                             MaterialTheme.colorScheme.onSecondary,
-                            CircleShape
+                           CircleShape
                         )
                         .padding(4.dp),
                     contentAlignment = Alignment.Center

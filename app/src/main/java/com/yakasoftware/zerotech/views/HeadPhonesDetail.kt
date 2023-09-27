@@ -32,10 +32,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowDropDownCircle
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -390,7 +392,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(if (isDialogVisible.value || isDialogVisible2.value || isDialogVisible3.value ) 10.dp else 0.dp)
+                .blur(if (isDialogVisible.value || isDialogVisible2.value || isDialogVisible3.value) 10.dp else 0.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -2525,17 +2527,18 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
             AlertDialog(
                 onDismissRequest = { isDialogVisible3.value = false },
                 title = {
-                    Row(
+                    Row(modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Comment,
-                            contentDescription = null,
+                            imageVector = Icons.Default.ColorLens,
+                            contentDescription = "Renk Seçme",
                             modifier = Modifier.size(24.dp)
                         )
+                        Spacer(modifier = Modifier.padding(6.dp))
                         Text(
-                            text = "Sepete Ekle",
+                            text = "Renk Seç",
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.secondary
                         )
