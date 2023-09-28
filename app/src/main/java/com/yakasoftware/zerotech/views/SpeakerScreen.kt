@@ -1008,7 +1008,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(1.4f)
+                                    .weight(1.5f)
                                     .background(
                                         MaterialTheme.colorScheme.onPrimary,
                                         RoundedCornerShape(10.dp)
@@ -1037,17 +1037,17 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
                                         Column(modifier = Modifier.fillMaxSize(),
-                                            verticalArrangement = Arrangement.Center,
+                                            verticalArrangement = Arrangement.Top,
                                             horizontalAlignment = Alignment.CenterHorizontally) {
                                             Text(
-                                                text = firstSpeakerData.oldPrice,
+                                                text = firstSpeakerData.oldPrice + "₺",
                                                 color = Color(100, 100, 100, 255),
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center,
                                                 textDecoration = TextDecoration.LineThrough
                                             )
                                             Text(
-                                                text = firstSpeakerData.price,
+                                                text = firstSpeakerData.price + "₺",
                                                 color = MaterialTheme.colorScheme.secondary,
                                                 fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                 fontWeight = FontWeight.Bold,
@@ -1208,7 +1208,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .weight(1.4f)
+                                        .weight(1.5f)
                                         .background(
                                             MaterialTheme.colorScheme.onPrimary,
                                             RoundedCornerShape(10.dp)
@@ -1240,7 +1240,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 verticalArrangement = Arrangement.Center,
                                                 horizontalAlignment = Alignment.CenterHorizontally) {
                                                 Text(
-                                                    text = secondSpeakerData.oldPrice,
+                                                    text = secondSpeakerData.oldPrice + "₺",
                                                     color = Color(100, 100, 100, 255),
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     textAlign = TextAlign.Center,
@@ -1248,7 +1248,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 )
 
                                                 Text(
-                                                    text = secondSpeakerData.price,
+                                                    text = secondSpeakerData.price + " ₺",
                                                     color = MaterialTheme.colorScheme.secondary,
                                                     fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                     fontWeight = FontWeight.Bold,

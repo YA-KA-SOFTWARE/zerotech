@@ -462,14 +462,14 @@ fun BasketScreen(navController: NavHostController) {
                                                         horizontalAlignment = Alignment.Start
                                                     ) {
                                                         Text(
-                                                            text = baskets.oldPrice,
+                                                            text = String.format("%.2f", baskets.oldPrice.toFloat()*sepetSayisi.value) + "₺",
                                                             color = Color(100, 100, 100, 255),
                                                             fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                             textAlign = TextAlign.Center,
                                                             textDecoration = TextDecoration.LineThrough
                                                         )
                                                         Text(
-                                                            text = baskets.price,
+                                                            text = String.format("%.2f", baskets.price.toFloat()*sepetSayisi.value) + "₺",
                                                             color = MaterialTheme.colorScheme.secondary,
                                                             fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                             fontWeight = FontWeight.Bold,

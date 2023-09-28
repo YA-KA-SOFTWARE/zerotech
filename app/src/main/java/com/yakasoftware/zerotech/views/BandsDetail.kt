@@ -2235,8 +2235,8 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                                         if (documents.isEmpty) {
                                             // Ürün sepette yoksa, yeni bir döküman oluşturun
                                             val dataBasket = hashMapOf(
-                                                "oldPrice" to oldPara.toString(),
-                                                "price" to para.toString(),
+                                                "oldPrice" to oldPrice.value,
+                                                "price" to price.value,
                                                 "photo1" to photo1.value,
                                                 "discount" to discount.value,
                                                 "type" to type.value,
