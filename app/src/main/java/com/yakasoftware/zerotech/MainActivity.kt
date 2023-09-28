@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,6 +14,7 @@ import com.yakasoftware.zerotech.views.AccesoiresScreen
 import com.yakasoftware.zerotech.views.AccesoriesDetail
 import com.yakasoftware.zerotech.views.AccountDetailScreen
 import com.yakasoftware.zerotech.views.AdressScreen
+import com.yakasoftware.zerotech.views.AgreementScreen
 import com.yakasoftware.zerotech.views.BandDetail
 import com.yakasoftware.zerotech.views.BandsScreen
 import com.yakasoftware.zerotech.views.BasketScreen
@@ -128,6 +127,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("band_screen"){
                         BandsScreen(navController = navController)
+                    }
+                    composable("agreement_screen") {
+                        AgreementScreen(navController = navController)
                     }
                 }
             }

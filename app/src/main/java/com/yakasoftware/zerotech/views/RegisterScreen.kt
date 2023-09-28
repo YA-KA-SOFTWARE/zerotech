@@ -304,6 +304,7 @@ fun RegisterScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.padding(4.dp))
                             //Sözleşmeler
                             var isChecked by remember { mutableStateOf(false) }
+                            var isCheckedSecond by remember { mutableStateOf(false) }
                             Row(modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -338,10 +339,7 @@ fun RegisterScreen(navController: NavHostController) {
                                 }
 
                                 Text(modifier = Modifier.clickable {
-                                    /*
                                     navController.navigate("agreement_screen")
-
-                                     */
                                 },
                                     text = "Kullanıcı ve Gizlilik Sözleşmesi",
                                     color = MaterialTheme.colorScheme.secondary,
@@ -355,7 +353,7 @@ fun RegisterScreen(navController: NavHostController) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 OutlinedButton(onClick = {
                                     if (userEmail.value.isNotEmpty() && password.value.isNotEmpty() && passwordAgain.value.isNotEmpty() && name.value.isNotEmpty()
-                                        && surName.value.isNotEmpty() && phoneNumber.value.isNotEmpty() && isChecked) {
+                                        && surName.value.isNotEmpty() && phoneNumber.value.isNotEmpty() && isChecked && isCheckedSecond) {
                                         if (userEmail.value.endsWith(".com")) {
                                             if (password.value == passwordAgain.value) {
                                                 if (password.value.length >= 7 && passwordAgain.value.length >= 7) {
