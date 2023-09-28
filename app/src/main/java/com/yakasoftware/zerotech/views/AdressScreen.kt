@@ -101,10 +101,13 @@ fun AdressScreen(navController: NavHostController) {
         mutableStateOf(false)
     }
     val barVisible = remember {
-        mutableStateOf(false) //İKİ KERE TIKLAMA SORUNU SONRADAN ÇÖZÜLECEK A.Ç.
+        mutableStateOf(false)
     }
+
+
+
     val sidebarHeight by animateFloatAsState(
-        targetValue = if (barVisible.value) 0.6f else 0f,
+        targetValue = if (barVisible.value ) 0.6f else 0f,
         animationSpec = if (barVisible.value) {
             tween(
                 durationMillis = 300,
@@ -333,9 +336,7 @@ fun AdressScreen(navController: NavHostController) {
                                                tint = MaterialTheme.colorScheme.secondary,
                                                modifier = Modifier.size(28.dp)
                                                    .clickable {
-                                                       if (currentUser.email != null) {
 
-                                                       }
                                                    })
                                        }
                                        Spacer(modifier = Modifier.padding(top = 4.dp))
@@ -366,6 +367,7 @@ fun AdressScreen(navController: NavHostController) {
                             //Buraya güncelleme için gereken bar eklenecek veya yeni sayfaya atılacak
                             Spacer(modifier = Modifier.height(18.dp))
                         }
+
                     }
                 }
 
