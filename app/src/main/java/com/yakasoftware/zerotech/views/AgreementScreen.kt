@@ -408,7 +408,359 @@ fun AgreementScreen(navController: NavHostController) {
                                 color = MaterialTheme.colorScheme.tertiary,
                                 fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
                             )
-                        }  
+                        }
+                        Spacer(modifier = Modifier.padding(top = 32.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "Gizlilik Sözleşmesi", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeMainTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.8f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 18.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                            Spacer(modifier = Modifier.padding(start = 8.dp))
+                            Text(text = "Zerotech (\"Şirket”) olarak kişisel verilerinizin korunmasına büyük önem veriyoruz. Bu kapsamda 6698 sayılı Kişisel Verilerin Korunması Kanunu (\"KVKK”) uyarınca \"veri sorumlusu” sıfatıyla kişisel verileriniz ve işleme süreçleri hakkında sizleri bilgilendirmek isteriz.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "1.İşlenen Kişisel Verileriniz Nelerdir", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kimlik bilgileriniz (Ad Soyad, Doğum tarihi, TC Kimlik No)",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "İletişim bilgileriniz (Adres, e-posta adresi, telefon numarası))",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Mobil uygulamayı kullanımınıza ilişkin detaylar (Uygulamadaki davranışlarınız, işlemleriniz, tercihleriniz, kullanıcı hesabınız)",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Size özel tahsis edilmiş Kullanıcı Adı ve Şifreniz",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "2.Kişisel Verilerinizin İşlenme Amaçları", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel verileriniz, kişisel verilerin korunmasına ilişkin mevzuata uygun olarak aşağıdaki amaçlar ile işlenebilecektir:",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kullanıcı hesabınızı yönetmek ve mobil uygulama hizmetlerini sunmak amacıyla kimlik ve iletişim bilgilerinizi,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Mevzuattan kaynaklanan yükümlülüklerimizi yerine getirmek, yetkili kamu kurum ve kuruluşları ile diğer hukuki yükümlüklerimizi yerine getirmek amaçlarıyla kimlik, iletişim bilgilerinizi,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kullanıcı hesabınıza ilişkin işlemlerde her türlü dava, cevap ve itiraz hakkının kullanılması amacıyla kimlik, iletişim bilgilerinizi,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kullanıcı hesabınızı diğer kullanıcı hesaplarından ayırt edilebilmesi ve gerekirse satın alınan ürünlerin veya hizmetlerin düzeltilmesi ve hizmet sonrası operasyonel süreçlerin yönetilmesi amacıyla kimlik ve iletişim bilgilerinizi.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "3.Elektronik Ticari İletişim İzni Vermeniz Halinde:", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "1.Kullanıcı hesabınıza özel kampanyaların, avantajların, promosyonların, reklamların, bilgilendirmelerin, pazarlama faaliyetlerinin oluşturulabilmesi/yapılabilmesi, size yönelik her türlü ticari iletişim faaliyetlerinde bulunulabilmesi amacıyla kimlik, iletişim ve kullanıcı bilgilerinizi işliyoruz.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "4.Kişisel Verilerinizin Toplama Yöntemi ve Hukuki Sebebi:", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel verileriniz Zerotech tarafından; mobil uygulamayı kullanımınız sırasında işlemleriniz, tercihleriniz ve kullanıcı hesabınız ile ilgili işlemler esnasında elektronik sistemler vasıtasıyla toplanmakta ve işlenmektedir.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Zerotech olarak kişisel verilerinizi; mobil uygulamayı kullanımınıza ilişkin olarak \"sözleşmenin kurulması ve ifası için veri işlemenin gerekli olması”, \"hukuki yükümlülüğün yerine getirilmesi” ile \"veri sorumlusunun meşru menfaatleri için veri işlenmesinin zorunlu olması” hukuki sebeplerine dayanarak topluyoruz.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Açık rızanın bulunması; Şirketimizin tabi olduğu sair mevzuatta açıkça öngörülmüş olması,\n" +
+                                    "Bir sözleşmenin kurulması veya ifasıyla doğrudan doğruya ilgili olması kaydıyla, sözleşmenin taraflarına ait kişisel verilerin işlenmesinin gerekli olması, talep edilen ürün ve hizmetleri sunabilmek ve akdettiğiniz sözleşmelerinin gereğinin yerine getirilmesi,\n" +
+                                    "Hukuki yükümlülüğün yerine getirebilmesi için zorunlu olması,\n" +
+                                    "İlgili kişinin kendisi tarafından alenileştirilmiş olması,\n" +
+                                    "Bir hakkın tesisi, kullanılması veya korunması için veri işlemenin zorunlu olması,\n" +
+                                    "İlgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla, veri sorumlusunun meşru menfaatleri için veri işlenmesinin zorunlu olması.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "4.Kişisel Verilerinizin Aktrarılması:", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Zerotech olarak kişisel verilerinizi:",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Mobil uygulamayı yönetmek, pazarlama faaliyetlerini yürütmek, kişisel veri toplama süreçlerinde hizmet almak gibi amaçlarla yurtiçi ve yurtdışında bulunan iş ortakları ve hizmet sağlayıcılarıyla (pazarlama danışmanları, veri tabanı hizmet sağlayıcıları, elektronik ileti aracı hizmet sağlayıcıları vb.) veya yurtdışındaki iş ortaklarımızın sunucularının yurtdışında olması halinde yurtdışı ile paylaşmaktayız.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "5.Haklarınız", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kanun’un 11. maddesi gereğince; bu Politikanın \"İletişim” bölümünde yer alan yöntemlerle:",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel Verilerinizin işlenip işlenmediğini öğrenme,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel Verileriniz işlenmişse buna ilişkin bilgi talep etme,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel Verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Yurtiçinde veya yurtdışında Kişisel Verilerinizin aktarıldığı üçüncü kişileri bilme,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel Verilerinizin eksik veya yanlış işlenmiş olması halinde bunların düzeltilmesini isteme,\n",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "KVKK mevzuatında öngörülen şartlar çerçevesinde Kişisel Verilerinizin silinmesini veya yok edilmesini isteme,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme,",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Kişisel Verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğramanız halinde bu zararın giderilmesini talep etme haklarına sahipsiniz.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 24.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "6.İletişim", fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeSubTitle.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Row(Modifier.fillMaxWidth(0.6f)) {
+                                SimpleLine()
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Başvurularınızı Veri Sorumlusu olarak Zerotech'un belirttiği e-posta adresine veya yazılı olarak iletebilirsiniz. İlgili talebin yasalar gereği belirli bir prosedürde yapılması gereken hallerde söz konusu prosedüre uyulması gerektiğini hatırlatmak isteriz.",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Adres: Süleymaniye, Ord. Prof.Dr.Cemil Birsel Cd 34116 Hisarın yanı Nezih Bey İs Hanı Girişin Üstü NO 1417 Fatih Eminönü İstanbul",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Telefon: 05317878856",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "Eposta: Yusuf.47doksal@icloud.com"
+                                    ,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = with(LocalDensity.current) { fontSizeText.toSp() }
+                            )
+                        }
+
+
                     }
                 }
                 item { 
