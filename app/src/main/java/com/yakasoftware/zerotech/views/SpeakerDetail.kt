@@ -150,7 +150,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
         mutableStateOf("")
     }
     val context = LocalContext.current
-    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -858,9 +857,6 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
 
-                    val commentsLoading = remember {
-                        mutableStateOf(true)
-                    }
                     if (isDialogVisible.value) {
 
                         val alertDialogFontSize = 16.dp

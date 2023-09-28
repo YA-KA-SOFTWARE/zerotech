@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -35,7 +34,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.AddLocation
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +61,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -130,9 +129,8 @@ fun AdressScreen(navController: NavHostController) {
         val street: String
     )
 
-    val adressList = remember {
-        mutableStateListOf<AdressData>()
-    }
+
+
 
     Surface(
         modifier = Modifier
@@ -280,42 +278,93 @@ fun AdressScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.padding(top = 18.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        SimpleLine()
-                    }
-                    Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                    LazyColumn() {
-                        items(5) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Spacer(modifier = Modifier.padding(start = 12.dp))
-                                Icon(
-                                    imageVector = Icons.Default.AddLocation, // Simgenizin adını buraya ekleyin
-                                    contentDescription = "İsim Simgesi",
-                                    tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .background(
-                                            MaterialTheme.colorScheme.onPrimary,
-                                            RoundedCornerShape(5.dp)
-                                        )
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                Text(
-                                    text = "İsim: ${name.value} ",
-                                    fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() },
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
 
-                            }
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                SimpleLine()
-                            }
-                            Spacer(modifier = Modifier.padding(top = 10.dp))
+                    val adressList = remember {
+                        mutableStateListOf<AdressData>()
+                    }
+                    db.collection("adress").document(email!!).collection(email).get().addOnSuccessListener { documents ->
+                        adressList.clear()
+                        for (document in documents){
+                            val adressData: Map<String,Any> = document.data
+                            city.value = adressData["city"].toString()
+                            adressTitle.value = adressData["adresstitle"].toString()
+                            direction.value = adressData["direction"].toString()
+                            district.value = adressData["district"].toString()
+                            neighbourhood.value = adressData["neighbourhood"].toString()
+                            street.value = adressData["street"].toString()
+                            adressList.add(AdressData(city.value,adressTitle.value,direction.value,district.value,neighbourhood.value,street.value))
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(top = 18.dp))
+                    LazyColumn() {
+                        val adressTitleFontSize = 20.dp
+                        val directionFontSize = 16.dp
+                        items(adressList.size) {index ->
+                            val adress = adressList[index]
+                            //gerekli veriler çekildi tarafımca test edildi istediğiniz bilgiyi çağırmak için adress.city şeklinde çağırmanız yeterlidir M.K.
+                           Box(modifier = Modifier.fillMaxWidth(),
+                               contentAlignment = Alignment.Center) {
+                               Box(modifier = Modifier
+                                   .clip(RoundedCornerShape(20.dp))
+                                   .fillMaxWidth(0.6f)
+                                   .height(120.dp)
+                                   .border(
+                                       width = 2.dp,
+                                       color = MaterialTheme.colorScheme.secondary,
+                                       shape = RoundedCornerShape(20.dp)
+                                   )
+                                   .background(MaterialTheme.colorScheme.onTertiary)) {
+                                   Column(modifier = Modifier.fillMaxSize(),
+                                       horizontalAlignment = Alignment.CenterHorizontally) {
+                                       Spacer(modifier = Modifier.padding(top = 12.dp))
+                                       Row(modifier = Modifier.fillMaxWidth(),
+                                           verticalAlignment = Alignment.CenterVertically,
+                                           horizontalArrangement = Arrangement.Center) {
+                                           Icon(painter = painterResource(id = R.drawable.konumtr), contentDescription ="Konum",
+                                               tint = MaterialTheme.colorScheme.secondary,
+                                               modifier = Modifier.size(28.dp))
+                                           Spacer(modifier = Modifier.padding(2.dp))
+                                           Text(text = adress.adressTitle, color = MaterialTheme.colorScheme.secondary,
+                                               fontWeight = FontWeight.Bold,
+                                               fontSize = with(LocalDensity.current){adressTitleFontSize.toSp()}
+                                           )
+                                           Spacer(modifier = Modifier.weight(0.9f))
+                                           Icon(imageVector = Icons.Default.DriveFileRenameOutline, contentDescription ="Konum",
+                                               tint = MaterialTheme.colorScheme.secondary,
+                                               modifier = Modifier.size(28.dp)
+                                                   .clickable {
+                                                       if (currentUser.email != null) {
+
+                                                       }
+                                                   })
+                                       }
+                                       Spacer(modifier = Modifier.padding(top = 4.dp))
+                                       Row(
+                                           modifier = Modifier.fillMaxWidth(),
+                                           horizontalArrangement = Arrangement.Start
+                                       ) {
+                                           Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                                               SimpleLine()
+                                           }
+                                       }
+                                       Spacer(modifier = Modifier.padding(12.dp))
+                                       Row(
+                                           modifier = Modifier.fillMaxWidth(0.8f), // Metnin maksimum genişliği
+                                           horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                       ) {
+                                           Text(
+                                               text = adress.direction,
+                                               color = MaterialTheme.colorScheme.tertiary,
+                                               fontSize = with(LocalDensity.current) { directionFontSize.toSp() },
+                                               maxLines = 1,
+                                               overflow = TextOverflow.Ellipsis
+                                           )
+                                       }
+                                   }
+                               }
+                           }
+                            //Buraya güncelleme için gereken bar eklenecek veya yeni sayfaya atılacak
+                            Spacer(modifier = Modifier.height(18.dp))
                         }
                     }
                 }
@@ -381,41 +430,41 @@ fun AdressScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-Row(
-    Modifier
-        .wrapContentHeight()
-        .fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.End ) {
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.End ) {
 
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            MaterialTheme.colorScheme.onSecondary,
-                           CircleShape
-                        )
-                        .padding(4.dp),
-                    contentAlignment = Alignment.Center
-
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Bar kapama",
-                        tint = MaterialTheme.colorScheme.primary,
+                    Box(
                         modifier = Modifier
-                            .clickable {
-                                coroutineScope.launch {
-                                    if (isClicked.value) {
-                                        barVisible.value = false
-                                        delay(timeMillis = 250) // Delay for 1000 milliseconds (1 second)
-                                    }
-                                    if (!barVisible.value) {
-                                        isClicked.value = false
+                            .size(40.dp)
+                            .background(
+                                MaterialTheme.colorScheme.onSecondary,
+                                CircleShape
+                            )
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Bar kapama",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .clickable {
+                                    coroutineScope.launch {
+                                        if (isClicked.value) {
+                                            barVisible.value = false
+                                            delay(timeMillis = 250) // Delay for 1000 milliseconds (1 second)
+                                        }
+                                        if (!barVisible.value) {
+                                            isClicked.value = false
+                                        }
                                     }
                                 }
-                            }
 
-                    )
-                } }
+                        )
+                    } }
 
                 LazyColumn(
                     Modifier.fillMaxSize(),
@@ -659,7 +708,7 @@ Row(
                             }
                         }
                         Spacer(modifier = Modifier.padding(top = 15.dp))
-                            Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.weight(1f))
                         Spacer(modifier = Modifier.padding(top = 15.dp))
                         Row(
                             Modifier
@@ -719,14 +768,14 @@ Row(
                             val fontSizeButton = 24.dp
                             OutlinedButton(
                                 onClick = {
-                                          val adressMap = hashMapOf(
-                                              "adresstitle" to adressTitle.value,
-                                              "city" to city.value,
-                                              "district" to district.value,
-                                              "neighbourhood" to neighbourhood.value,
-                                              "street" to street.value,
-                                              "direction" to direction.value
-                                          )
+                                    val adressMap = hashMapOf(
+                                        "adresstitle" to adressTitle.value,
+                                        "city" to city.value,
+                                        "district" to district.value,
+                                        "neighbourhood" to neighbourhood.value,
+                                        "street" to street.value,
+                                        "direction" to direction.value
+                                    )
                                     val adressDb = Firebase.firestore
                                     val currentUserEmailAdress = Firebase.auth.currentUser?.email
                                     if (currentUserEmailAdress != null) {
@@ -742,6 +791,12 @@ Row(
                                                     documentReference.update(updatedData)
                                                         .addOnSuccessListener {
                                                             Toast.makeText(context,"Adres başarıyla eklendi.",Toast.LENGTH_SHORT).show()
+                                                            adressTitle.value = ""
+                                                            city.value = ""
+                                                            district.value = ""
+                                                            neighbourhood.value = ""
+                                                            street.value = ""
+                                                            direction.value = ""
                                                             coroutineScope.launch {
                                                                 if (isClicked.value) {
                                                                     barVisible.value = false
@@ -781,5 +836,3 @@ Row(
         }
     }
 }
-
-
