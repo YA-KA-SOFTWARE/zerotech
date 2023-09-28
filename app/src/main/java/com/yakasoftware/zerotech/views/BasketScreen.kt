@@ -23,10 +23,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.ArrowDropDownCircle
 import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,6 +55,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
@@ -487,9 +491,14 @@ fun BasketScreen(navController: NavHostController) {
                                                             .clickable {
                                                                 if (sepetSayisi.value > 1) {
                                                                     sepetSayisi.value -= 1
-                                                                    val documentReference = db.collection("basket").document(baskets.docId)
+                                                                    val documentReference = db
+                                                                        .collection("basket")
+                                                                        .document(baskets.docId)
 
-                                                                    documentReference.update("amount", sepetSayisi.value.toString())
+                                                                    documentReference.update(
+                                                                        "amount",
+                                                                        sepetSayisi.value.toString()
+                                                                    )
                                                                 }
                                                             },
                                                         contentAlignment = Alignment.CenterStart
@@ -519,9 +528,14 @@ fun BasketScreen(navController: NavHostController) {
                                                             .background(MaterialTheme.colorScheme.onSecondary)
                                                             .clickable {
                                                                 sepetSayisi.value += 1
-                                                                val documentReference = db.collection("basket").document(baskets.docId)
+                                                                val documentReference = db
+                                                                    .collection("basket")
+                                                                    .document(baskets.docId)
 
-                                                                documentReference.update("amount", sepetSayisi.value.toString())
+                                                                documentReference.update(
+                                                                    "amount",
+                                                                    sepetSayisi.value.toString()
+                                                                )
 
                                                             }
                                                         ,
@@ -552,9 +566,35 @@ fun BasketScreen(navController: NavHostController) {
                             }
                         }
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(120.dp))
+                    }
 
                 }
             }
+        }
+        val fontSizeIcon = 20.dp
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            val shoppingBarFontSize = 20.dp
+            val oldPriceFontSize = 18.dp
+            Spacer(modifier = Modifier.padding(start = 8.dp))
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(MaterialTheme.colorScheme.secondary)
+                //BORDER EKLENEBİLİR
+                ,
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
+
+            }
+
         }
     }
 }
