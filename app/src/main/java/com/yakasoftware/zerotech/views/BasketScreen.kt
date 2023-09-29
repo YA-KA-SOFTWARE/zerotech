@@ -1,11 +1,8 @@
 package com.yakasoftware.zerotech.views
 
 import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,19 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleUp
-import androidx.compose.material.icons.filled.ArrowDropDownCircle
 import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.filled.ShoppingBasket
+import androidx.compose.material3.Button
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,14 +50,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
-import kotlinx.coroutines.launch
-import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun BasketScreen(navController: NavHostController) {
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+     val totalPrice = remember { mutableStateOf(0.0) }
         val context = LocalContext.current
         val db = Firebase.firestore
         val auth = Firebase.auth
@@ -212,7 +206,14 @@ fun BasketScreen(navController: NavHostController) {
                 }
 
                 val basList = remember { mutableStateListOf<BasketProduct>() }
-
+                fun calculateTotalPrice(basList: List<BasketProduct>): Double {
+                    var totalPrice = 0.0
+                    for (baskets in basList) {
+                        totalPrice += baskets.price.toFloat() * baskets.amount.toInt()
+                    }
+                    return totalPrice
+                }
+                totalPrice.value = calculateTotalPrice(basList)
                 db.collection("basket").whereEqualTo("email", email).get()
                     .addOnSuccessListener { documents ->
                         basList.clear()
@@ -251,6 +252,7 @@ fun BasketScreen(navController: NavHostController) {
                     }
 
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
+
                     val fontSize = 12.dp
                     val fontSizePrice = 16.dp
                     items(basList.size) { index ->
@@ -258,6 +260,7 @@ fun BasketScreen(navController: NavHostController) {
                         val painter = rememberAsyncImagePainter(model = baskets.photo1)
                         val sepetSayisi =
                             remember { mutableStateOf(baskets.amount.toInt()) }
+
 
                         Box(
                             modifier = Modifier
@@ -468,6 +471,7 @@ fun BasketScreen(navController: NavHostController) {
                                                             textAlign = TextAlign.Center,
                                                             textDecoration = TextDecoration.LineThrough
                                                         )
+
                                                         Text(
                                                             text = String.format("%.2f", baskets.price.toFloat()*sepetSayisi.value) + "₺",
                                                             color = MaterialTheme.colorScheme.secondary,
@@ -475,6 +479,7 @@ fun BasketScreen(navController: NavHostController) {
                                                             fontWeight = FontWeight.Bold,
                                                             textAlign = TextAlign.Center
                                                         )
+
                                                     }
 
                                                     Spacer(modifier = Modifier.weight(1f))
@@ -569,7 +574,6 @@ fun BasketScreen(navController: NavHostController) {
                     item {
                         Spacer(modifier = Modifier.height(120.dp))
                     }
-
                 }
             }
         }
@@ -587,11 +591,18 @@ fun BasketScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .height(100.dp)
                     .background(MaterialTheme.colorScheme.secondary)
-                //BORDER EKLENEBİLİR
                 ,
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Center
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
             ) {
+
+                Text(text = "Toplam Fiyat:")
+                Spacer(modifier = Modifier.padding(10.dp))
+                Text(text = "${String.format("%.2f", totalPrice.value)}₺" )
+                Spacer(modifier = Modifier.padding(10.dp))
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = "Siparişi Onayla", color = MaterialTheme.colorScheme.tertiary)
+                }
 
             }
 
