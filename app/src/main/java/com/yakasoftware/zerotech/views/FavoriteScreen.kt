@@ -184,7 +184,6 @@ fun FavoriteScreen(navController: NavHostController) {
                 val discount: String,
                 val type: String
             )
-            val db = Firebase.firestore
 
             val title = remember { mutableStateOf("") }
             val photo1 = remember{ mutableStateOf("") }

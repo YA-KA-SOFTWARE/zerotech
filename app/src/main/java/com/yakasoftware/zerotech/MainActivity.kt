@@ -13,6 +13,7 @@ import com.yakasoftware.zerotech.ui.theme.ZeroTechTheme
 import com.yakasoftware.zerotech.views.AccesoiresScreen
 import com.yakasoftware.zerotech.views.AccesoriesDetail
 import com.yakasoftware.zerotech.views.AccountDetailScreen
+import com.yakasoftware.zerotech.views.AdressDetail
 import com.yakasoftware.zerotech.views.AdressScreen
 import com.yakasoftware.zerotech.views.AgreementScreen
 import com.yakasoftware.zerotech.views.BandDetail
@@ -130,6 +131,10 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("agreement_screen") {
                         AgreementScreen(navController = navController)
+                    }
+                    composable("adress_detail_screen/{documentId}") { backStackEntry ->
+                        backStackEntry.arguments?.getString("documentId")
+                            ?.let { AdressDetail(navController = navController, documentId = it) }
                     }
                 }
             }

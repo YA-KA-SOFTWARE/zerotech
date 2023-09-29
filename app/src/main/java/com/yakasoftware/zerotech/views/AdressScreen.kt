@@ -24,17 +24,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -85,6 +84,9 @@ fun AdressScreen(navController: NavHostController) {
     val city = remember {
         mutableStateOf("")
     }
+    val docId = remember {
+        mutableStateOf("")
+    }
     val district = remember {
         mutableStateOf("")
     }
@@ -103,8 +105,6 @@ fun AdressScreen(navController: NavHostController) {
     val barVisible = remember {
         mutableStateOf(false)
     }
-
-
 
     val sidebarHeight by animateFloatAsState(
         targetValue = if (barVisible.value ) 0.6f else 0f,
@@ -129,7 +129,8 @@ fun AdressScreen(navController: NavHostController) {
         val direction: String,
         val district: String,
         val neighbourhood: String,
-        val street: String
+        val street: String,
+        val docId: String
     )
 
 
@@ -295,7 +296,8 @@ fun AdressScreen(navController: NavHostController) {
                             district.value = adressData["district"].toString()
                             neighbourhood.value = adressData["neighbourhood"].toString()
                             street.value = adressData["street"].toString()
-                            adressList.add(AdressData(city.value,adressTitle.value,direction.value,district.value,neighbourhood.value,street.value))
+                            docId.value = adressData["documentId"].toString()
+                            adressList.add(AdressData(city.value,adressTitle.value,direction.value,district.value,neighbourhood.value,street.value,docId.value))
                         }
                     }
                     Spacer(modifier = Modifier.padding(top = 18.dp))
@@ -332,11 +334,12 @@ fun AdressScreen(navController: NavHostController) {
                                                fontSize = with(LocalDensity.current){adressTitleFontSize.toSp()}
                                            )
                                            Spacer(modifier = Modifier.weight(0.9f))
-                                           Icon(imageVector = Icons.Default.DriveFileRenameOutline, contentDescription ="Konum",
+                                           Icon(imageVector = Icons.Default.DriveFileRenameOutline, contentDescription ="Adres Güncelleme",
                                                tint = MaterialTheme.colorScheme.secondary,
-                                               modifier = Modifier.size(28.dp)
+                                               modifier = Modifier
+                                                   .size(26.dp)
                                                    .clickable {
-
+                                                       navController.navigate("adress_detail_screen/${adress.docId}")
                                                    })
                                        }
                                        Spacer(modifier = Modifier.padding(top = 4.dp))
