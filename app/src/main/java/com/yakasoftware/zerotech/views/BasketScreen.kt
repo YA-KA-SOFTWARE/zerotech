@@ -56,7 +56,7 @@ import com.yakasoftware.zerotech.Lines.SimpleLine
 fun BasketScreen(navController: NavHostController) {
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-     val totalPrice = remember { mutableStateOf(0.0) }
+        val totalPrice = remember { mutableStateOf(0.0) }
         val context = LocalContext.current
         val db = Firebase.firestore
         val auth = Firebase.auth

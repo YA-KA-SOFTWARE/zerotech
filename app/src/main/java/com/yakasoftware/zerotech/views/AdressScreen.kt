@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -300,98 +301,105 @@ fun AdressScreen(navController: NavHostController) {
                             adressList.add(AdressData(city.value,adressTitle.value,direction.value,district.value,neighbourhood.value,street.value,docId.value))
                         }
                     }
-                    Spacer(modifier = Modifier.padding(top = 18.dp))
+
                     LazyColumn() {
                         val adressTitleFontSize = 20.dp
                         val directionFontSize = 16.dp
+                        item{
+                            Spacer(modifier = Modifier.padding(top = 18.dp))
+                        }
                         items(adressList.size) {index ->
                             val adress = adressList[index]
                             //gerekli veriler çekildi tarafımca test edildi istediğiniz bilgiyi çağırmak için adress.city şeklinde çağırmanız yeterlidir M.K.
-                           Box(modifier = Modifier.fillMaxWidth(),
-                               contentAlignment = Alignment.Center) {
-                               Box(modifier = Modifier
-                                   .clip(RoundedCornerShape(20.dp))
-                                   .fillMaxWidth(0.6f)
-                                   .height(120.dp)
-                                   .border(
-                                       width = 2.dp,
-                                       color = MaterialTheme.colorScheme.secondary,
-                                       shape = RoundedCornerShape(20.dp)
-                                   )
-                                   .background(MaterialTheme.colorScheme.onTertiary)) {
-                                   Column(modifier = Modifier.fillMaxSize(),
-                                       horizontalAlignment = Alignment.CenterHorizontally) {
-                                       Spacer(modifier = Modifier.padding(top = 12.dp))
-                                       Row(modifier = Modifier.fillMaxWidth(),
-                                           verticalAlignment = Alignment.CenterVertically,
-                                           horizontalArrangement = Arrangement.Center) {
-                                           Icon(painter = painterResource(id = R.drawable.konumtr), contentDescription ="Konum",
-                                               tint = MaterialTheme.colorScheme.secondary,
-                                               modifier = Modifier.size(28.dp))
-                                           Spacer(modifier = Modifier.padding(2.dp))
-                                           Text(text = adress.adressTitle, color = MaterialTheme.colorScheme.secondary,
-                                               fontWeight = FontWeight.Bold,
-                                               fontSize = with(LocalDensity.current){adressTitleFontSize.toSp()}
-                                           )
-                                           Spacer(modifier = Modifier.weight(0.9f))
-                                           Icon(imageVector = Icons.Default.DriveFileRenameOutline, contentDescription ="Adres Güncelleme",
-                                               tint = MaterialTheme.colorScheme.secondary,
-                                               modifier = Modifier
-                                                   .size(26.dp)
-                                                   .clickable {
-                                                       navController.navigate("adress_detail_screen/${adress.docId}")
-                                                   })
-                                       }
-                                       Spacer(modifier = Modifier.padding(top = 4.dp))
-                                       Row(
-                                           modifier = Modifier.fillMaxWidth(),
-                                           horizontalArrangement = Arrangement.Start
-                                       ) {
-                                           Row(modifier = Modifier.fillMaxWidth(0.5f)) {
-                                               SimpleLine()
-                                           }
-                                       }
-                                       Spacer(modifier = Modifier.padding(12.dp))
-                                       Row(
-                                           modifier = Modifier.fillMaxWidth(0.8f), // Metnin maksimum genişliği
-                                           horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                       ) {
-                                           Text(
-                                               text = adress.direction,
-                                               color = MaterialTheme.colorScheme.tertiary,
-                                               fontSize = with(LocalDensity.current) { directionFontSize.toSp() },
-                                               maxLines = 1,
-                                               overflow = TextOverflow.Ellipsis
-                                           )
-                                       }
-                                   }
-                               }
-                           }
+                            Box(modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center) {
+                                Box(modifier = Modifier
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .fillMaxWidth(0.6f)
+                                    .height(120.dp)
+                                    .border(
+                                        width = 2.dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(20.dp)
+                                    )
+                                    .background(MaterialTheme.colorScheme.onTertiary)) {
+                                    Column(modifier = Modifier.fillMaxSize(),
+                                        horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Spacer(modifier = Modifier.padding(top = 12.dp))
+                                        Row(modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center) {
+                                            Icon(painter = painterResource(id = R.drawable.konumtr), contentDescription ="Konum",
+                                                tint = MaterialTheme.colorScheme.secondary,
+                                                modifier = Modifier.size(28.dp))
+                                            Spacer(modifier = Modifier.padding(2.dp))
+                                            Text(text = adress.adressTitle, color = MaterialTheme.colorScheme.secondary,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = with(LocalDensity.current){adressTitleFontSize.toSp()}
+                                            )
+                                            Spacer(modifier = Modifier.weight(0.9f))
+                                            Icon(imageVector = Icons.Default.DriveFileRenameOutline, contentDescription ="Adres Güncelleme",
+                                                tint = MaterialTheme.colorScheme.secondary,
+                                                modifier = Modifier
+                                                    .size(26.dp)
+                                                    .clickable {
+                                                        navController.navigate("adress_detail_screen/${adress.docId}")
+                                                    })
+                                        }
+                                        Spacer(modifier = Modifier.padding(top = 4.dp))
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Start
+                                        ) {
+                                            Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                                                SimpleLine()
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.padding(12.dp))
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(0.8f), // Metnin maksimum genişliği
+                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                        ) {
+                                            Text(
+                                                text = adress.direction,
+                                                color = MaterialTheme.colorScheme.tertiary,
+                                                fontSize = with(LocalDensity.current) { directionFontSize.toSp() },
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                             //Buraya güncelleme için gereken bar eklenecek veya yeni sayfaya atılacak
                             Spacer(modifier = Modifier.height(18.dp))
+                        }
+                        item{
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                Spacer(modifier = Modifier.weight(1f))
+                                FloatingActionButton(
+                                    onClick = {
+                                        isClicked.value = true
+                                        barVisible.value = true
+                                    },
+                                    modifier = Modifier.clickable(enabled = !isClicked.value) {}.padding(bottom = 5.dp, end = 5.dp),
+                                ) {
+                                    Icon(Icons.Filled.AddCircleOutline, "Localized description")
+                                }
+                            }
                         }
 
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    LargeFloatingActionButton(
-                        onClick = {
-                            isClicked.value = true
-                            barVisible.value = true
-                        },
-                        modifier = Modifier.clickable(enabled = !isClicked.value) {},
-                    ) {
-                        Icon(Icons.Filled.AddCircleOutline, "Localized description")
-                    }
-                }
+
 
 
             }

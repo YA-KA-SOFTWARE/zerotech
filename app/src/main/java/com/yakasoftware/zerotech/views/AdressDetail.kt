@@ -65,24 +65,25 @@ fun AdressDetail(navController: NavHostController,documentId: String) {
     val currentUserEmail = currentUser?.email
     val db = Firebase.firestore
 
-    if (currentUserEmail != null)
-    db.collection("adress")
-        .document(currentUserEmail)
-        .collection(currentUserEmail)
-        .document(documentId)
-        .get()
-        .addOnSuccessListener { 
-            val data = it.data
-            city.value = data?.get("city") as String
-            direction.value = data["direction"] as String
-            district.value = data["district"] as String
-            neighbourhood.value = data["neighbourhood"] as String
-            adressTitle.value = data["adresstitle"] as String
-            street.value = data["street"] as String
-        }
-        .addOnFailureListener { 
-            println(it)
-        }
+    if (currentUserEmail != null) {
+        db.collection("adress")
+            .document(currentUserEmail)
+            .collection(currentUserEmail)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener {
+                val data = it.data
+                city.value = data?.get("city") as String
+                direction.value = data["direction"] as String
+                district.value = data["district"] as String
+                neighbourhood.value = data["neighbourhood"] as String
+                adressTitle.value = data["adresstitle"] as String
+                street.value = data["street"] as String
+            }
+            .addOnFailureListener {
+                println(it)
+            }
+    }
     val uptadeTitle = remember {
         mutableStateOf("")
     }
@@ -106,7 +107,7 @@ fun AdressDetail(navController: NavHostController,documentId: String) {
         val fontSizeMain = 24.dp
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.padding(top = 48.dp))
+            Spacer(modifier = Modifier.padding(top = 175.dp))    //ortalamak için
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(text = "Adres Güncelleme", color = MaterialTheme.colorScheme.secondary,
