@@ -103,7 +103,7 @@ import java.util.Locale
 fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) {
     val db = Firebase.firestore
     val proCollection = db.collection("products").document("speakers")
-    val docRef = proCollection.collection("Aggiy AG-S21 Bluetooth Hoparlör")
+    val docRef = proCollection.collection("speakers")
     val detail1 = remember {
         mutableStateOf("")
     }

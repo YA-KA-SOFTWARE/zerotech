@@ -772,7 +772,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
         speakersDb.collection("products").document("speakers")
-            .collection("Aggiy AG-S21 Bluetooth Hoparlör")
+            .collection("speakers")
             .get()
             .addOnSuccessListener { documents ->
                 speakerList.clear()

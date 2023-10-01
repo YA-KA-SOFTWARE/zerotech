@@ -148,6 +148,18 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
     val detail15 = remember {
         mutableStateOf("")
     }
+    val detail16 = remember {
+        mutableStateOf("")
+    }
+    val detail17 = remember {
+        mutableStateOf("")
+    }
+    val detail18 = remember {
+        mutableStateOf("")
+    }
+    val detail19 = remember {
+        mutableStateOf("")
+    }
     val context = LocalContext.current
     val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
@@ -289,6 +301,22 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                         val detail15Value = document.getString("detail15")
                         if (detail15Value != null && detail15Value != "") {
                             detail15.value = detail15Value
+                        }
+                        val detail16Value = document.getString("detail16")
+                        if (detail16Value != null && detail16Value != "") {
+                            detail16.value = detail16Value
+                        }
+                        val detail17Value = document.getString("detail17")
+                        if (detail17Value != null && detail17Value != "") {
+                            detail17.value = detail17Value
+                        }
+                        val detail18Value = document.getString("detail18")
+                        if (detail18Value != null && detail18Value != "") {
+                            detail18.value = detail18Value
+                        }
+                        val detail19Value = document.getString("detail19")
+                        if (detail19Value != null && detail19Value != "") {
+                            detail19.value = detail19Value
                         }
                         if (photo1.value.isNotEmpty() && photo1.value != "") {
                             photoUrls.add(photo1.value)
