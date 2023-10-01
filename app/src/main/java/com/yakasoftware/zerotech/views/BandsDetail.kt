@@ -1215,7 +1215,7 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                             modifier = Modifier
                                 .fillMaxWidth(0.75f)
                                 .height(75.dp)
-                                .clickable {
+                                .clickable (enabled = isAtTop.value){
                                     isDialogVisible2.value = true
                                 },
                             colors = CardDefaults.cardColors(
