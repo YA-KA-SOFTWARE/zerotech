@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -25,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
@@ -190,6 +192,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
         data class Colorr(
             val color: String,
         )
+
         data class CommentData(
             val productTitle: String,
             val senderName: String,
@@ -216,10 +219,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
         val starNumber = remember {
             mutableStateOf(0)
         }
+        data class ColorData(
+            val color: String
+        )
         val colorList = remember {
-            mutableStateListOf<String>()
+            mutableStateListOf<ColorData>()
         }
-        val dataList =remember{ mutableStateListOf<String>()}
 
         LaunchedEffect(Unit) {
             pagerLoading.value = true
@@ -323,7 +328,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                         val yourArray = document.get("color") as? ArrayList<*>
                         if (yourArray != null) {
                             for (item in yourArray) {
-                                colorList.add(item.toString())
+                                colorList.add(ColorData(item.toString()))
                             }
                         } else {
                             println("ArrayList null veya dizi değil.")
@@ -456,10 +461,11 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                             modifier = Modifier.fillMaxSize(),
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            Row (Modifier.fillMaxWidth(),
+                            Row(
+                                Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.End
-                            ){
+                            ) {
                                 Text(
                                     text = "${commentList.size} Değerlendirme | ${ortalamaPuan}",
                                     color = MaterialTheme.colorScheme.tertiary,
@@ -522,9 +528,11 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
 
 
                         }
-                        Row(modifier = Modifier.fillMaxSize(),
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
                             horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.Top) {
+                            verticalAlignment = Alignment.Top
+                        ) {
                             val favData = hashMapOf(
                                 "oldPrice" to oldPrice.value,
                                 "price" to price.value,
@@ -901,7 +909,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         text = "Sıralama",
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.secondary,
-                                        fontSize = with(LocalDensity.current) {alertDialogFontSizeTitle.toSp()}
+                                        fontSize = with(LocalDensity.current) { alertDialogFontSizeTitle.toSp() }
                                     )
                                 }
                             },
@@ -928,7 +936,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         Spacer(modifier = Modifier.padding(start = 6.dp))
                                         Text(text = "Varsayılan",
-                                            fontSize = with(LocalDensity.current) {alertDialogFontSize.toSp()}
+                                            fontSize = with(LocalDensity.current) { alertDialogFontSize.toSp() }
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
@@ -950,7 +958,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         Spacer(modifier = Modifier.padding(start = 6.dp))
                                         Text(text = "En yüksek puana göre",
-                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                            fontSize = with(LocalDensity.current) { alertDialogFontSize.toSp() }
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
@@ -973,7 +981,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         Spacer(modifier = Modifier.padding(start = 6.dp))
                                         Text(text = "En düşük puana göre",
-                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                            fontSize = with(LocalDensity.current) { alertDialogFontSize.toSp() }
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
@@ -994,7 +1002,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         Spacer(modifier = Modifier.padding(start = 6.dp))
                                         Text(text = "En yeni yorumlar",
-                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                            fontSize = with(LocalDensity.current) { alertDialogFontSize.toSp() }
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
@@ -1015,7 +1023,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         Spacer(modifier = Modifier.padding(start = 6.dp))
                                         Text(text = "En eski yorumlar",
-                                            fontSize = with(LocalDensity.current){alertDialogFontSize.toSp()}
+                                            fontSize = with(LocalDensity.current) { alertDialogFontSize.toSp() }
                                         )
                                     }
                                 }
@@ -1045,11 +1053,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         name.value = commentDt["senderName"].toString()
                                         surName.value = commentDt["senderSurName"].toString()
                                         val dateValue = commentDt["date"]
-                                        date.value = if (dateValue is com.google.firebase.Timestamp) {
-                                            dateValue
-                                        } else {
-                                            null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
-                                        }
+                                        date.value =
+                                            if (dateValue is com.google.firebase.Timestamp) {
+                                                dateValue
+                                            } else {
+                                                null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                                            }
                                         description.value = commentDt["description"].toString()
                                         starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
@@ -1077,11 +1086,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         name.value = commentDt["senderName"].toString()
                                         surName.value = commentDt["senderSurName"].toString()
                                         val dateValue = commentDt["date"]
-                                        date.value = if (dateValue is com.google.firebase.Timestamp) {
-                                            dateValue
-                                        } else {
-                                            null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
-                                        }
+                                        date.value =
+                                            if (dateValue is com.google.firebase.Timestamp) {
+                                                dateValue
+                                            } else {
+                                                null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                                            }
                                         description.value = commentDt["description"].toString()
                                         starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
@@ -1109,11 +1119,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         name.value = commentDt["senderName"].toString()
                                         surName.value = commentDt["senderSurName"].toString()
                                         val dateValue = commentDt["date"]
-                                        date.value = if (dateValue is com.google.firebase.Timestamp) {
-                                            dateValue
-                                        } else {
-                                            null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
-                                        }
+                                        date.value =
+                                            if (dateValue is com.google.firebase.Timestamp) {
+                                                dateValue
+                                            } else {
+                                                null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                                            }
                                         description.value = commentDt["description"].toString()
                                         starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
@@ -1141,11 +1152,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         name.value = commentDt["senderName"].toString()
                                         surName.value = commentDt["senderSurName"].toString()
                                         val dateValue = commentDt["date"]
-                                        date.value = if (dateValue is com.google.firebase.Timestamp) {
-                                            dateValue
-                                        } else {
-                                            null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
-                                        }
+                                        date.value =
+                                            if (dateValue is com.google.firebase.Timestamp) {
+                                                dateValue
+                                            } else {
+                                                null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                                            }
                                         description.value = commentDt["description"].toString()
                                         starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
@@ -1173,11 +1185,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         name.value = commentDt["senderName"].toString()
                                         surName.value = commentDt["senderSurName"].toString()
                                         val dateValue = commentDt["date"]
-                                        date.value = if (dateValue is com.google.firebase.Timestamp) {
-                                            dateValue
-                                        } else {
-                                            null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
-                                        }
+                                        date.value =
+                                            if (dateValue is com.google.firebase.Timestamp) {
+                                                dateValue
+                                            } else {
+                                                null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                                            }
                                         description.value = commentDt["description"].toString()
                                         starNumber.value = commentDt["point"].toString().toInt()
                                         commentList.add(
@@ -1236,7 +1249,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                             modifier = Modifier
                                 .fillMaxWidth(0.75f)
                                 .height(75.dp)
-                                .clickable (enabled = isAtTop.value){
+                                .clickable(enabled = isAtTop.value) {
                                     isDialogVisible2.value = true
                                 },
                             colors = CardDefaults.cardColors(
@@ -1373,10 +1386,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         {
                                             Spacer(modifier = Modifier.padding(top = 8.dp))
-                                            Column(modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentHeight(),
-                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -1384,7 +1399,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     verticalAlignment = Alignment.Top,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Text(
                                                         text = commentData.senderName + " " + commentData.senderSurName,
                                                         color = MaterialTheme.colorScheme.tertiary,
@@ -1415,7 +1435,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     }
                                                 }
                                                 Row(modifier = Modifier.fillMaxWidth()) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Row(modifier = Modifier.fillMaxWidth(0.4f)) {
                                                         SimpleLine()
                                                     }
@@ -1443,7 +1468,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         Modifier
                                                             .fillMaxWidth(0.8f)
                                                             .wrapContentHeight()
-                                                            .defaultMinSize(minHeight = 50.dp)) {
+                                                            .defaultMinSize(minHeight = 50.dp)
+                                                    ) {
                                                         Text(
                                                             text = commentData.description,
                                                             color = Color(255, 162, 118, 255),
@@ -1452,9 +1478,13 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         )
                                                     }
                                                     val dateFormat =
-                                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                                        SimpleDateFormat(
+                                                            "dd/MM/yyyy",
+                                                            Locale.getDefault()
+                                                        )
                                                     val commentDate = commentData.date?.toDate()
-                                                    val formattedDate = commentDate?.let { dateFormat.format(it) }
+                                                    val formattedDate =
+                                                        commentDate?.let { dateFormat.format(it) }
                                                     Text(
                                                         text = formattedDate.toString(), // Eklemek istediğiniz metni buraya yazın
                                                         color = Color(255, 162, 118, 255),
@@ -1513,10 +1543,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         {
                                             Spacer(modifier = Modifier.padding(top = 8.dp))
-                                            Column(modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentHeight(),
-                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -1524,7 +1556,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     verticalAlignment = Alignment.Top,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Text(
                                                         text = commentData.senderName + " " + commentData.senderSurName,
                                                         color = MaterialTheme.colorScheme.tertiary,
@@ -1555,7 +1592,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     }
                                                 }
                                                 Row(modifier = Modifier.fillMaxWidth()) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Row(modifier = Modifier.fillMaxWidth(0.4f)) {
                                                         SimpleLine()
                                                     }
@@ -1583,7 +1625,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         Modifier
                                                             .fillMaxWidth(0.8f)
                                                             .wrapContentHeight()
-                                                            .defaultMinSize(minHeight = 50.dp)) {
+                                                            .defaultMinSize(minHeight = 50.dp)
+                                                    ) {
                                                         Text(
                                                             text = commentData.description,
                                                             color = Color(255, 162, 118, 255),
@@ -1592,9 +1635,13 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         )
                                                     }
                                                     val dateFormat =
-                                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                                        SimpleDateFormat(
+                                                            "dd/MM/yyyy",
+                                                            Locale.getDefault()
+                                                        )
                                                     val commentDate = commentData.date?.toDate()
-                                                    val formattedDate = commentDate?.let { dateFormat.format(it) }
+                                                    val formattedDate =
+                                                        commentDate?.let { dateFormat.format(it) }
                                                     Text(
                                                         text = formattedDate.toString(), // Eklemek istediğiniz metni buraya yazın
                                                         color = Color(255, 162, 118, 255),
@@ -1653,10 +1700,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         {
                                             Spacer(modifier = Modifier.padding(top = 8.dp))
-                                            Column(modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentHeight(),
-                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -1664,7 +1713,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     verticalAlignment = Alignment.Top,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Text(
                                                         text = commentData.senderName + " " + commentData.senderSurName,
                                                         color = MaterialTheme.colorScheme.tertiary,
@@ -1695,7 +1749,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     }
                                                 }
                                                 Row(modifier = Modifier.fillMaxWidth()) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Row(modifier = Modifier.fillMaxWidth(0.4f)) {
                                                         SimpleLine()
                                                     }
@@ -1723,7 +1782,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         Modifier
                                                             .fillMaxWidth(0.8f)
                                                             .wrapContentHeight()
-                                                            .defaultMinSize(minHeight = 50.dp)) {
+                                                            .defaultMinSize(minHeight = 50.dp)
+                                                    ) {
                                                         Text(
                                                             text = commentData.description,
                                                             color = Color(255, 162, 118, 255),
@@ -1732,9 +1792,13 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         )
                                                     }
                                                     val dateFormat =
-                                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                                        SimpleDateFormat(
+                                                            "dd/MM/yyyy",
+                                                            Locale.getDefault()
+                                                        )
                                                     val commentDate = commentData.date?.toDate()
-                                                    val formattedDate = commentDate?.let { dateFormat.format(it) }
+                                                    val formattedDate =
+                                                        commentDate?.let { dateFormat.format(it) }
                                                     Text(
                                                         text = formattedDate.toString(), // Eklemek istediğiniz metni buraya yazın
                                                         color = Color(255, 162, 118, 255),
@@ -1793,10 +1857,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         {
                                             Spacer(modifier = Modifier.padding(top = 8.dp))
-                                            Column(modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentHeight(),
-                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -1804,7 +1870,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     verticalAlignment = Alignment.Top,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Text(
                                                         text = commentData.senderName + " " + commentData.senderSurName,
                                                         color = MaterialTheme.colorScheme.tertiary,
@@ -1835,7 +1906,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     }
                                                 }
                                                 Row(modifier = Modifier.fillMaxWidth()) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Row(modifier = Modifier.fillMaxWidth(0.4f)) {
                                                         SimpleLine()
                                                     }
@@ -1863,7 +1939,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         Modifier
                                                             .fillMaxWidth(0.8f)
                                                             .wrapContentHeight()
-                                                            .defaultMinSize(minHeight = 50.dp)) {
+                                                            .defaultMinSize(minHeight = 50.dp)
+                                                    ) {
                                                         Text(
                                                             text = commentData.description,
                                                             color = Color(255, 162, 118, 255),
@@ -1872,9 +1949,13 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         )
                                                     }
                                                     val dateFormat =
-                                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                                        SimpleDateFormat(
+                                                            "dd/MM/yyyy",
+                                                            Locale.getDefault()
+                                                        )
                                                     val commentDate = commentData.date?.toDate()
-                                                    val formattedDate = commentDate?.let { dateFormat.format(it) }
+                                                    val formattedDate =
+                                                        commentDate?.let { dateFormat.format(it) }
                                                     Text(
                                                         text = formattedDate.toString(), // Eklemek istediğiniz metni buraya yazın
                                                         color = Color(255, 162, 118, 255),
@@ -1933,10 +2014,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                         )
                                         {
                                             Spacer(modifier = Modifier.padding(top = 8.dp))
-                                            Column(modifier = Modifier
-                                                .fillMaxWidth()
-                                                .wrapContentHeight(),
-                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .wrapContentHeight(),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -1944,7 +2027,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     verticalAlignment = Alignment.Top,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Text(
                                                         text = commentData.senderName + " " + commentData.senderSurName,
                                                         color = MaterialTheme.colorScheme.tertiary,
@@ -1975,7 +2063,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     }
                                                 }
                                                 Row(modifier = Modifier.fillMaxWidth()) {
-                                                    Spacer(modifier = Modifier.padding(start = 12.dp, top = 12.dp))
+                                                    Spacer(
+                                                        modifier = Modifier.padding(
+                                                            start = 12.dp,
+                                                            top = 12.dp
+                                                        )
+                                                    )
                                                     Row(modifier = Modifier.fillMaxWidth(0.4f)) {
                                                         SimpleLine()
                                                     }
@@ -2003,7 +2096,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         Modifier
                                                             .fillMaxWidth(0.8f)
                                                             .wrapContentHeight()
-                                                            .defaultMinSize(minHeight = 50.dp)) {
+                                                            .defaultMinSize(minHeight = 50.dp)
+                                                    ) {
                                                         Text(
                                                             text = commentData.description,
                                                             color = Color(255, 162, 118, 255),
@@ -2012,9 +2106,13 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                         )
                                                     }
                                                     val dateFormat =
-                                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                                        SimpleDateFormat(
+                                                            "dd/MM/yyyy",
+                                                            Locale.getDefault()
+                                                        )
                                                     val commentDate = commentData.date?.toDate()
-                                                    val formattedDate = commentDate?.let { dateFormat.format(it) }
+                                                    val formattedDate =
+                                                        commentDate?.let { dateFormat.format(it) }
                                                     Text(
                                                         text = formattedDate.toString(), // Eklemek istediğiniz metni buraya yazın
                                                         color = Color(255, 162, 118, 255),
@@ -2242,7 +2340,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                     Spacer(modifier = Modifier.width(5.dp))
                     OutlinedButton(
                         onClick = {
-                            if(colorList.isNotEmpty())
+                            if (colorList.isNotEmpty())
                                 isDialogVisible3.value = !isDialogVisible3.value
                             else {
                                 val calendar = Calendar.getInstance()
@@ -2303,7 +2401,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                 val docId = documents.documents[0].id
                                                 val currentAmount =
                                                     documents.documents[0].get("amount") as String
-                                                val updatedAmount = currentAmount.toInt() + newAmount
+                                                val updatedAmount =
+                                                    currentAmount.toInt() + newAmount
                                                 docRefBasket.document(docId)
                                                     .update("amount", updatedAmount.toString())
                                                     .addOnSuccessListener {
@@ -2402,7 +2501,11 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                 .fillMaxWidth()
                         ) {
 
-                            LazyRow(modifier = Modifier.fillMaxWidth(),  verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
                                 items(5) { index ->
                                     val isSelected = index < currentRating.value
                                     Box(
@@ -2424,7 +2527,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                             }
 
                         }
-                        Text(text = "Lütfen puanlamak için yıldız seçiniz", color = Color.Gray, fontWeight = FontWeight.Light, fontSize = 10.sp)
+                        Text(
+                            text = "Lütfen puanlamak için yıldız seçiniz",
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 10.sp
+                        )
 
                         Spacer(modifier = Modifier.padding(top = 10.dp))
 
@@ -2490,8 +2598,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                     currentRating.value = 0
                                                     isDialogVisible2.value = false
                                                 }
-                                        }else {
-                                            Toast.makeText(context,"Puan alanı boş bırakılamaz.",Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Puan alanı boş bırakılamaz.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
 
                                     } else {
@@ -2515,19 +2627,12 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
             )
         }
         if (isDialogVisible3.value) {
-            val comments = remember {
-                mutableStateOf("")
-            }
-            val userName = remember {
-                mutableStateOf("")
-            }
-            val userSurName = remember {
-                mutableStateOf("")
-            }
             AlertDialog(
                 onDismissRequest = { isDialogVisible3.value = false },
+                modifier = Modifier.wrapContentHeight(),
                 title = {
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
@@ -2545,140 +2650,261 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                     }
                 },
                 text = {
+
+
+
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier.wrapContentSize(),
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
 
-                            LazyRow(modifier = Modifier.fillMaxWidth(),  verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                                items(colorList.size) { item ->
-                                    val colorData = colorList[item]
-                                    Button(onClick = { }, colors = ButtonDefaults.buttonColors(
-                                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                                        containerColor =MaterialTheme.colorScheme.primary,
-                                        disabledContentColor = Color.Blue ,
-                                        disabledContainerColor = Color.White
-                                    )) {
-                                        Text(text = colorData)
-                                    }
-                                    Spacer(modifier = Modifier.padding(top = 10.dp))
-                                }
-                            }
+                        Text(
+                            text = "Lütfen Renk Seçiniz",
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 10.sp
+                        )
+                        LazyColumn(modifier = Modifier.wrapContentSize().disabledVerticalPointerInputScroll(disabled = true)) {
 
-                        }
-                        Text(text = "Lütfen Renk Seçiniz", color = Color.Gray, fontWeight = FontWeight.Light, fontSize = 10.sp)
+                            items(if(colorList.size%2==0)colorList.size/2 else colorList.size/2 + 1) { rowIndex ->
+                                val firstColorIndex = rowIndex * 2
+                                val secondColorIndex = rowIndex * 2 + 1
+                                val firstColorData = colorList[firstColorIndex]
+                                val secondColorData = colorList.getOrNull(secondColorIndex)
 
-                        Spacer(modifier = Modifier.padding(top = 10.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Button(onClick = {
+                                        val calendar = Calendar.getInstance()
 
-                    }
-                },
-                confirmButton = {
+                                        val currentUserEmailBasket = Firebase.auth.currentUser?.email
+                                        val newAmount = sepetSayisi.value
 
-                    Button(
-                        onClick = {
-                            val calendar = Calendar.getInstance()
-
-                            val currentUserEmailBasket = Firebase.auth.currentUser?.email
-                            val newAmount = sepetSayisi.value
-
-                            if (currentUserEmailBasket != null) {
-                                val docRefBasket = db.collection("basket")
-                                docRefBasket.whereEqualTo("email", currentUserEmailBasket)
-                                    .whereEqualTo("title", productTitle)
-                                    .get()
-                                    .addOnSuccessListener { documents ->
-                                        if (documents.isEmpty) {
-                                            // Ürün sepette yoksa, yeni bir döküman oluşturun
-                                            val dataBasket = hashMapOf(
-                                                "oldPrice" to oldPrice.value,
-                                                "price" to price.value,
-                                                "photo1" to photo1.value,
-                                                "discount" to discount.value,
-                                                "type" to type.value,
-                                                "title" to productTitle,
-                                                "amount" to newAmount.toString(),
-                                                "email" to currentUserEmailBasket,
-                                                "date" to calendar.time,
-                                                "onay" to onay.value
-                                            )
-                                            docRefBasket.add(dataBasket)
-                                                .addOnSuccessListener { documentReference ->
-                                                    val addedDocumentId = documentReference.id
-                                                    docRefBasket.document(addedDocumentId)
-                                                        .update("docId", addedDocumentId)
-                                                        .addOnSuccessListener {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Ürün sepete eklendi.",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
-                                                        }
-                                                        .addOnFailureListener {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Ürün eklenirken hata oluştu.",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
-                                                        }
+                                        if (currentUserEmailBasket != null) {
+                                            val docRefBasket = db.collection("basket")
+                                            docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                                .whereEqualTo("title", productTitle)
+                                                .get()
+                                                .addOnSuccessListener { documents ->
+                                                    if (documents.isEmpty) {
+                                                        // Ürün sepette yoksa, yeni bir döküman oluşturun
+                                                        val dataBasket = hashMapOf(
+                                                            "oldPrice" to oldPrice.value,
+                                                            "price" to price.value,
+                                                            "photo1" to photo1.value,
+                                                            "discount" to discount.value,
+                                                            "type" to type.value,
+                                                            "title" to productTitle,
+                                                            "amount" to newAmount.toString(),
+                                                            "email" to currentUserEmailBasket,
+                                                            "date" to calendar.time,
+                                                            "onay" to onay.value,
+                                                            "color" to firstColorData.color
+                                                        )
+                                                        docRefBasket.add(dataBasket)
+                                                            .addOnSuccessListener { documentReference ->
+                                                                val addedDocumentId = documentReference.id
+                                                                docRefBasket.document(addedDocumentId)
+                                                                    .update("docId", addedDocumentId)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(
+                                                                            context,
+                                                                            "Ürün sepete eklendi.",
+                                                                            Toast.LENGTH_SHORT
+                                                                        ).show()
+                                                                        println(documentReference.id)
+                                                                        isDialogVisible3.value = false
+                                                                    }
+                                                                    .addOnFailureListener {
+                                                                        Toast.makeText(
+                                                                            context,
+                                                                            "Ürün eklenirken hata oluştu.",
+                                                                            Toast.LENGTH_SHORT
+                                                                        ).show()
+                                                                        isDialogVisible3.value = false
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün eklenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                    } else {
+                                                        // Ürün sepette varsa, miktarı güncelleyin
+                                                        val docId = documents.documents[0].id
+                                                        val currentAmount =
+                                                            documents.documents[0].get("amount") as String
+                                                        val updatedAmount = currentAmount.toInt() + newAmount
+                                                        docRefBasket.document(docId)
+                                                            .update("amount", updatedAmount.toString())
+                                                            .addOnSuccessListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün miktarı güncellendi.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün miktarı güncellenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                    }
                                                 }
                                                 .addOnFailureListener {
                                                     Toast.makeText(
                                                         context,
-                                                        "Ürün eklenirken hata oluştu.",
+                                                        "Sepet sorgulanırken hata oluştu.",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     isDialogVisible3.value = false
                                                 }
                                         } else {
-                                            // Ürün sepette varsa, miktarı güncelleyin
-                                            val docId = documents.documents[0].id
-                                            val currentAmount = documents.documents[0].get("amount") as String
-                                            val updatedAmount = currentAmount.toInt() + newAmount
-                                            docRefBasket.document(docId)
-                                                .update("amount", updatedAmount.toString())
-                                                .addOnSuccessListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Ürün miktarı güncellendi.",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
+                                            Toast.makeText(
+                                                context,
+                                                "Oturum açmanız gerekli.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            isDialogVisible3.value = false
+                                        }
+                                    },
+                                        colors = ButtonDefaults.buttonColors(
+                                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                                        containerColor =MaterialTheme.colorScheme.primary,
+                                        disabledContentColor = Color.Blue ,
+                                        disabledContainerColor = Color.White
+                                    )) {
+                                        Text(text = firstColorData.color)
+
+                                    }
+                                Spacer(modifier = Modifier.weight(1f))
+                                if (secondColorData != null) {
+                                    Button(onClick = {
+                                        val calendar = Calendar.getInstance()
+
+                                        val currentUserEmailBasket = Firebase.auth.currentUser?.email
+                                        val newAmount = sepetSayisi.value
+
+                                        if (currentUserEmailBasket != null) {
+                                            val docRefBasket = db.collection("basket")
+                                            docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                                .whereEqualTo("title", productTitle)
+                                                .get()
+                                                .addOnSuccessListener { documents ->
+                                                    if (documents.isEmpty) {
+                                                        // Ürün sepette yoksa, yeni bir döküman oluşturun
+                                                        val dataBasket = hashMapOf(
+                                                            "oldPrice" to oldPrice.value,
+                                                            "price" to price.value,
+                                                            "photo1" to photo1.value,
+                                                            "discount" to discount.value,
+                                                            "type" to type.value,
+                                                            "title" to productTitle,
+                                                            "amount" to newAmount.toString(),
+                                                            "email" to currentUserEmailBasket,
+                                                            "date" to calendar.time,
+                                                            "onay" to onay.value,
+                                                            "color" to secondColorData.color
+                                                        )
+                                                        docRefBasket.add(dataBasket)
+                                                            .addOnSuccessListener { documentReference ->
+                                                                val addedDocumentId = documentReference.id
+                                                                docRefBasket.document(addedDocumentId)
+                                                                    .update("docId", addedDocumentId)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(
+                                                                            context,
+                                                                            "Ürün sepete eklendi.",
+                                                                            Toast.LENGTH_SHORT
+                                                                        ).show()
+                                                                    }
+                                                                    .addOnFailureListener {
+                                                                        Toast.makeText(
+                                                                            context,
+                                                                            "Ürün eklenirken hata oluştu.",
+                                                                            Toast.LENGTH_SHORT
+                                                                        ).show()
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün eklenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                    } else {
+                                                        // Ürün sepette varsa, miktarı güncelleyin
+                                                        val docId = documents.documents[0].id
+                                                        val currentAmount =
+                                                            documents.documents[0].get("amount") as String
+                                                        val updatedAmount = currentAmount.toInt() + newAmount
+                                                        docRefBasket.document(docId)
+                                                            .update("amount", updatedAmount.toString())
+                                                            .addOnSuccessListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün miktarı güncellendi.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün miktarı güncellenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                    }
                                                 }
                                                 .addOnFailureListener {
                                                     Toast.makeText(
                                                         context,
-                                                        "Ürün miktarı güncellenirken hata oluştu.",
+                                                        "Sepet sorgulanırken hata oluştu.",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                 }
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Oturum açmanız gerekli.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
+                                    },
+                                        colors = ButtonDefaults.buttonColors(
+                                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                                        containerColor =MaterialTheme.colorScheme.primary,
+                                        disabledContentColor = Color.Blue ,
+                                        disabledContainerColor = Color.White
+                                    )) {
+                                        Text(text = secondColorData.color)
+
                                     }
-                                    .addOnFailureListener {
-                                        Toast.makeText(
-                                            context,
-                                            "Sepet sorgulanırken hata oluştu.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Oturum açmanız gerekli.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                }
                             }
-                        },
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
-                    )
-                    {
-                        Text(text = "Sepete Ekle")
+                        }
+
+                        }
                     }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+
+
+
+
+                },
+                confirmButton = {
+                                //onayla
                 },
                 dismissButton = {
                     // Kapat düğmesi

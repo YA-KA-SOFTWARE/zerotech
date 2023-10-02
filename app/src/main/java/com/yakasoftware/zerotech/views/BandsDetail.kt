@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
@@ -36,6 +37,7 @@ import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowDropDownCircle
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -188,6 +190,9 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
     val isDialogVisible = remember { mutableStateOf(false) }
 
     val isDialogVisible2 = remember { mutableStateOf(false) }
+
+    val isDialogVisible3 = remember { mutableStateOf(false) }
+
     val currentRating = remember { mutableStateOf(0) }
 
 
@@ -217,6 +222,13 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
         }
         val starNumber = remember {
             mutableStateOf(0)
+        }
+
+        data class ColorData(
+            val color: String
+        )
+        val colorList = remember {
+            mutableStateListOf<ColorData>()
         }
 
         LaunchedEffect(Unit) {
@@ -334,6 +346,14 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                         oldPrice.value = document.getString("oldPrice")!!
                         discount.value = document.getString("discount")!!
                         type.value = document.getString("type")!!
+                        val yourArray = document.get("color") as? ArrayList<*>
+                        if (yourArray != null) {
+                            for (item in yourArray) {
+                                colorList.add(ColorData(item.toString()))
+                            }
+                        } else {
+                            println("ArrayList null veya dizi değil.")
+                        }
                     }
                     pagerLoading.value = false
                 }
@@ -399,7 +419,7 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(if (isDialogVisible.value || isDialogVisible2.value) 10.dp else 0.dp)
+                .blur(if (isDialogVisible.value || isDialogVisible2.value || isDialogVisible3.value) 10.dp else 0.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -2249,94 +2269,101 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                     Spacer(modifier = Modifier.width(5.dp))
                     OutlinedButton(
                         onClick = {
-                            val calendar = Calendar.getInstance()
+                            if (colorList.isNotEmpty())
+                                isDialogVisible3.value = !isDialogVisible3.value
+                            else {
+                                val calendar = Calendar.getInstance()
 
-                            val currentUserEmailBasket = Firebase.auth.currentUser?.email
-                            val newAmount = sepetSayisi.value
+                                val currentUserEmailBasket = Firebase.auth.currentUser?.email
+                                val newAmount = sepetSayisi.value
 
-                            if (currentUserEmailBasket != null) {
-                                val docRefBasket = db.collection("basket")
-                                docRefBasket.whereEqualTo("email", currentUserEmailBasket)
-                                    .whereEqualTo("title", productTitle)
-                                    .get()
-                                    .addOnSuccessListener { documents ->
-                                        if (documents.isEmpty) {
-                                            // Ürün sepette yoksa, yeni bir döküman oluşturun
-                                            val dataBasket = hashMapOf(
-                                                "oldPrice" to oldPrice.value,
-                                                "price" to price.value,
-                                                "photo1" to photo1.value,
-                                                "discount" to discount.value,
-                                                "type" to type.value,
-                                                "title" to productTitle,
-                                                "amount" to newAmount.toString(),
-                                                "email" to currentUserEmailBasket,
-                                                "date" to calendar.time,
-                                                "onay" to onay.value
-                                            )
-                                            docRefBasket.add(dataBasket)
-                                                .addOnSuccessListener { documentReference ->
-                                                    val addedDocumentId = documentReference.id
-                                                    docRefBasket.document(addedDocumentId)
-                                                        .update("docId", addedDocumentId)
-                                                        .addOnSuccessListener {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Ürün sepete eklendi.",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
-                                                        }
-                                                        .addOnFailureListener {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Ürün eklenirken hata oluştu.",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
-                                                        }
-                                                }
-                                                .addOnFailureListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Ürün eklenirken hata oluştu.",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                        } else {
-                                            // Ürün sepette varsa, miktarı güncelleyin
-                                            val docId = documents.documents[0].id
-                                            val currentAmount = documents.documents[0].get("amount") as String
-                                            val updatedAmount = currentAmount.toInt() + newAmount
-                                            docRefBasket.document(docId)
-                                                .update("amount", updatedAmount.toString())
-                                                .addOnSuccessListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Ürün miktarı güncellendi.",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                                .addOnFailureListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Ürün miktarı güncellenirken hata oluştu.",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
+                                if (currentUserEmailBasket != null) {
+                                    val docRefBasket = db.collection("basket")
+                                    docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                        .whereEqualTo("title", productTitle)
+                                        .get()
+                                        .addOnSuccessListener { documents ->
+                                            if (documents.isEmpty) {
+                                                // Ürün sepette yoksa, yeni bir döküman oluşturun
+                                                val dataBasket = hashMapOf(
+                                                    "oldPrice" to oldPrice.value,
+                                                    "price" to price.value,
+                                                    "photo1" to photo1.value,
+                                                    "discount" to discount.value,
+                                                    "type" to type.value,
+                                                    "title" to productTitle,
+                                                    "amount" to newAmount.toString(),
+                                                    "email" to currentUserEmailBasket,
+                                                    "date" to calendar.time,
+                                                    "onay" to onay.value
+                                                )
+                                                docRefBasket.add(dataBasket)
+                                                    .addOnSuccessListener { documentReference ->
+                                                        val addedDocumentId = documentReference.id
+                                                        docRefBasket.document(addedDocumentId)
+                                                            .update("docId", addedDocumentId)
+                                                            .addOnSuccessListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün sepete eklendi.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün eklenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Ürün eklenirken hata oluştu.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        isDialogVisible3.value = false
+                                                    }
+                                            } else {
+                                                // Ürün sepette varsa, miktarı güncelleyin
+                                                val docId = documents.documents[0].id
+                                                val currentAmount =
+                                                    documents.documents[0].get("amount") as String
+                                                val updatedAmount =
+                                                    currentAmount.toInt() + newAmount
+                                                docRefBasket.document(docId)
+                                                    .update("amount", updatedAmount.toString())
+                                                    .addOnSuccessListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Ürün miktarı güncellendi.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Ürün miktarı güncellenirken hata oluştu.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                            }
                                         }
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(
-                                            context,
-                                            "Sepet sorgulanırken hata oluştu.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Oturum açmanız gerekli.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                        .addOnFailureListener {
+                                            Toast.makeText(
+                                                context,
+                                                "Sepet sorgulanırken hata oluştu.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Oturum açmanız gerekli.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         },
                         modifier = Modifier
@@ -2515,6 +2542,293 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                 }
             )
         }
+
+        if (isDialogVisible3.value) {
+            AlertDialog(
+                onDismissRequest = { isDialogVisible3.value = false },
+                modifier = Modifier.wrapContentHeight(),
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ColorLens,
+                            contentDescription = "Renk Seçme",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        Text(
+                            text = "Renk Seç",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                },
+                text = {
+
+
+
+                    Column(
+                        modifier = Modifier.wrapContentSize(),
+                    ) {
+
+                        Text(
+                            text = "Lütfen Renk Seçiniz",
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 10.sp
+                        )
+                        LazyColumn(modifier = Modifier.wrapContentSize().disabledVerticalPointerInputScroll(disabled = true)) {
+
+                            items(if(colorList.size%2==0)colorList.size/2 else colorList.size/2 + 1) { rowIndex ->
+                                val firstColorIndex = rowIndex * 2
+                                val secondColorIndex = rowIndex * 2 + 1
+                                val firstColorData = colorList[firstColorIndex]
+                                val secondColorData = colorList.getOrNull(secondColorIndex)
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Button(onClick = {
+                                        val calendar = Calendar.getInstance()
+
+                                        val currentUserEmailBasket = Firebase.auth.currentUser?.email
+                                        val newAmount = sepetSayisi.value
+
+                                        if (currentUserEmailBasket != null) {
+                                            val docRefBasket = db.collection("basket")
+                                            docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                                .whereEqualTo("title", productTitle)
+                                                .get()
+                                                .addOnSuccessListener { documents ->
+                                                    if (documents.isEmpty) {
+                                                        // Ürün sepette yoksa, yeni bir döküman oluşturun
+                                                        val dataBasket = hashMapOf(
+                                                            "oldPrice" to oldPrice.value,
+                                                            "price" to price.value,
+                                                            "photo1" to photo1.value,
+                                                            "discount" to discount.value,
+                                                            "type" to type.value,
+                                                            "title" to productTitle,
+                                                            "amount" to newAmount.toString(),
+                                                            "email" to currentUserEmailBasket,
+                                                            "date" to calendar.time,
+                                                            "onay" to onay.value,
+                                                            "color" to firstColorData.color
+                                                        )
+                                                        docRefBasket.add(dataBasket)
+                                                            .addOnSuccessListener { documentReference ->
+                                                                val addedDocumentId = documentReference.id
+                                                                docRefBasket.document(addedDocumentId)
+                                                                    .update("docId", addedDocumentId)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(
+                                                                            context,
+                                                                            "Ürün sepete eklendi.",
+                                                                            Toast.LENGTH_SHORT
+                                                                        ).show()
+                                                                        println(documentReference.id)
+                                                                        isDialogVisible3.value = false
+                                                                    }
+                                                                    .addOnFailureListener {
+                                                                        Toast.makeText(
+                                                                            context,
+                                                                            "Ürün eklenirken hata oluştu.",
+                                                                            Toast.LENGTH_SHORT
+                                                                        ).show()
+                                                                        isDialogVisible3.value = false
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün eklenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                    } else {
+                                                        // Ürün sepette varsa, miktarı güncelleyin
+                                                        val docId = documents.documents[0].id
+                                                        val currentAmount =
+                                                            documents.documents[0].get("amount") as String
+                                                        val updatedAmount = currentAmount.toInt() + newAmount
+                                                        docRefBasket.document(docId)
+                                                            .update("amount", updatedAmount.toString())
+                                                            .addOnSuccessListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün miktarı güncellendi.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Ürün miktarı güncellenirken hata oluştu.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                isDialogVisible3.value = false
+                                                            }
+                                                    }
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Sepet sorgulanırken hata oluştu.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                    isDialogVisible3.value = false
+                                                }
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Oturum açmanız gerekli.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            isDialogVisible3.value = false
+                                        }
+                                    },
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                                            containerColor =MaterialTheme.colorScheme.primary,
+                                            disabledContentColor = Color.Blue ,
+                                            disabledContainerColor = Color.White
+                                        )) {
+                                        Text(text = firstColorData.color)
+
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    if (secondColorData != null) {
+                                        Button(onClick = {
+                                            val calendar = Calendar.getInstance()
+
+                                            val currentUserEmailBasket = Firebase.auth.currentUser?.email
+                                            val newAmount = sepetSayisi.value
+
+                                            if (currentUserEmailBasket != null) {
+                                                val docRefBasket = db.collection("basket")
+                                                docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                                    .whereEqualTo("title", productTitle)
+                                                    .get()
+                                                    .addOnSuccessListener { documents ->
+                                                        if (documents.isEmpty) {
+                                                            // Ürün sepette yoksa, yeni bir döküman oluşturun
+                                                            val dataBasket = hashMapOf(
+                                                                "oldPrice" to oldPrice.value,
+                                                                "price" to price.value,
+                                                                "photo1" to photo1.value,
+                                                                "discount" to discount.value,
+                                                                "type" to type.value,
+                                                                "title" to productTitle,
+                                                                "amount" to newAmount.toString(),
+                                                                "email" to currentUserEmailBasket,
+                                                                "date" to calendar.time,
+                                                                "onay" to onay.value,
+                                                                "color" to secondColorData.color
+                                                            )
+                                                            docRefBasket.add(dataBasket)
+                                                                .addOnSuccessListener { documentReference ->
+                                                                    val addedDocumentId = documentReference.id
+                                                                    docRefBasket.document(addedDocumentId)
+                                                                        .update("docId", addedDocumentId)
+                                                                        .addOnSuccessListener {
+                                                                            Toast.makeText(
+                                                                                context,
+                                                                                "Ürün sepete eklendi.",
+                                                                                Toast.LENGTH_SHORT
+                                                                            ).show()
+                                                                        }
+                                                                        .addOnFailureListener {
+                                                                            Toast.makeText(
+                                                                                context,
+                                                                                "Ürün eklenirken hata oluştu.",
+                                                                                Toast.LENGTH_SHORT
+                                                                            ).show()
+                                                                        }
+                                                                }
+                                                                .addOnFailureListener {
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Ürün eklenirken hata oluştu.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                    isDialogVisible3.value = false
+                                                                }
+                                                        } else {
+                                                            // Ürün sepette varsa, miktarı güncelleyin
+                                                            val docId = documents.documents[0].id
+                                                            val currentAmount =
+                                                                documents.documents[0].get("amount") as String
+                                                            val updatedAmount = currentAmount.toInt() + newAmount
+                                                            docRefBasket.document(docId)
+                                                                .update("amount", updatedAmount.toString())
+                                                                .addOnSuccessListener {
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Ürün miktarı güncellendi.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                                .addOnFailureListener {
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Ürün miktarı güncellenirken hata oluştu.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                        }
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Sepet sorgulanırken hata oluştu.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Oturum açmanız gerekli.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        },
+                                            colors = ButtonDefaults.buttonColors(
+                                                contentColor = MaterialTheme.colorScheme.onSecondary,
+                                                containerColor =MaterialTheme.colorScheme.primary,
+                                                disabledContentColor = Color.Blue ,
+                                                disabledContainerColor = Color.White
+                                            )) {
+                                            Text(text = secondColorData.color)
+
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+
+
+
+
+                },
+                confirmButton = {
+                    //onayla
+                },
+                dismissButton = {
+                    // Kapat düğmesi
+                }
+            )
+        }
+
     }
 }
 

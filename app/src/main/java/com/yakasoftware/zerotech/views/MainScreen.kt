@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -417,8 +418,109 @@ fun MainScreen(navController: NavHostController) {
 
                     }
                 }
+
+                item {
+                    Spacer(modifier = Modifier.padding(top = 25.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .background(Color.Magenta) //renk göstermelik resim eklenince kaldırılacak
+
+                    ) {
+
+                        if (pagerLoading.value) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+
+
+                                //RESİM EKLENECEK ZEROTECHSSHOP TAKİ TOPLAM 3 TANE
+                                // 1. BURAYA
+
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.padding(top = 25.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .background(Color.Magenta) //renk göstermelik resim eklenince kaldırılacak
+
+                    ) {
+
+                        if (pagerLoading.value) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+
+
+                                //RESİM EKLENECEK ZEROTECHSSHOP TAKİ TOPLAM 3 TANE
+                                // 2. BURAYA
+
+                            }
+                        }
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(top = 25.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .background(Color.Magenta) //renk göstermelik resim eklenince kaldırılacak
+
+                    ) {
+
+                        if (pagerLoading.value) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+
+
+                                //RESİM EKLENECEK ZEROTECHSSHOP TAKİ TOPLAM 3 TANE
+                                // 3. BURAYA
+
+                            }
+                        }
+                    }
+                }
+                item{
+                    //BURAYA KAMPANYALI ÜRÜNLER EKLENECEK ÖRN: HeadPhonesScreen.kt
+                    Spacer(modifier = Modifier.padding(top = 100.dp))
+                }
             }
-        }
+
+
+            }
         //SideBar
         val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 
