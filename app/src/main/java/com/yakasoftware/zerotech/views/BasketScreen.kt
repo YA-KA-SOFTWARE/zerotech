@@ -189,7 +189,8 @@ fun BasketScreen(navController: NavHostController) {
                     val amount: String,
                     val date: com.google.firebase.Timestamp?,
                     val onay: Boolean,
-                    val docId: String
+                    val docId: String,
+                    val color: String
                 )
 
                 val oldPrice = remember { mutableStateOf("") }
@@ -204,6 +205,7 @@ fun BasketScreen(navController: NavHostController) {
                 val docId = remember {
                     mutableStateOf("")
                 }
+                val color = remember { mutableStateOf("") }
 
                 val basList = remember { mutableStateListOf<BasketProduct>() }
                 fun calculateTotalPrice(basList: List<BasketProduct>): Double {
@@ -226,6 +228,7 @@ fun BasketScreen(navController: NavHostController) {
                             discount.value = basketData["discount"].toString()
                             type.value = basketData["type"].toString()
                             docId.value = basketData["docId"].toString()
+                            color.value = basketData["color"].toString()
                             val dateValue = basketData["date"]
                             date.value = if (dateValue is com.google.firebase.Timestamp) {
                                 dateValue
@@ -245,7 +248,8 @@ fun BasketScreen(navController: NavHostController) {
                                     amount.value,
                                     date.value,
                                     onay.value,
-                                    docId.value
+                                    docId.value,
+                                    color.value
                                 )
                             )
                         }
@@ -383,19 +387,43 @@ fun BasketScreen(navController: NavHostController) {
                                                 }
                                         )
 
+                                        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
+                                            Text(
+                                                text = sepetSayisi.value.toString() + " " + "adet",
+                                                color = Color.Black,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                modifier = Modifier
+                                                    .background(
+                                                        Color.White,
+                                                        shape = CircleShape
+                                                    )
+                                                    .padding(8.dp)
+                                            )
 
-                                        Text(
-                                            text = sepetSayisi.value.toString() + " " + "adet", color = Color.Black,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                            modifier = Modifier
-                                                .background(
-                                                    Color.White,
-                                                    shape = CircleShape
+                                            Spacer(modifier = Modifier.padding(top = 25.dp))
+
+                                            //RENK YAZISI BURADA
+                                            if (baskets.color.isNotEmpty()) {
+                                                Text(
+                                                    text = baskets.color,
+                                                    color = Color.DarkGray,
+                                                    fontWeight = FontWeight.Light,
+                                                    fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                    modifier = Modifier
+                                                        .background(
+                                                            MaterialTheme.colorScheme.onSecondary,
+                                                            shape = RoundedCornerShape(
+                                                                0.dp,
+                                                                10.dp,
+                                                                10.dp,
+                                                                0.dp
+                                                            )
+                                                        )
+                                                        .padding(8.dp)
                                                 )
-                                                .align(Alignment.TopStart)
-                                                .padding(8.dp)
-                                        )
+                                            }
+                                        }
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxSize()
@@ -469,7 +497,10 @@ fun BasketScreen(navController: NavHostController) {
                                                         horizontalAlignment = Alignment.Start
                                                     ) {
                                                         Text(
-                                                            text = String.format("%.2f", baskets.oldPrice.toFloat()*sepetSayisi.value) + "₺",
+                                                            text = String.format(
+                                                                "%.2f",
+                                                                baskets.oldPrice.toFloat() * sepetSayisi.value
+                                                            ) + "₺",
                                                             color = Color(100, 100, 100, 255),
                                                             fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                             textAlign = TextAlign.Center,
@@ -477,7 +508,10 @@ fun BasketScreen(navController: NavHostController) {
                                                         )
 
                                                         Text(
-                                                            text = String.format("%.2f", baskets.price.toFloat()*sepetSayisi.value) + "₺",
+                                                            text = String.format(
+                                                                "%.2f",
+                                                                baskets.price.toFloat() * sepetSayisi.value
+                                                            ) + "₺",
                                                             color = MaterialTheme.colorScheme.secondary,
                                                             fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                             fontWeight = FontWeight.Bold,
@@ -546,8 +580,7 @@ fun BasketScreen(navController: NavHostController) {
                                                                     sepetSayisi.value.toString()
                                                                 )
 
-                                                            }
-                                                        ,
+                                                            },
                                                         contentAlignment = Alignment.CenterEnd
                                                     ) {
 
@@ -594,15 +627,14 @@ fun BasketScreen(navController: NavHostController) {
                     .clip(RoundedCornerShape(10.dp))
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(MaterialTheme.colorScheme.secondary)
-                ,
+                    .background(MaterialTheme.colorScheme.secondary),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
 
                 Text(text = "Toplam Fiyat:")
                 Spacer(modifier = Modifier.padding(10.dp))
-                Text(text = "${String.format("%.2f", totalPrice.value)}₺" )
+                Text(text = "${String.format("%.2f", totalPrice.value)}₺")
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(onClick = { /*TODO*/ }) {
                     Text(text = "Siparişi Onayla", color = MaterialTheme.colorScheme.tertiary)
