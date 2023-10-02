@@ -99,10 +99,10 @@ import java.util.Locale
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BandDetail(navController: NavHostController, productTitle: String) {
+fun WatchDetail(navController: NavHostController, productTitle: String) {
     val db = Firebase.firestore
-    val proCollection = db.collection("products").document("bands")
-    val docRef = proCollection.collection("bands")
+    val proCollection = db.collection("products").document("watchs")
+    val docRef = proCollection.collection("watchs")
     val detail1 = remember {
         mutableStateOf("")
     }
@@ -158,6 +158,24 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
         mutableStateOf("")
     }
     val detail19 = remember {
+        mutableStateOf("")
+    }
+    val detail20 = remember {
+        mutableStateOf("")
+    }
+    val detail21 = remember {
+        mutableStateOf("")
+    }
+    val detail22 = remember {
+        mutableStateOf("")
+    }
+    val detail23 = remember {
+        mutableStateOf("")
+    }
+    val detail24 = remember {
+        mutableStateOf("")
+    }
+    val detail25 = remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
@@ -317,6 +335,30 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                         val detail19Value = document.getString("detail19")
                         if (detail19Value != null && detail19Value != "") {
                             detail19.value = detail19Value
+                        }
+                        val detail20Value = document.getString("detail20")
+                        if (detail20Value != null && detail20Value != "") {
+                            detail20.value = detail20Value
+                        }
+                        val detail21Value = document.getString("detail21")
+                        if (detail21Value != null && detail21Value != "") {
+                            detail21.value = detail21Value
+                        }
+                        val detail22Value = document.getString("detail22")
+                        if (detail22Value != null && detail22Value != "") {
+                            detail22.value = detail22Value
+                        }
+                        val detail23Value = document.getString("detail23")
+                        if (detail23Value != null && detail23Value != "") {
+                            detail23.value = detail23Value
+                        }
+                        val detail24Value = document.getString("detail24")
+                        if (detail24Value != null && detail24Value != "") {
+                            detail24.value = detail24Value
+                        }
+                        val detail25Value = document.getString("detail25")
+                        if (detail25Value != null && detail25Value != "") {
+                            detail25.value = detail25Value
                         }
                         if (photo1.value.isNotEmpty() && photo1.value != "") {
                             photoUrls.add(photo1.value)
@@ -936,6 +978,91 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                                 )
                             }
                         }
+                        if (detail20.value != "") {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Circle, // İkonun türünü ve rengini ayarlayın
+                                    contentDescription = "Detay Belirtme",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(text = detail20.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
+                                )
+                            }
+                        }
+                        if (detail21.value != "") {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Circle, // İkonun türünü ve rengini ayarlayın
+                                    contentDescription = "Detay Belirtme",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(text = detail21.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
+                                )
+                            }
+                        }
+                        if (detail22.value != "") {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Circle, // İkonun türünü ve rengini ayarlayın
+                                    contentDescription = "Detay Belirtme",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(text = detail22.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
+                                )
+                            }
+                        }
+                        if (detail23.value != "") {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Circle, // İkonun türünü ve rengini ayarlayın
+                                    contentDescription = "Detay Belirtme",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(text = detail23.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
+                                )
+                            }
+                        }
+                        if (detail24.value != "") {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Circle, // İkonun türünü ve rengini ayarlayın
+                                    contentDescription = "Detay Belirtme",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(text = detail24.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
+                                )
+                            }
+                        }
+                        if (detail25.value != "") {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Circle, // İkonun türünü ve rengini ayarlayın
+                                    contentDescription = "Detay Belirtme",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(text = detail25.value,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontSize = with(LocalDensity.current) { detailFontSize.toSp() }
+                                )
+                            }
+                        }
+
 
                     }
                     Spacer(modifier = Modifier.height(24.dp))

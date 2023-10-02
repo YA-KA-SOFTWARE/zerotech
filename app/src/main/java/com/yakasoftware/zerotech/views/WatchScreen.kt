@@ -96,7 +96,7 @@ import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BandsScreen(navController: NavHostController) {
+fun WatchsScreen(navController: NavHostController) {
     val isMenuVisible = remember {
         mutableStateOf(false)
     }
@@ -313,7 +313,7 @@ fun BandsScreen(navController: NavHostController) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "Kordonlar",
+                    text = "Akıllı Saatler",
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 24.sp,
                     modifier = Modifier
@@ -338,7 +338,7 @@ fun BandsScreen(navController: NavHostController) {
 
 
             Spacer(modifier = Modifier.padding(20.dp))
-            RectanglesWithLinesBand(navController)
+            RectanglesWithLinesWatch(navController)
 
         }
     }
@@ -450,14 +450,7 @@ fun BandsScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(bottom = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .clickable {
-                            navController.navigate("watch_screen") {
-                                popUpTo("profile_screen") {
-                                    inclusive = true
-                                }
-                            }
-                        },
+                    Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Akıllı Saat", color = MaterialTheme.colorScheme.secondary,
@@ -507,7 +500,14 @@ fun BandsScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            navController.navigate("band_screen") {
+                                popUpTo("profile_screen") {
+                                    inclusive = true
+                                }
+                            }
+                        },
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Kordon", color = MaterialTheme.colorScheme.secondary,
@@ -738,7 +738,7 @@ fun BandsScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RectanglesWithLinesBand(navController: NavHostController) {
+fun RectanglesWithLinesWatch(navController: NavHostController) {
     val context = LocalContext.current
     val photoSpeaker1 = remember {
         mutableStateOf("")
@@ -767,8 +767,8 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         isSpeakerLoading.value = true
-        speakersDb.collection("products").document("bands")
-            .collection("bands")
+        speakersDb.collection("products").document("watchs")
+            .collection("watchs")
             .get()
             .addOnSuccessListener { documents ->
                 speakerList.clear()
@@ -872,7 +872,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                 )
                                 .padding(4.dp)
                                 .clickable {
-                                    navController.navigate("band_detail_screen/${firstSpeakerData.title}")
+                                    navController.navigate("watch_detail_screen/${firstSpeakerData.title}")
                                 },
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -1073,7 +1073,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                     )
                                     .padding(4.dp)
                                     .clickable {
-                                        navController.navigate("band_detail_screen/${secondSpeakerData.title}")
+                                        navController.navigate("watch_detail_screen/${secondSpeakerData.title}")
                                     },
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -1089,7 +1089,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                         )
                                 )
                                 {
-                                    Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
+                                    Image(painter = painter2, contentDescription = "Akıllı Saat", contentScale = ContentScale.Crop, modifier = Modifier
                                         .fillMaxSize()
                                         .clip(RoundedCornerShape(10.dp)))
 
@@ -1220,7 +1220,7 @@ fun RectanglesWithLinesBand(navController: NavHostController) {
                                             modifier = Modifier.fillMaxSize(),
                                             verticalArrangement = Arrangement.Center
                                         ) {
-                                            Box(modifier = Modifier.fillMaxWidth(),
+                                            Box(modifier = Modifier.fillMaxWidth() ,
                                                 contentAlignment = Alignment.Center) {
                                                 Text(
                                                     text = secondSpeakerData.title, color = Color(

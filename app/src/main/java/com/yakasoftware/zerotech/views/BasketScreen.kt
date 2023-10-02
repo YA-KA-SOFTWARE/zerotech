@@ -279,6 +279,9 @@ fun BasketScreen(navController: NavHostController) {
                                     if (baskets.type == "bands") {
                                         navController.navigate("band_detail_screen/${baskets.title}")
                                     }
+                                    if (baskets.type == "watchs") {
+                                        navController.navigate("watch_detail_screen/${baskets.title}")
+                                    }
                                 },
                             contentAlignment = Alignment.Center
                         ) {
@@ -435,7 +438,8 @@ fun BasketScreen(navController: NavHostController) {
                                                     .fillMaxSize(),
                                                 verticalArrangement = Arrangement.Center
                                             ) {
-                                                Box(modifier = Modifier.fillMaxWidth()) {
+                                                Box(modifier = Modifier.fillMaxWidth(),
+                                                    contentAlignment = Alignment.Center) {
                                                     Text(
                                                         text = baskets.title,
                                                         color = Color(

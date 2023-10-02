@@ -450,7 +450,14 @@ fun AccesoiresScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(bottom = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            navController.navigate("watch_screen") {
+                                popUpTo("profile_screen") {
+                                    inclusive = true
+                                }
+                            }
+                        },
                         horizontalArrangement = Arrangement.Center) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(text = "Akıllı Saat", color = MaterialTheme.colorScheme.secondary,
@@ -1004,7 +1011,8 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         modifier = Modifier.fillMaxSize(),
                                         verticalArrangement = Arrangement.Center
                                     ) {
-                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                        Box(modifier = Modifier.fillMaxWidth(),
+                                            contentAlignment = Alignment.Center) {
                                             Text(
                                                 text = firstSpeakerData.title, color = Color(
                                                     255,
@@ -1204,7 +1212,8 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                             modifier = Modifier.fillMaxSize(),
                                             verticalArrangement = Arrangement.Center
                                         ) {
-                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                            Box(modifier = Modifier.fillMaxWidth(),
+                                                contentAlignment = Alignment.Center) {
                                                 Text(
                                                     text = secondSpeakerData.title, color = Color(
                                                         255,

@@ -34,6 +34,8 @@ import com.yakasoftware.zerotech.views.ResetPasswordScreen
 import com.yakasoftware.zerotech.views.SpeakerDetailScreen
 import com.yakasoftware.zerotech.views.SpeakerScreen
 import com.yakasoftware.zerotech.views.SplashScreen
+import com.yakasoftware.zerotech.views.WatchDetail
+import com.yakasoftware.zerotech.views.WatchsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,12 +96,20 @@ class MainActivity : ComponentActivity() {
                     composable("speaker_screen"){
                         SpeakerScreen(navController = navController)
                     }
+                    composable("watch_screen"){
+                        WatchsScreen(navController = navController)
+                    }
                     composable("headphone_screen"){
                         HeadPhonesScreen(navController = navController)
                     }
                     composable("speaker_detail_screen/{title}"){backStackEntry ->
                         backStackEntry.arguments?.getString("title")
                             ?.let { SpeakerDetailScreen(navController = navController, productTitle = it) }
+
+                    }
+                    composable("watch_detail_screen/{title}"){backStackEntry ->
+                        backStackEntry.arguments?.getString("title")
+                            ?.let { WatchDetail(navController = navController, productTitle = it) }
 
                     }
                     composable("accesories_detail_screen/{title}"){backStackEntry ->
