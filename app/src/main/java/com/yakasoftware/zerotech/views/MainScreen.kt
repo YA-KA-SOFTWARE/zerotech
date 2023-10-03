@@ -475,7 +475,7 @@ fun MainScreen(navController: NavHostController) {
             }
 
 
-            }
+        }
         //SideBar
         val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
 

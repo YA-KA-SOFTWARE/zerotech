@@ -3004,7 +3004,7 @@ fun WatchDetail(navController: NavHostController, productTitle: String) {
                     //onayla
                 },
                 dismissButton = {
-                    // Kapat düğmesi
+                    // Kapat düğmesii
                 }
             )
         }
