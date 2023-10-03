@@ -2651,18 +2651,9 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                 },
                 text = {
 
-
-
                     Column(
                         modifier = Modifier.wrapContentSize(),
                     ) {
-
-                        Text(
-                            text = "Lütfen Renk Seçiniz",
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 10.sp
-                        )
                         LazyColumn(modifier = Modifier.wrapContentSize().disabledVerticalPointerInputScroll(disabled = true)) {
 
                             items(if(colorList.size%2==0)colorList.size/2 else colorList.size/2 + 1) { rowIndex ->
@@ -2723,7 +2714,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                                             "Ürün eklenirken hata oluştu.",
                                                                             Toast.LENGTH_SHORT
                                                                         ).show()
-                                                                        isDialogVisible3.value = false
                                                                     }
                                                             }
                                                             .addOnFailureListener {
@@ -2732,7 +2722,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                                     "Ürün eklenirken hata oluştu.",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
-                                                                isDialogVisible3.value = false
                                                             }
                                                     } else {
                                                         // Ürün sepette varsa, miktarı güncelleyin
@@ -2756,7 +2745,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                                     "Ürün miktarı güncellenirken hata oluştu.",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
-                                                                isDialogVisible3.value = false
                                                             }
                                                     }
                                                 }
@@ -2826,6 +2814,8 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                                             "Ürün sepete eklendi.",
                                                                             Toast.LENGTH_SHORT
                                                                         ).show()
+                                                                        isDialogVisible3.value = false
+
                                                                     }
                                                                     .addOnFailureListener {
                                                                         Toast.makeText(
@@ -2841,7 +2831,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                                     "Ürün eklenirken hata oluştu.",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
-                                                                isDialogVisible3.value = false
                                                             }
                                                     } else {
                                                         // Ürün sepette varsa, miktarı güncelleyin
@@ -2857,6 +2846,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                                                                     "Ürün miktarı güncellendi.",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
+                                                                isDialogVisible3.value = false
                                                             }
                                                             .addOnFailureListener {
                                                                 Toast.makeText(
@@ -2898,7 +2888,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                         }
                     }
                     Spacer(modifier = Modifier.padding(top = 10.dp))
-
 
 
 
