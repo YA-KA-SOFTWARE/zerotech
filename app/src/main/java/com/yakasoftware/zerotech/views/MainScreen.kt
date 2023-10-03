@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
@@ -172,6 +173,12 @@ fun MainScreen(navController: NavHostController) {
     val watchs = remember {
         mutableStateOf("")
     }
+    val benzersiz = remember {
+        mutableStateOf("")
+    }
+    val banner = remember {
+        mutableStateOf("")
+    }
 
     LaunchedEffect(Unit) {
         pagerLoading.value = true
@@ -183,6 +190,8 @@ fun MainScreen(navController: NavHostController) {
                 offers.value = data["offers"] as String
                 bluetooth.value = data["bluetooth"] as String
                 watchs.value = data["watchs"] as String
+                benzersiz.value = data["benzersiz"] as String
+                banner.value = data["banner"] as String
 
                 pagerLoading.value = false
 
@@ -197,7 +206,8 @@ fun MainScreen(navController: NavHostController) {
     val offersPainter = rememberAsyncImagePainter(model = offers.value)
     val bluetoothPainter = rememberAsyncImagePainter(model = bluetooth.value)
     val watchsPainter = rememberAsyncImagePainter(model = watchs.value)
-
+    val benzersizPainter = rememberAsyncImagePainter(model = benzersiz.value)
+    val bannerPainter = rememberAsyncImagePainter(model = banner.value)
 
     val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
     Surface(modifier = Modifier.fillMaxSize()
@@ -328,7 +338,7 @@ fun MainScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.padding(top = 12.dp))
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
-                    val pagerState = rememberPagerState(pageCount = { 4 })
+                    val pagerState = rememberPagerState(pageCount = { 5 })
                     Spacer(modifier = Modifier.padding(top = 8.dp))
                     Box(
                         modifier = Modifier
@@ -360,6 +370,7 @@ fun MainScreen(navController: NavHostController) {
                                                 1 -> MaterialTheme.colorScheme.primary
                                                 2 -> MaterialTheme.colorScheme.primary
                                                 3 -> MaterialTheme.colorScheme.primary
+                                                4 -> MaterialTheme.colorScheme.primary
                                                 else -> MaterialTheme.colorScheme.primary
                                             }
                                         )
@@ -370,13 +381,23 @@ fun MainScreen(navController: NavHostController) {
                                             // İlk sayfa içeriği
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
+                                                    painter = benzersizPainter,
+                                                    contentDescription = "Benzersiz"
+                                                )
+                                            }
+
+                                        }
+                                        1 -> {
+                                            // İlk sayfa içeriği
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                Image(
                                                     painter = offersPainter,
                                                     contentDescription = "Kampanya"
                                                 )
                                             }
 
                                         }
-                                        1 -> {
+                                        2 -> {
                                             // İkinci sayfa içeriği
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
@@ -385,7 +406,7 @@ fun MainScreen(navController: NavHostController) {
                                                 )
                                             }
                                         }
-                                        2 -> {
+                                        3 -> {
                                             // Üçüncü sayfa içeriği
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
@@ -394,7 +415,7 @@ fun MainScreen(navController: NavHostController) {
                                                 )
                                             }
                                         }
-                                        3 -> {
+                                        4 -> {
                                             // Dördüncü sayfa içeriği
                                             Box(modifier = Modifier.fillMaxWidth()) {
                                                 Image(
@@ -420,13 +441,11 @@ fun MainScreen(navController: NavHostController) {
                 }
 
                 item {
-                    Spacer(modifier = Modifier.padding(top = 25.dp))
+                    Spacer(modifier = Modifier.padding(top = 75.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
-                            .background(Color.Magenta) //renk göstermelik resim eklenince kaldırılacak
-
+                            .height(100.dp)
                     ) {
 
                         if (pagerLoading.value) {
@@ -443,71 +462,7 @@ fun MainScreen(navController: NavHostController) {
                             ) {
 
 
-                                //RESİM EKLENECEK ZEROTECHSSHOP TAKİ TOPLAM 3 TANE
-                                // 1. BURAYA
-
-                            }
-                        }
-                    }
-                }
-
-                item {
-                    Spacer(modifier = Modifier.padding(top = 25.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                            .background(Color.Magenta) //renk göstermelik resim eklenince kaldırılacak
-
-                    ) {
-
-                        if (pagerLoading.value) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-
-
-                                //RESİM EKLENECEK ZEROTECHSSHOP TAKİ TOPLAM 3 TANE
-                                // 2. BURAYA
-
-                            }
-                        }
-                    }
-                }
-                item {
-                    Spacer(modifier = Modifier.padding(top = 25.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                            .background(Color.Magenta) //renk göstermelik resim eklenince kaldırılacak
-
-                    ) {
-
-                        if (pagerLoading.value) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-
-
-                                //RESİM EKLENECEK ZEROTECHSSHOP TAKİ TOPLAM 3 TANE
-                                // 3. BURAYA
+                                Image(painter = bannerPainter, contentDescription = "banner" )
 
                             }
                         }
@@ -630,7 +585,8 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(bottom = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
                                 navController.navigate("watch_screen") {
                                     popUpTo("profile_screen") {
