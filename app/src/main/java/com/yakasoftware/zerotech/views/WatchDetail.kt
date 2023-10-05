@@ -2781,7 +2781,7 @@ fun WatchDetail(navController: NavHostController, productTitle: String) {
 
                                         if (currentUserEmailBasket != null) {
                                             val docRefBasket = db.collection("basket")
-                                            docRefBasket.whereEqualTo("email", currentUserEmailBasket)
+                                            docRefBasket.whereEqualTo("email", currentUserEmailBasket).whereEqualTo("color", firstColorData.color)
                                                 .whereEqualTo("title", productTitle)
                                                 .get()
                                                 .addOnSuccessListener { documents ->
@@ -2894,7 +2894,7 @@ fun WatchDetail(navController: NavHostController, productTitle: String) {
                                             if (currentUserEmailBasket != null) {
                                                 val docRefBasket = db.collection("basket")
                                                 docRefBasket.whereEqualTo("email", currentUserEmailBasket)
-                                                    .whereEqualTo("title", productTitle)
+                                                    .whereEqualTo("title", productTitle).whereEqualTo("color", firstColorData.color)
                                                     .get()
                                                     .addOnSuccessListener { documents ->
                                                         if (documents.isEmpty) {
