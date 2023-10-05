@@ -2686,7 +2686,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                             if (currentUserEmailBasket != null) {
                                                 val docRefBasket = db.collection("basket")
                                                 docRefBasket.whereEqualTo("email", currentUserEmailBasket)
-                                                    .whereEqualTo("title", productTitle).whereEqualTo("color", firstColorData.color)
+                                                    .whereEqualTo("title", productTitle).whereEqualTo("color", secondColorData.color)
                                                     .get()
                                                     .addOnSuccessListener { documents ->
                                                         if (documents.isEmpty) {
@@ -2715,6 +2715,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                                                                 "Ürün sepete eklendi.",
                                                                                 Toast.LENGTH_SHORT
                                                                             ).show()
+                                                                            isDialogVisible3.value = false
                                                                         }
                                                                         .addOnFailureListener {
                                                                             Toast.makeText(
@@ -2722,6 +2723,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                                                                 "Ürün eklenirken hata oluştu.",
                                                                                 Toast.LENGTH_SHORT
                                                                             ).show()
+                                                                            isDialogVisible3.value = false
                                                                         }
                                                                 }
                                                                 .addOnFailureListener {
@@ -2746,6 +2748,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                                                         "Ürün miktarı güncellendi.",
                                                                         Toast.LENGTH_SHORT
                                                                     ).show()
+                                                                    isDialogVisible3.value = false
                                                                 }
                                                                 .addOnFailureListener {
                                                                     Toast.makeText(
@@ -2753,6 +2756,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                                                         "Ürün miktarı güncellenirken hata oluştu.",
                                                                         Toast.LENGTH_SHORT
                                                                     ).show()
+                                                                    isDialogVisible3.value = false
                                                                 }
                                                         }
                                                     }
@@ -2762,6 +2766,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                                             "Sepet sorgulanırken hata oluştu.",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
+                                                        isDialogVisible3.value = false
                                                     }
                                             } else {
                                                 Toast.makeText(
@@ -2769,6 +2774,7 @@ fun AccesoriesDetail(navController: NavHostController, productTitle: String) {
                                                     "Oturum açmanız gerekli.",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
+                                                isDialogVisible3.value = false
                                             }
                                         },
                                             colors = ButtonDefaults.buttonColors(
