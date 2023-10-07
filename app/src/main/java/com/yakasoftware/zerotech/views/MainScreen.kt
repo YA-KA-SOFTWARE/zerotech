@@ -3,6 +3,7 @@ package com.yakasoftware.zerotech.views
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
@@ -38,6 +40,8 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -48,6 +52,7 @@ import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -59,6 +64,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,9 +72,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -76,8 +84,11 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -91,6 +102,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
+data class CampaignData(
+    val photo1: String,
+    val oldPrice: String,
+    val price: String,
+    val title: String,
+    val discount: String,
+    val type: String
+)
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -197,6 +216,64 @@ fun MainScreen(navController: NavHostController) {
 
             }
             .addOnFailureListener {
+                println(it)
+            }
+    }
+    val photoSpeaker1 = remember {
+        mutableStateOf("")
+    }
+    val oldPrice = remember {
+        mutableStateOf("")
+    }
+    val price = remember {
+        mutableStateOf("")
+    }
+    val discount = remember {
+        mutableStateOf("")
+    }
+    val title = remember {
+        mutableStateOf("")
+    }
+    val type = remember {
+        mutableStateOf("")
+    }
+
+    val campaignList = remember { mutableStateListOf<CampaignData>() }
+    val isSpeakerLoading = remember { mutableStateOf(true) }
+    val speakersDb = Firebase.firestore
+    val fontSize = 12.dp
+    val fontSizePrice = 16.dp
+
+    LaunchedEffect(Unit) {
+        isSpeakerLoading.value = true
+        speakersDb.collection("products").document("campaign")
+            .collection("campaign")
+            .get()
+            .addOnSuccessListener { documents ->
+                campaignList.clear()
+                for (document in documents) {
+                    val campaignDataBigVal: Map<String, Any> = document.data
+                    // Firestore'dan gelen 'usercaption' field değerini 'userCaption' değişkenine atıyoruz
+                    photoSpeaker1.value = campaignDataBigVal["photo1"].toString()
+                    oldPrice.value = campaignDataBigVal["oldPrice"].toString()
+                    price.value = campaignDataBigVal["price"].toString()
+                    title.value = campaignDataBigVal["title"].toString()
+                    discount.value = campaignDataBigVal["discount"].toString()
+                    type.value = campaignDataBigVal["type"].toString()
+                    campaignList.add(
+                        CampaignData(
+                            photoSpeaker1.value,
+                            oldPrice.value,
+                            price.value,
+                            title.value,
+                            discount.value,
+                            type.value
+                        )
+                    )
+
+                }
+                isSpeakerLoading.value = false
+            }.addOnFailureListener {
                 println(it)
             }
     }
@@ -336,7 +413,7 @@ fun MainScreen(navController: NavHostController) {
                     })
             }
             Spacer(modifier = Modifier.padding(top = 12.dp))
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.wrapContentSize()) {
                 item {
                     val pagerState = rememberPagerState(pageCount = { 5 })
                     Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -439,13 +516,22 @@ fun MainScreen(navController: NavHostController) {
 
                     }
                 }
+                item {
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth(0.8f)) {
+                            SimpleLineWhite()
+                        }
+                    }
+                }
 
                 item {
                     Spacer(modifier = Modifier.padding(top = 75.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(100.dp)
+                            .height(70.dp)
                     ) {
 
                         if (pagerLoading.value) {
@@ -468,9 +554,506 @@ fun MainScreen(navController: NavHostController) {
                         }
                     }
                 }
-                item{
-                    //BURAYA KAMPANYALI ÜRÜNLER EKLENECEK ÖRN: HeadPhonesScreen.kt
-                    Spacer(modifier = Modifier.padding(top = 100.dp))
+                item {
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth(0.6f)) {
+                            SimpleLineWhite()
+                        }
+                    }
+                }
+
+                items(campaignList.size / 2) { rowIndex ->
+                    val firstSpeakerIndex = rowIndex * 2
+                    val secondSpeakerIndex = rowIndex * 2 + 1
+                    val firstSpeakerData = campaignList[firstSpeakerIndex]
+                    val secondSpeakerData = campaignList.getOrNull(secondSpeakerIndex)
+                    val painter = rememberAsyncImagePainter(model = firstSpeakerData.photo1)
+                    val controlEmail = Firebase.auth.currentUser?.email
+                    val controlFavDbFirst = Firebase.firestore
+                    val isFavoriteFirst = remember {
+                        mutableStateOf(false)
+                    }
+                    val isFavoriteSecond = remember {
+                        mutableStateOf(false)
+                    }
+                    LaunchedEffect(isFavoriteFirst.value) {
+                        if (controlEmail != null) {
+                            val docRef = controlFavDbFirst.collection("fav").document(controlEmail)
+                                .collection(controlEmail)
+                                .document(firstSpeakerData.title)
+                            docRef.get()
+                                .addOnSuccessListener { document ->
+                                    if (document.exists()) {
+                                        isFavoriteFirst.value = true
+                                    }
+                                }
+                                .addOnFailureListener {
+                                    println(it)
+                                }
+                        }
+                    }
+                    LaunchedEffect(isFavoriteSecond.value) {
+                        if (controlEmail != null) {
+                            val docRef = secondSpeakerData?.let {
+                                controlFavDbFirst.collection("fav").document(controlEmail)
+                                    .collection(controlEmail)
+                                    .document(secondSpeakerData.title)
+                            }
+                            docRef?.get()?.addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    isFavoriteSecond.value = true
+                                }
+                            }?.addOnFailureListener {
+                                println(it)
+                            }
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.primary)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(280.dp)
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            // İlk dikdörtgeni üç parçaya böl
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .background(
+                                        MaterialTheme.colorScheme.onSecondary,
+                                        RoundedCornerShape(14.dp)
+                                    )
+                                    .padding(4.dp)
+                                    .clickable {
+                                        navController.navigate("main_detail_screen/${firstSpeakerData.title}")
+                                    },
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                //Resimler + Ürün ismi buraya müminim
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(5f)
+                                        .background(
+                                            MaterialTheme.colorScheme.onPrimary,
+                                            RoundedCornerShape(10.dp)
+                                        )
+                                )
+                                {
+                                    Image(
+                                        painter = painter,
+                                        contentDescription = "Hoparlör",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(10.dp))
+                                    )
+                                    val sizeState = remember {
+                                        androidx.compose.animation.core.Animatable(
+                                            1f
+                                        )
+                                    }
+
+                                    if (!isFavoriteFirst.value) {
+                                        LaunchedEffect(!isFavoriteFirst.value) {
+                                            if (!isFavoriteFirst.value) {
+                                                sizeState.animateTo(1.2f)
+                                                sizeState.animateTo(1f)
+                                            }
+                                        }
+                                        Icon(
+                                            imageVector = Icons.Default.FavoriteBorder,
+                                            contentDescription = "Favorilerim",
+                                            tint = MaterialTheme.colorScheme.onSecondary,
+                                            modifier = Modifier
+                                                .size(34.dp * sizeState.value)
+                                                .align(alignment = Alignment.TopEnd)
+                                                .background(Color(255, 255, 255, 255), CircleShape)
+                                                .clickable {
+                                                    val favDb = Firebase.firestore
+                                                    val userEmail = Firebase.auth.currentUser?.email
+                                                    if (userEmail != null) {
+                                                        val docRef = favDb
+                                                            .collection("fav")
+                                                            .document(userEmail)
+                                                            .collection(userEmail)
+                                                            .document(firstSpeakerData.title)
+                                                        docRef
+                                                            .set(firstSpeakerData)
+                                                            .addOnSuccessListener {
+                                                                println("ekledi")
+                                                            }
+                                                            .addOnFailureListener {
+                                                                println(it)
+                                                            }
+                                                        isFavoriteFirst.value = true
+                                                    } else {
+                                                        navController.navigate("login_screen")
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Oturum açmanız gerekiyor.",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+                                                    }
+                                                }
+
+                                        )
+
+                                    } else {
+                                        LaunchedEffect(isFavoriteFirst) {
+                                            if (isFavoriteFirst.value) {
+                                                sizeState.animateTo(1.2f)
+                                                sizeState.animateTo(1f)
+                                            }
+                                        }
+                                        Icon(
+                                            imageVector = Icons.Default.Favorite,
+                                            contentDescription = "Favorilerim",
+                                            tint = Color(238, 69, 69, 255),
+                                            modifier = Modifier
+                                                .size(34.dp * sizeState.value)
+                                                .align(alignment = Alignment.TopEnd)
+                                                .background(Color(255, 255, 255, 255), CircleShape)
+                                                .clickable {
+                                                    val favDb = Firebase.firestore
+                                                    val userEmail = Firebase.auth.currentUser?.email
+                                                    if (userEmail != null) {
+                                                        val docRef = favDb
+                                                            .collection("fav")
+                                                            .document(userEmail)
+                                                            .collection(userEmail)
+                                                            .document(firstSpeakerData.title)
+                                                        docRef
+                                                            .delete()
+                                                            .addOnSuccessListener {
+                                                                isFavoriteFirst.value = false
+                                                            }
+                                                            .addOnFailureListener {
+                                                                println(it)
+                                                            }
+                                                    }
+                                                }
+
+                                        )
+                                    }
+
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        Color.Transparent,// Başlangıç rengi
+                                                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                    ),
+                                                    startY = 0f,
+                                                    endY = 500f // Yüksekliği ayarlayın
+                                                )
+                                            ),
+                                        verticalArrangement = Arrangement.Bottom,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+
+                                    }
+                                }
+                                //Sepete ekleme - ürün fiyat
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1.5f)
+                                        .background(
+                                            MaterialTheme.colorScheme.onPrimary,
+                                            RoundedCornerShape(10.dp)
+                                        )
+
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(
+                                                    text = firstSpeakerData.title, color = Color(
+                                                        255,
+                                                        231,
+                                                        208,
+                                                        255
+                                                    ), fontWeight = FontWeight.Bold,
+                                                    fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                    textAlign = TextAlign.Center, lineHeight = 12.sp
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.weight(1f))
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.Top,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Text(
+                                                    text = firstSpeakerData.oldPrice + "₺",
+                                                    color = Color(100, 100, 100, 255),
+                                                    fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                    textAlign = TextAlign.Center,
+                                                    textDecoration = TextDecoration.LineThrough
+                                                )
+                                                Text(
+                                                    text = firstSpeakerData.price + "₺",
+                                                    color = MaterialTheme.colorScheme.secondary,
+                                                    fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                    fontWeight = FontWeight.Bold,
+                                                    textAlign = TextAlign.Center
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.weight(1f))
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            if (secondSpeakerData != null) {
+                                val painter2 =
+                                    rememberAsyncImagePainter(model = secondSpeakerData.photo1)
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxSize()
+                                        .background(
+                                            MaterialTheme.colorScheme.onSecondary,
+                                            RoundedCornerShape(14.dp)
+                                        )
+                                        .padding(4.dp)
+                                        .clickable {
+                                            navController.navigate("main_detail_screen/${secondSpeakerData.title}")
+                                        },
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+
+                                    //Resimler + Ürün ismi buraya müminim
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(5f)
+                                            .background(
+                                                MaterialTheme.colorScheme.onPrimary,
+                                                RoundedCornerShape(10.dp)
+                                            )
+                                    )
+                                    {
+                                        Image(
+                                            painter = painter2,
+                                            contentDescription = "Hoparlör",
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .clip(RoundedCornerShape(10.dp))
+                                        )
+
+                                        val sizeState2 = remember {
+                                            androidx.compose.animation.core.Animatable(
+                                                1f
+                                            )
+                                        }
+                                        if (!isFavoriteSecond.value) {
+                                            LaunchedEffect(!isFavoriteSecond.value) {
+                                                if (!isFavoriteSecond.value) {
+                                                    sizeState2.animateTo(1.2f)
+                                                    sizeState2.animateTo(1f)
+                                                }
+                                            }
+                                            Icon(
+                                                imageVector = Icons.Default.FavoriteBorder,
+                                                contentDescription = "Favorilerim",
+                                                tint = MaterialTheme.colorScheme.onSecondary,
+                                                modifier = Modifier
+                                                    .size(34.dp * sizeState2.value)
+                                                    .align(alignment = Alignment.TopEnd)
+                                                    .background(Color(255, 255, 255, 255), CircleShape)
+                                                    .clickable {
+                                                        val favDb = Firebase.firestore
+                                                        val userEmail = Firebase.auth.currentUser?.email
+                                                        if (userEmail != null) {
+                                                            val docRef = favDb
+                                                                .collection("fav")
+                                                                .document(userEmail)
+                                                                .collection(userEmail)
+                                                                .document(secondSpeakerData.title)
+                                                            docRef
+                                                                .set(secondSpeakerData)
+                                                                .addOnSuccessListener {
+                                                                    println("ekledi")
+                                                                }
+                                                                .addOnFailureListener {
+                                                                    println(it)
+                                                                }
+                                                            isFavoriteSecond.value = true
+                                                        } else {
+                                                            navController.navigate("login_screen")
+                                                            Toast
+                                                                .makeText(
+                                                                    context,
+                                                                    "Oturum açmanız gerekiyor.",
+                                                                    Toast.LENGTH_SHORT
+                                                                )
+                                                                .show()
+                                                        }
+                                                    }
+
+                                            )
+
+                                        } else {
+                                            LaunchedEffect(isFavoriteSecond.value) {
+                                                if (isFavoriteSecond.value) {
+                                                    sizeState2.animateTo(1.2f)
+                                                    sizeState2.animateTo(1f)
+                                                }
+                                            }
+
+                                            Icon(
+                                                imageVector = Icons.Default.Favorite,
+                                                contentDescription = "Favorilerim",
+                                                tint = Color(238, 69, 69, 255),
+                                                modifier = Modifier
+                                                    .size(34.dp * sizeState2.value)
+                                                    .align(alignment = Alignment.TopEnd)
+                                                    .background(Color(255, 255, 255, 255), CircleShape)
+                                                    .clickable {
+                                                        val favDb = Firebase.firestore
+                                                        val userEmail = Firebase.auth.currentUser?.email
+                                                        if (userEmail != null) {
+                                                            val docRef = favDb
+                                                                .collection("fav")
+                                                                .document(userEmail)
+                                                                .collection(userEmail)
+                                                                .document(secondSpeakerData.title)
+                                                            docRef
+                                                                .delete()
+                                                                .addOnSuccessListener {
+                                                                    isFavoriteSecond.value = false
+                                                                }
+                                                                .addOnFailureListener {
+                                                                    println(it)
+                                                                }
+                                                        }
+                                                    }
+
+                                            )
+                                        }
+
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(
+                                                    brush = Brush.verticalGradient(
+                                                        colors = listOf(
+                                                            Color.Transparent,
+                                                            Color.Transparent,// Başlangıç rengi
+                                                            MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                        ),
+                                                        startY = 0f,
+                                                        endY = 500f // Yüksekliği ayarlayın
+                                                    )
+                                                ),
+                                            verticalArrangement = Arrangement.Bottom,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+
+                                        }
+                                    }
+                                    //Sepete ekleme - ürün fiyat
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1.5f)
+                                            .background(
+                                                MaterialTheme.colorScheme.onPrimary,
+                                                RoundedCornerShape(10.dp)
+                                            )
+
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Start
+                                        ) {
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        text = secondSpeakerData.title, color = Color(
+                                                            255,
+                                                            231,
+                                                            208,
+                                                            255
+                                                        ), fontWeight = FontWeight.Bold,
+                                                        fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                        textAlign = TextAlign.Center, lineHeight = 12.sp
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                Column(
+                                                    modifier = Modifier.fillMaxSize(),
+                                                    verticalArrangement = Arrangement.Center,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Text(
+                                                        text = secondSpeakerData.oldPrice + "₺",
+                                                        color = Color(100, 100, 100, 255),
+                                                        fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                        textAlign = TextAlign.Center,
+                                                        textDecoration = TextDecoration.LineThrough
+                                                    )
+
+                                                    Text(
+                                                        text = secondSpeakerData.price + " ₺",
+                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                        fontWeight = FontWeight.Bold,
+                                                        textAlign = TextAlign.Center
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.weight(1f))
+
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+
                 }
             }
 
