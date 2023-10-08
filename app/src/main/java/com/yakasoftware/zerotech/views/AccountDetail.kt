@@ -64,6 +64,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
+import com.yakasoftware.zerotech.Lines.SimpleLineWhite
 import com.yakasoftware.zerotech.R
 
 
@@ -337,6 +338,13 @@ fun AccountDetailScreen(navController: NavHostController) {
                             shape = RoundedCornerShape(16.dp)
                         )
                     }
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -365,6 +373,13 @@ fun AccountDetailScreen(navController: NavHostController) {
                             shape = RoundedCornerShape(16.dp)
                         )
                     }
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -391,6 +406,13 @@ fun AccountDetailScreen(navController: NavHostController) {
                              ),
                             shape = RoundedCornerShape(16.dp)
                         )
+                    }
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            SimpleLineWhite()
+                        }
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),

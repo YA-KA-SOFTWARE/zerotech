@@ -1004,7 +1004,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                             ),
                                             startY = 0f,
-                                            endY = 500f // Yüksekliği ayarlayın
+                                            endY =650f // Yüksekliği ayarlayın
                                         )
                                     ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -1034,9 +1034,9 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             contentAlignment = Alignment.Center) {
                                             Text(
                                                 text = firstSpeakerData.title, color = Color(
-                                                    255,
-                                                    231,
-                                                    208,
+                                                    143,
+                                                    100,
+                                                    60,
                                                     255
                                                 ), fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
@@ -1205,7 +1205,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                     MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                 ),
                                                 startY = 0f,
-                                                endY = 500f // Yüksekliği ayarlayın
+                                                endY =650f // Yüksekliği ayarlayın
                                             )
                                         ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -1235,9 +1235,9 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                                 contentAlignment = Alignment.Center) {
                                                 Text(
                                                     text = secondSpeakerData.title, color = Color(
-                                                        255,
-                                                        231,
-                                                        208,
+                                                        143,
+                                                        100,
+                                                        60,
                                                         255
                                                     ), fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },

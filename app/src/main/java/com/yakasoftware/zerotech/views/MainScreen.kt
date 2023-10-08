@@ -760,7 +760,7 @@ fun MainScreen(navController: NavHostController) {
                                                         MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                     ),
                                                     startY = 0f,
-                                                    endY = 500f // Yüksekliği ayarlayın
+                                                    endY =650f // Yüksekliği ayarlayın
                                                 )
                                             ),
                                         verticalArrangement = Arrangement.Bottom,
@@ -794,12 +794,7 @@ fun MainScreen(navController: NavHostController) {
                                                 contentAlignment = Alignment.Center
                                             ) {
                                                 Text(
-                                                    text = firstSpeakerData.title, color = Color(
-                                                        255,
-                                                        231,
-                                                        208,
-                                                        255
-                                                    ), fontWeight = FontWeight.Bold,
+                                                    text = firstSpeakerData.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     textAlign = TextAlign.Center, lineHeight = 12.sp
                                                 )
@@ -819,7 +814,7 @@ fun MainScreen(navController: NavHostController) {
                                                 )
                                                 Text(
                                                     text = firstSpeakerData.price + "₺",
-                                                    color = MaterialTheme.colorScheme.secondary,
+                                                    color = MaterialTheme.colorScheme.onSurface,
                                                     fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                     fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center
@@ -975,7 +970,7 @@ fun MainScreen(navController: NavHostController) {
                                                             MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                         ),
                                                         startY = 0f,
-                                                        endY = 500f // Yüksekliği ayarlayın
+                                                        endY =650f // Yüksekliği ayarlayın
                                                     )
                                                 ),
                                             verticalArrangement = Arrangement.Bottom,
@@ -1009,12 +1004,7 @@ fun MainScreen(navController: NavHostController) {
                                                     contentAlignment = Alignment.Center
                                                 ) {
                                                     Text(
-                                                        text = secondSpeakerData.title, color = Color(
-                                                            255,
-                                                            231,
-                                                            208,
-                                                            255
-                                                        ), fontWeight = FontWeight.Bold,
+                                                        text = secondSpeakerData.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold,
                                                         fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                         textAlign = TextAlign.Center, lineHeight = 12.sp
                                                     )
@@ -1035,7 +1025,7 @@ fun MainScreen(navController: NavHostController) {
 
                                                     Text(
                                                         text = secondSpeakerData.price + " ₺",
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = MaterialTheme.colorScheme.onSurface,
                                                         fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                         fontWeight = FontWeight.Bold,
                                                         textAlign = TextAlign.Center
