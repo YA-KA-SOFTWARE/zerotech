@@ -95,6 +95,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.Lines.SimpleLineWhite
 import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.Dispatchers
@@ -521,7 +522,7 @@ fun MainScreen(navController: NavHostController) {
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth(0.8f)) {
-                            SimpleLineWhite()
+                            SimpleLine()
                         }
                     }
                 }
@@ -558,7 +559,7 @@ fun MainScreen(navController: NavHostController) {
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth(0.6f)) {
-                            SimpleLineWhite()
+                            SimpleLine()
                         }
                     }
                 }

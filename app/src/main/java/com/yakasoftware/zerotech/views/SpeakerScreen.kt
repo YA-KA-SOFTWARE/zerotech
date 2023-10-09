@@ -1033,12 +1033,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                         Box(modifier = Modifier.fillMaxWidth(),
                                             contentAlignment = Alignment.Center) {
                                             Text(
-                                                text = firstSpeakerData.title, color = Color(
-                                                    143,
-                                                    100,
-                                                    60,
-                                                    255
-                                                ), fontWeight = FontWeight.Bold,
+                                                text = firstSpeakerData.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                 textAlign = TextAlign.Center, lineHeight = 12.sp
                                             )
@@ -1056,7 +1051,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             )
                                             Text(
                                                 text = firstSpeakerData.price + "₺",
-                                                color = MaterialTheme.colorScheme.secondary,
+                                                color = MaterialTheme.colorScheme.onSurface,
                                                 fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                 fontWeight = FontWeight.Bold,
                                                 textAlign = TextAlign.Center
@@ -1234,12 +1229,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
                                             Box(modifier = Modifier.fillMaxWidth(),
                                                 contentAlignment = Alignment.Center) {
                                                 Text(
-                                                    text = secondSpeakerData.title, color = Color(
-                                                        143,
-                                                        100,
-                                                        60,
-                                                        255
-                                                    ), fontWeight = FontWeight.Bold,
+                                                    text = secondSpeakerData.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     textAlign = TextAlign.Center, lineHeight = 12.sp
                                                 )
@@ -1258,7 +1248,7 @@ fun RectanglesWithLinesSpeaker(navController: NavHostController) {
 
                                                 Text(
                                                     text = secondSpeakerData.price + " ₺",
-                                                    color = MaterialTheme.colorScheme.secondary,
+                                                    color = MaterialTheme.colorScheme.onSurface,
                                                     fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                     fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center

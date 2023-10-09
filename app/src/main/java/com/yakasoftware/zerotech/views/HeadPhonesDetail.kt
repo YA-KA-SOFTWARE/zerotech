@@ -654,7 +654,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                 ) {
                     Text(
                         text = productTitle,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp
                     )
@@ -2192,7 +2192,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent, // Başlangıç rengi
-                                MaterialTheme.colorScheme.primary  // Bitiş rengi
+                                MaterialTheme.colorScheme.onTertiary  // Bitiş rengi
                             ),
                             startY = 10f,
                             endY = 100f // Yüksekliği ayarlayın
@@ -2212,7 +2212,7 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                 Text(
                     text = if (!isAtTop.value) "Daha Fazlası.." else "Küçült..",
                     fontSize = 20.sp, fontWeight = FontWeight.W800,
-                    color = Color(255, 207, 184, 255),
+                    color = MaterialTheme.colorScheme.onBackground,
                     textDecoration = TextDecoration.Underline
                 )
 
