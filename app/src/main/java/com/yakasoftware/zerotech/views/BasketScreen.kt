@@ -679,11 +679,13 @@ fun BasketScreen(navController: NavHostController) {
                     Text(text = "Toplam Fiyat:",
                         fontSize = with(LocalDensity.current) {
                             shoppingBarFontSize.toSp()
-                        }
+                        },
+                        fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(text = "${String.format("%.2f", totalPrice.value)}₺",
-                        fontSize = with(LocalDensity.current){shoppingBarFontSize.toSp()}
+                        fontSize = with(LocalDensity.current){shoppingBarFontSize.toSp()},
+                        fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(onClick = { /*TODO*/ }) {
