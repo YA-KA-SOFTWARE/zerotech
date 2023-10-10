@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material3.Button
@@ -55,22 +56,100 @@ import com.yakasoftware.zerotech.Lines.SimpleLine
 @Composable
 fun BasketScreen(navController: NavHostController) {
 
+    val db = Firebase.firestore
+    val auth = Firebase.auth
+    val currentUser = auth.currentUser
+    val email = currentUser?.email
+    val name = remember {
+        mutableStateOf("")
+    }
+    val surname = remember {
+        mutableStateOf("")
+    }
+    val phoneNumber = remember {
+        mutableStateOf("")
+    }
+    data class BasketProduct(
+        val title: String,
+        val photo1: String,
+        val price: String,
+        val oldPrice: String,
+        val discount: String,
+        val type: String,
+        val amount: String,
+        val date: com.google.firebase.Timestamp?,
+        val onay: Boolean,
+        val docId: String,
+        val color: String
+    )
+
+    val oldPrice = remember { mutableStateOf("") }
+    val price = remember { mutableStateOf("") }
+    val photo1 = remember { mutableStateOf("") }
+    val discount = remember { mutableStateOf("") }
+    val type = remember { mutableStateOf("") }
+    val title = remember { mutableStateOf("") }
+    val amount = remember { mutableStateOf("") }
+    val date = remember { mutableStateOf<com.google.firebase.Timestamp?>(null) }
+    val onay = remember { mutableStateOf(false) }
+    val docId = remember {
+        mutableStateOf("")
+    }
+    val totalPrice = remember { mutableStateOf(0.0) }
+
+    val color = remember { mutableStateOf("") }
+
+    val basList = remember { mutableStateListOf<BasketProduct>() }
+    fun calculateTotalPrice(basList: List<BasketProduct>): Double {
+        var totalPrice = 0.0
+        for (baskets in basList) {
+            totalPrice += baskets.price.toFloat() * baskets.amount.toInt()
+        }
+        return totalPrice
+    }
+    totalPrice.value = calculateTotalPrice(basList)
+    db.collection("basket").whereEqualTo("email", email).get()
+        .addOnSuccessListener { documents ->
+            basList.clear()
+            for (document in documents) {
+                val basketData: Map<String, Any> = document.data
+                title.value = basketData["title"].toString()
+                oldPrice.value = basketData["oldPrice"].toString()
+                price.value = basketData["price"].toString()
+                photo1.value = basketData["photo1"].toString()
+                discount.value = basketData["discount"].toString()
+                type.value = basketData["type"].toString()
+                docId.value = basketData["docId"].toString()
+                color.value = basketData["color"].toString()
+                val dateValue = basketData["date"]
+                date.value = if (dateValue is com.google.firebase.Timestamp) {
+                    dateValue
+                } else {
+                    null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
+                }
+                amount.value = basketData["amount"].toString()
+                onay.value = basketData["onay"] as? Boolean ?: false
+                basList.add(
+                    BasketProduct(
+                        title.value,
+                        photo1.value,
+                        price.value,
+                        oldPrice.value,
+                        discount.value,
+                        type.value,
+                        amount.value,
+                        date.value,
+                        onay.value,
+                        docId.value,
+                        color.value
+                    )
+                )
+            }
+        }
+
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-        val totalPrice = remember { mutableStateOf(0.0) }
         val context = LocalContext.current
-        val db = Firebase.firestore
-        val auth = Firebase.auth
-        val currentUser = auth.currentUser
-        val email = currentUser?.email
-        val name = remember {
-            mutableStateOf("")
-        }
-        val surname = remember {
-            mutableStateOf("")
-        }
-        val phoneNumber = remember {
-            mutableStateOf("")
-        }
+
         if (currentUser != null) {
             db.collection("users").document(email.toString())
                 .get()
@@ -179,361 +258,361 @@ fun BasketScreen(navController: NavHostController) {
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
-                data class BasketProduct(
-                    val title: String,
-                    val photo1: String,
-                    val price: String,
-                    val oldPrice: String,
-                    val discount: String,
-                    val type: String,
-                    val amount: String,
-                    val date: com.google.firebase.Timestamp?,
-                    val onay: Boolean,
-                    val docId: String,
-                    val color: String
-                )
 
-                val oldPrice = remember { mutableStateOf("") }
-                val price = remember { mutableStateOf("") }
-                val photo1 = remember { mutableStateOf("") }
-                val discount = remember { mutableStateOf("") }
-                val type = remember { mutableStateOf("") }
-                val title = remember { mutableStateOf("") }
-                val amount = remember { mutableStateOf("") }
-                val date = remember { mutableStateOf<com.google.firebase.Timestamp?>(null) }
-                val onay = remember { mutableStateOf(false) }
-                val docId = remember {
-                    mutableStateOf("")
-                }
-                val color = remember { mutableStateOf("") }
 
-                val basList = remember { mutableStateListOf<BasketProduct>() }
-                fun calculateTotalPrice(basList: List<BasketProduct>): Double {
-                    var totalPrice = 0.0
-                    for (baskets in basList) {
-                        totalPrice += baskets.price.toFloat() * baskets.amount.toInt()
-                    }
-                    return totalPrice
-                }
-                totalPrice.value = calculateTotalPrice(basList)
-                db.collection("basket").whereEqualTo("email", email).get()
-                    .addOnSuccessListener { documents ->
-                        basList.clear()
-                        for (document in documents) {
-                            val basketData: Map<String, Any> = document.data
-                            title.value = basketData["title"].toString()
-                            oldPrice.value = basketData["oldPrice"].toString()
-                            price.value = basketData["price"].toString()
-                            photo1.value = basketData["photo1"].toString()
-                            discount.value = basketData["discount"].toString()
-                            type.value = basketData["type"].toString()
-                            docId.value = basketData["docId"].toString()
-                            color.value = basketData["color"].toString()
-                            val dateValue = basketData["date"]
-                            date.value = if (dateValue is com.google.firebase.Timestamp) {
-                                dateValue
-                            } else {
-                                null // Değer "com.google.firebase.Timestamp" değilse, null olarak ayarlayın
-                            }
-                            amount.value = basketData["amount"].toString()
-                            onay.value = basketData["onay"] as? Boolean ?: false
-                            basList.add(
-                                BasketProduct(
-                                    title.value,
-                                    photo1.value,
-                                    price.value,
-                                    oldPrice.value,
-                                    discount.value,
-                                    type.value,
-                                    amount.value,
-                                    date.value,
-                                    onay.value,
-                                    docId.value,
-                                    color.value
+                val emptyFontSize = 18.dp
+                if (basList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .size(250.dp)
+                            .background(MaterialTheme.colorScheme.onTertiary),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Column(modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(
+                                    imageVector = Icons.Default.RemoveShoppingCart,
+                                    contentDescription = "Boş Sepet",
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier
+                                        .size(32.dp)
                                 )
-                            )
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                Text(text = "Sepetinizde Ürün Bulunmamaktadır.", color = MaterialTheme.colorScheme.secondary,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = with(LocalDensity.current){emptyFontSize.toSp()},
+                                    textAlign = TextAlign.Center
+                                )
+
+                            }
                         }
                     }
 
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-                    val fontSize = 12.dp
-                    val fontSizePrice = 16.dp
-                    items(basList.size) { index ->
-                        val baskets = basList[index]
-                        val painter = rememberAsyncImagePainter(model = baskets.photo1)
-                        val sepetSayisi =
-                            remember { mutableStateOf(baskets.amount.toInt()) }
+                }else {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+                        val fontSize = 12.dp
+                        val fontSizePrice = 16.dp
+                        items(basList.size) { index ->
+                            val baskets = basList[index]
+                            val painter = rememberAsyncImagePainter(model = baskets.photo1)
+                            val sepetSayisi =
+                                remember { mutableStateOf(baskets.amount.toInt()) }
 
 
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.primary)
-                                .clickable {
-                                    if (baskets.type == "speakers") {
-                                        navController.navigate("speaker_detail_screen/${baskets.title}")
-                                    }
-                                    if (baskets.type == "headphones") {
-                                        navController.navigate("headphones_detail_screen/${baskets.title}")
-                                    }
-                                    if (baskets.type == "accesories") {
-                                        navController.navigate("accesories_detail_screen/${baskets.title}")
-                                    }
-                                    if (baskets.type == "bands") {
-                                        navController.navigate("band_detail_screen/${baskets.title}")
-                                    }
-                                    if (baskets.type == "watchs") {
-                                        navController.navigate("watch_detail_screen/${baskets.title}")
-                                    }
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(
+                            Box(
                                 modifier = Modifier
-                                    .size(280.dp)
-                                    .padding(10.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .clickable {
+                                        if (baskets.type == "speakers") {
+                                            navController.navigate("speaker_detail_screen/${baskets.title}")
+                                        }
+                                        if (baskets.type == "headphones") {
+                                            navController.navigate("headphones_detail_screen/${baskets.title}")
+                                        }
+                                        if (baskets.type == "accesories") {
+                                            navController.navigate("accesories_detail_screen/${baskets.title}")
+                                        }
+                                        if (baskets.type == "bands") {
+                                            navController.navigate("band_detail_screen/${baskets.title}")
+                                        }
+                                        if (baskets.type == "watchs") {
+                                            navController.navigate("watch_detail_screen/${baskets.title}")
+                                        }
+                                    },
+                                contentAlignment = Alignment.Center
                             ) {
-                                // İlk dikdörtgeni üç parçaya böl
-                                Column(
+                                Row(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxSize()
-                                        .background(
-                                            MaterialTheme.colorScheme.onSecondary,
-                                            RoundedCornerShape(14.dp)
-                                        )
-                                        .padding(4.dp),
-                                    verticalArrangement = Arrangement.SpaceBetween
+                                        .size(280.dp)
+                                        .padding(10.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-
-                                    //Resimler + Ürün ismi buraya müminim
-                                    Box(
+                                    // İlk dikdörtgeni üç parçaya böl
+                                    Column(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(5f)
+                                            .weight(1f)
+                                            .fillMaxSize()
                                             .background(
-                                                MaterialTheme.colorScheme.onPrimary,
-                                                RoundedCornerShape(10.dp)
+                                                MaterialTheme.colorScheme.onSecondary,
+                                                RoundedCornerShape(14.dp)
                                             )
-                                    )
-                                    {
-                                        Image(
-                                            painter = painter,
-                                            contentDescription = "Sepetteki ürün",
-                                            contentScale = ContentScale.Crop,
+                                            .padding(4.dp),
+                                        verticalArrangement = Arrangement.SpaceBetween
+                                    ) {
+
+                                        //Resimler + Ürün ismi buraya müminim
+                                        Box(
                                             modifier = Modifier
-                                                .fillMaxSize()
-                                                .clip(RoundedCornerShape(10.dp))
+                                                .fillMaxWidth()
+                                                .weight(5f)
+                                                .background(
+                                                    MaterialTheme.colorScheme.onPrimary,
+                                                    RoundedCornerShape(10.dp)
+                                                )
                                         )
-                                        Icon(
-                                            imageVector = Icons.Default.RemoveShoppingCart,
-                                            contentDescription = "Sepetten Çıkar",
-                                            tint = MaterialTheme.colorScheme.onSecondary,
-                                            modifier = Modifier
-                                                .size(34.dp)
-                                                .align(alignment = Alignment.TopEnd)
-                                                .background(Color(255, 255, 255, 255), CircleShape)
-                                                .clickable {
-                                                    val controlEmail =
-                                                        Firebase.auth.currentUser?.email
-                                                    val controlDb = Firebase.firestore
-                                                    if (controlEmail != null) {
-                                                        val query = controlDb
-                                                            .collection("basket")
-                                                            .whereEqualTo("email", controlEmail)
-                                                        query
-                                                            .get()
-                                                            .addOnSuccessListener { documents ->
-                                                                for (document in documents) {
-                                                                    val docEmail =
-                                                                        document.getString("email")
-                                                                    if (docEmail == controlEmail) {
-                                                                        // Oturum açmış kullanıcıya ait belgeyi silme işlemi
-                                                                        val docIdDelete =
-                                                                            baskets.docId
-                                                                        controlDb
-                                                                            .collection("basket")
-                                                                            .document(docIdDelete)
-                                                                            .delete()
-                                                                            .addOnSuccessListener {
-                                                                                // Belge başarıyla silindi
-                                                                                navController.navigate(
-                                                                                    "basket_screen"
-                                                                                ) {
-                                                                                    popUpTo("basket_screen") {
-                                                                                        inclusive =
-                                                                                            true
+                                        {
+                                            Image(
+                                                painter = painter,
+                                                contentDescription = "Sepetteki ürün",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(RoundedCornerShape(10.dp))
+                                            )
+                                            Icon(
+                                                imageVector = Icons.Default.RemoveShoppingCart,
+                                                contentDescription = "Sepetten Çıkar",
+                                                tint = MaterialTheme.colorScheme.onSecondary,
+                                                modifier = Modifier
+                                                    .size(34.dp)
+                                                    .align(alignment = Alignment.TopEnd)
+                                                    .background(
+                                                        Color(255, 255, 255, 255),
+                                                        CircleShape
+                                                    )
+                                                    .clickable {
+                                                        val controlEmail =
+                                                            Firebase.auth.currentUser?.email
+                                                        val controlDb = Firebase.firestore
+                                                        if (controlEmail != null) {
+                                                            val query = controlDb
+                                                                .collection("basket")
+                                                                .whereEqualTo("email", controlEmail)
+                                                            query
+                                                                .get()
+                                                                .addOnSuccessListener { documents ->
+                                                                    for (document in documents) {
+                                                                        val docEmail =
+                                                                            document.getString("email")
+                                                                        if (docEmail == controlEmail) {
+                                                                            // Oturum açmış kullanıcıya ait belgeyi silme işlemi
+                                                                            val docIdDelete =
+                                                                                baskets.docId
+                                                                            controlDb
+                                                                                .collection("basket")
+                                                                                .document(
+                                                                                    docIdDelete
+                                                                                )
+                                                                                .delete()
+                                                                                .addOnSuccessListener {
+                                                                                    // Belge başarıyla silindi
+                                                                                    navController.navigate(
+                                                                                        "basket_screen"
+                                                                                    ) {
+                                                                                        popUpTo("basket_screen") {
+                                                                                            inclusive =
+                                                                                                true
+                                                                                        }
                                                                                     }
+                                                                                    println("Belge silindi: $docIdDelete")
                                                                                 }
-                                                                                println("Belge silindi: $docIdDelete")
-                                                                            }
-                                                                            .addOnFailureListener { e ->
-                                                                                // Hata durumunda bildirim veya kayıt yapabilirsiniz
-                                                                                println("Belge silme hatası: $e")
-                                                                            }
-                                                                    } else {
-                                                                        // Bu belge oturum açmış kullanıcıya ait değil
-                                                                        println("Bu belgeyi silemezsiniz.")
+                                                                                .addOnFailureListener { e ->
+                                                                                    // Hata durumunda bildirim veya kayıt yapabilirsiniz
+                                                                                    println("Belge silme hatası: $e")
+                                                                                }
+                                                                        } else {
+                                                                            // Bu belge oturum açmış kullanıcıya ait değil
+                                                                            println("Bu belgeyi silemezsiniz.")
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
-                                                            .addOnFailureListener { e ->
-                                                                // Sorgu başarısız oldu
-                                                                println("Sorgu hatası: $e")
-                                                            }
+                                                                .addOnFailureListener { e ->
+                                                                    // Sorgu başarısız oldu
+                                                                    println("Sorgu hatası: $e")
+                                                                }
+                                                        }
                                                     }
-                                                }
-                                        )
-
-                                        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
-                                            Text(
-                                                text = sepetSayisi.value.toString() + " " + "adet",
-                                                color = Color.Black,
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                modifier = Modifier
-                                                    .background(
-                                                        Color.White,
-                                                        shape = CircleShape
-                                                    )
-                                                    .padding(8.dp)
                                             )
 
-                                            Spacer(modifier = Modifier.padding(top = 25.dp))
-
-                                            //RENK YAZISI BURADA
-                                            if (baskets.color.isNotEmpty()) {
+                                            Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
                                                 Text(
-                                                    text = baskets.color,
-                                                    color = Color.DarkGray,
-                                                    fontWeight = FontWeight.Light,
+                                                    text = sepetSayisi.value.toString() + " " + "adet",
+                                                    color = Color.Black,
+                                                    fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     modifier = Modifier
                                                         .background(
-                                                            MaterialTheme.colorScheme.onSecondary,
-                                                            shape = RoundedCornerShape(
-                                                                0.dp,
-                                                                10.dp,
-                                                                10.dp,
-                                                                0.dp
-                                                            )
+                                                            Color.White,
+                                                            shape = CircleShape
                                                         )
                                                         .padding(8.dp)
                                                 )
-                                            }
-                                        }
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .background(
-                                                    brush = Brush.verticalGradient(
-                                                        colors = listOf(
-                                                            Color.Transparent,
-                                                            Color.Transparent,// Başlangıç rengi
-                                                            MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
-                                                        ),
-                                                        startY = 0f,
-                                                        endY = 500f // Yüksekliği ayarlayın
-                                                    )
-                                                ),
-                                            verticalArrangement = Arrangement.Bottom,
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
 
-                                        }
-                                    }
-                                    //Sepete ekleme - ürün fiyat
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1.4f)
-                                            .background(
-                                                MaterialTheme.colorScheme.onPrimary,
-                                                RoundedCornerShape(10.dp)
-                                            )
-
-                                    ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.Start
-                                        ) {
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxSize(),
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Box(modifier = Modifier.fillMaxWidth(),
-                                                    contentAlignment = Alignment.Center) {
+                                                Spacer(modifier = Modifier.padding(top = 25.dp))
+                                                //RENK YAZISI BURADA
+                                                if (baskets.color.isNotEmpty()) {
                                                     Text(
-                                                        text = baskets.title,
-                                                        color = Color(
-                                                            255,
-                                                            231,
-                                                            208,
-                                                            255
-                                                        ),
-                                                        fontWeight = FontWeight.Bold,
+                                                        text = baskets.color,
+                                                        color = Color.DarkGray,
+                                                        fontWeight = FontWeight.Light,
                                                         fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                        textAlign = TextAlign.Center,
-                                                        lineHeight = 12.sp
+                                                        modifier = Modifier
+                                                            .background(
+                                                                MaterialTheme.colorScheme.onSecondary,
+                                                                shape = RoundedCornerShape(
+                                                                    0.dp,
+                                                                    10.dp,
+                                                                    10.dp,
+                                                                    0.dp
+                                                                )
+                                                            )
+                                                            .padding(8.dp)
                                                     )
                                                 }
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                Row(
-                                                    Modifier.fillMaxWidth(),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                            }
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .background(
+                                                        brush = Brush.verticalGradient(
+                                                            colors = listOf(
+                                                                Color.Transparent,
+                                                                Color.Transparent,// Başlangıç rengi
+                                                                MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                            ),
+                                                            startY = 0f,
+                                                            endY = 500f // Yüksekliği ayarlayın
+                                                        )
+                                                    ),
+                                                verticalArrangement = Arrangement.Bottom,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+
+                                            }
+                                        }
+                                        //Sepete ekleme - ürün fiyat
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .weight(1.4f)
+                                                .background(
+                                                    MaterialTheme.colorScheme.onPrimary,
+                                                    RoundedCornerShape(10.dp)
+                                                )
+
+                                        ) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxSize(),
+                                                    verticalArrangement = Arrangement.Center
                                                 ) {
-
-
-                                                    Column(
-                                                        modifier = Modifier
-                                                            .wrapContentSize(),
-                                                        verticalArrangement = Arrangement.Center,
-                                                        horizontalAlignment = Alignment.Start
-                                                    ) {
+                                                    Box(modifier = Modifier.fillMaxWidth(),
+                                                        contentAlignment = Alignment.Center) {
                                                         Text(
-                                                            text = String.format(
-                                                                "%.2f",
-                                                                baskets.oldPrice.toFloat() * sepetSayisi.value
-                                                            ) + "₺",
-                                                            color = Color(100, 100, 100, 255),
+                                                            text = baskets.title,
+                                                            color = Color(
+                                                                255,
+                                                                231,
+                                                                208,
+                                                                255
+                                                            ),
+                                                            fontWeight = FontWeight.Bold,
                                                             fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                             textAlign = TextAlign.Center,
-                                                            textDecoration = TextDecoration.LineThrough
+                                                            lineHeight = 12.sp
                                                         )
+                                                    }
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    Row(
+                                                        Modifier.fillMaxWidth(),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.SpaceBetween
+                                                    ) {
+
+
+                                                        Column(
+                                                            modifier = Modifier
+                                                                .wrapContentSize(),
+                                                            verticalArrangement = Arrangement.Center,
+                                                            horizontalAlignment = Alignment.Start
+                                                        ) {
+                                                            Text(
+                                                                text = String.format(
+                                                                    "%.2f",
+                                                                    baskets.oldPrice.toFloat() * sepetSayisi.value
+                                                                ) + "₺",
+                                                                color = Color(100, 100, 100, 255),
+                                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                                textAlign = TextAlign.Center,
+                                                                textDecoration = TextDecoration.LineThrough
+                                                            )
+
+                                                            Text(
+                                                                text = String.format(
+                                                                    "%.2f",
+                                                                    baskets.price.toFloat() * sepetSayisi.value
+                                                                ) + "₺",
+                                                                color = MaterialTheme.colorScheme.secondary,
+                                                                fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
+                                                                fontWeight = FontWeight.Bold,
+                                                                textAlign = TextAlign.Center
+                                                            )
+
+                                                        }
+
+                                                        Spacer(modifier = Modifier.weight(1f))
+
+
+                                                        Spacer(modifier = Modifier.weight(0.2f))
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(20.dp)
+                                                                .clip(RoundedCornerShape(20.dp))
+                                                                .background(
+                                                                    MaterialTheme.colorScheme.onSecondary
+                                                                )
+                                                                .clickable {
+                                                                    if (sepetSayisi.value > 1) {
+                                                                        sepetSayisi.value -= 1
+                                                                        val documentReference = db
+                                                                            .collection("basket")
+                                                                            .document(baskets.docId)
+
+                                                                        documentReference.update(
+                                                                            "amount",
+                                                                            sepetSayisi.value.toString()
+                                                                        )
+                                                                    }
+                                                                },
+                                                            contentAlignment = Alignment.CenterStart
+                                                        ) {
+
+                                                            Text(
+                                                                text = "-",
+                                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                                modifier = Modifier
+                                                                    .align(Alignment.Center)
+                                                            )
+
+                                                        }
+                                                        Spacer(modifier = Modifier.weight(0.5f))
 
                                                         Text(
-                                                            text = String.format(
-                                                                "%.2f",
-                                                                baskets.price.toFloat() * sepetSayisi.value
-                                                            ) + "₺",
-                                                            color = MaterialTheme.colorScheme.secondary,
-                                                            fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
-                                                            fontWeight = FontWeight.Bold,
-                                                            textAlign = TextAlign.Center
+                                                            text = sepetSayisi.value.toString(),
+                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                            color = MaterialTheme.colorScheme.secondary
                                                         )
 
-                                                    }
-
-                                                    Spacer(modifier = Modifier.weight(1f))
-
-
-                                                    Spacer(modifier = Modifier.weight(0.2f))
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .size(20.dp)
-                                                            .clip(RoundedCornerShape(20.dp))
-                                                            .background(
-                                                                MaterialTheme.colorScheme.onSecondary
-                                                            )
-                                                            .clickable {
-                                                                if (sepetSayisi.value > 1) {
-                                                                    sepetSayisi.value -= 1
+                                                        Spacer(modifier = Modifier.weight(0.5f))
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(20.dp)
+                                                                .clip(RoundedCornerShape(20.dp))
+                                                                .background(MaterialTheme.colorScheme.onSecondary)
+                                                                .clickable {
+                                                                    sepetSayisi.value += 1
                                                                     val documentReference = db
                                                                         .collection("basket")
                                                                         .document(baskets.docId)
@@ -542,58 +621,23 @@ fun BasketScreen(navController: NavHostController) {
                                                                         "amount",
                                                                         sepetSayisi.value.toString()
                                                                     )
-                                                                }
-                                                            },
-                                                        contentAlignment = Alignment.CenterStart
-                                                    ) {
 
-                                                        Text(
-                                                            text = "-",
-                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                            modifier = Modifier
-                                                                .align(Alignment.Center)
-                                                        )
+                                                                },
+                                                            contentAlignment = Alignment.CenterEnd
+                                                        ) {
 
-                                                    }
-                                                    Spacer(modifier = Modifier.weight(0.5f))
+                                                            Text(
+                                                                text = "+",
+                                                                fontSize = with(LocalDensity.current) { fontSize.toSp() },
+                                                                modifier = Modifier
+                                                                    .align(Alignment.Center)
+                                                            )
 
-                                                    Text(
-                                                        text = sepetSayisi.value.toString(),
-                                                        fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                        color = MaterialTheme.colorScheme.secondary
-                                                    )
+                                                        }
+                                                        Spacer(modifier = Modifier.weight(0.2f))
 
-                                                    Spacer(modifier = Modifier.weight(0.5f))
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .size(20.dp)
-                                                            .clip(RoundedCornerShape(20.dp))
-                                                            .background(MaterialTheme.colorScheme.onSecondary)
-                                                            .clickable {
-                                                                sepetSayisi.value += 1
-                                                                val documentReference = db
-                                                                    .collection("basket")
-                                                                    .document(baskets.docId)
-
-                                                                documentReference.update(
-                                                                    "amount",
-                                                                    sepetSayisi.value.toString()
-                                                                )
-
-                                                            },
-                                                        contentAlignment = Alignment.CenterEnd
-                                                    ) {
-
-                                                        Text(
-                                                            text = "+",
-                                                            fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                            modifier = Modifier
-                                                                .align(Alignment.Center)
-                                                        )
 
                                                     }
-                                                    Spacer(modifier = Modifier.weight(0.2f))
-
 
                                                 }
 
@@ -604,45 +648,56 @@ fun BasketScreen(navController: NavHostController) {
                                     }
 
                                 }
-
                             }
                         }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(120.dp))
+                        item {
+                            Spacer(modifier = Modifier.height(120.dp))
+                        }
                     }
                 }
+
             }
         }
-        val fontSizeIcon = 20.dp
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            val shoppingBarFontSize = 20.dp
-            val oldPriceFontSize = 18.dp
-            Spacer(modifier = Modifier.padding(start = 8.dp))
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .background(MaterialTheme.colorScheme.secondary),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+        if (basList.isNotEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Bottom
             ) {
+                val shoppingBarFontSize = 18.dp
+                val buttonFontSize = 14.dp
+                Spacer(modifier = Modifier.padding(start = 8.dp))
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .background(MaterialTheme.colorScheme.secondary),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Spacer(modifier = Modifier.padding(6.dp))
+                    Text(text = "Toplam Fiyat:",
+                        fontSize = with(LocalDensity.current) {
+                            shoppingBarFontSize.toSp()
+                        }
+                    )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "${String.format("%.2f", totalPrice.value)}₺",
+                        fontSize = with(LocalDensity.current){shoppingBarFontSize.toSp()}
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Siparişi Onayla", color = MaterialTheme.colorScheme.tertiary,
+                            fontSize = with(LocalDensity.current) {
+                                buttonFontSize.toSp()
+                            })
+                    }
 
-                Text(text = "Toplam Fiyat:")
-                Spacer(modifier = Modifier.padding(10.dp))
-                Text(text = "${String.format("%.2f", totalPrice.value)}₺")
-                Spacer(modifier = Modifier.padding(10.dp))
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Siparişi Onayla", color = MaterialTheme.colorScheme.tertiary)
                 }
 
             }
-
         }
+
     }
 }
 

@@ -20,7 +20,7 @@ val koyukrem = Color(143, 100, 60, 255)
 
 
 //Koyu Tema
-val siyah = Color(31,  31, 31, 255)
+val siyah = Color(31,31, 31, 255)
 val koyusiyah = Color(20, 20, 20, 255)
 val koyuturuncu = Color(255, 140, 0, 255)
 val acikkirmizi = Color(255, 90, 60, 255)
