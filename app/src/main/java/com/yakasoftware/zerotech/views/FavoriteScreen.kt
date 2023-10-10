@@ -278,7 +278,7 @@ fun FavoriteScreen(navController: NavHostController) {
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .clip(RoundedCornerShape(10.dp))
+                                                .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
                                         )
                                         Icon(
                                             imageVector = Icons.Default.Favorite,
@@ -360,12 +360,9 @@ fun FavoriteScreen(navController: NavHostController) {
                                                     horizontalArrangement = Arrangement.Center,
                                                     verticalAlignment = Alignment.CenterVertically) {
                                                     Text(
-                                                        text = favListData.title, color = Color(
-                                                            255,
-                                                            231,
-                                                            208,
-                                                            255
-                                                        ), fontWeight = FontWeight.Bold,
+                                                        text = favListData.title,
+                                                        color = MaterialTheme.colorScheme.onBackground,
+                                                        fontWeight = FontWeight.Bold,
                                                         fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                         textAlign = TextAlign.Center, lineHeight = 12.sp
                                                     )
@@ -382,7 +379,7 @@ fun FavoriteScreen(navController: NavHostController) {
                                                     )
                                                     Text(
                                                         text = favListData.price + "₺",
-                                                        color = MaterialTheme.colorScheme.secondary,
+                                                        color = MaterialTheme.colorScheme.onSurface,
                                                         fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                         fontWeight = FontWeight.Bold,
                                                         textAlign = TextAlign.Center
@@ -447,7 +444,7 @@ fun FavoriteScreen(navController: NavHostController) {
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(RoundedCornerShape(10.dp))
+                                                    .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
                                             )
 
                                             Icon(

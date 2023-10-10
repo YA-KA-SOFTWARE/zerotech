@@ -2124,7 +2124,7 @@ fun SpeakerDetailScreen(navController: NavHostController, productTitle: String) 
             }
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(0.dp,0.dp,10.dp,10.dp))
                     .fillMaxWidth()
                     .height(100.dp)
                     .background(MaterialTheme.colorScheme.secondary)

@@ -363,7 +363,7 @@ fun BasketScreen(navController: NavHostController) {
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(RoundedCornerShape(10.dp))
+                                                    .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
                                             )
                                             Icon(
                                                 imageVector = Icons.Default.RemoveShoppingCart,
@@ -429,8 +429,9 @@ fun BasketScreen(navController: NavHostController) {
                                                         }
                                                     }
                                             )
-
+                                            val colorShape = if (baskets.color != "null") 0.dp else 10.dp
                                             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
+                                                Row (Modifier.fillMaxSize()){
                                                 Text(
                                                     text = sepetSayisi.value.toString() + " " + "adet",
                                                     color = Color.Black,
@@ -438,15 +439,18 @@ fun BasketScreen(navController: NavHostController) {
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                     modifier = Modifier
                                                         .background(
-                                                            Color.White,
-                                                            shape = CircleShape
+                                                            MaterialTheme.colorScheme.onSecondary,
+                                                            shape = RoundedCornerShape(
+                                                                0.dp,
+                                                                0.dp,
+                                                                colorShape,
+                                                                0.dp
+                                                            )
                                                         )
                                                         .padding(8.dp)
                                                 )
 
-                                                Spacer(modifier = Modifier.padding(top = 25.dp))
-                                                //RENK YAZISI BURADA
-                                                if (baskets.color.isNotEmpty()) {
+                                                if (baskets.color != "null") {
                                                     Text(
                                                         text = baskets.color,
                                                         color = Color.DarkGray,
@@ -457,7 +461,7 @@ fun BasketScreen(navController: NavHostController) {
                                                                 MaterialTheme.colorScheme.onSecondary,
                                                                 shape = RoundedCornerShape(
                                                                     0.dp,
-                                                                    10.dp,
+                                                                    0.dp,
                                                                     10.dp,
                                                                     0.dp
                                                                 )
@@ -465,6 +469,10 @@ fun BasketScreen(navController: NavHostController) {
                                                             .padding(8.dp)
                                                     )
                                                 }
+                                            }
+                                                Spacer(modifier = Modifier.padding(top = 25.dp))
+                                                //RENK YAZISI BURADA
+
                                             }
                                             Column(
                                                 modifier = Modifier
@@ -477,7 +485,7 @@ fun BasketScreen(navController: NavHostController) {
                                                                 MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                             ),
                                                             startY = 0f,
-                                                            endY = 500f // Yüksekliği ayarlayın
+                                                            endY = 700f // Yüksekliği ayarlayın
                                                         )
                                                     ),
                                                 verticalArrangement = Arrangement.Bottom,
@@ -512,12 +520,7 @@ fun BasketScreen(navController: NavHostController) {
                                                         contentAlignment = Alignment.Center) {
                                                         Text(
                                                             text = baskets.title,
-                                                            color = Color(
-                                                                255,
-                                                                231,
-                                                                208,
-                                                                255
-                                                            ),
+                                                            color = MaterialTheme.colorScheme.onBackground,
                                                             fontWeight = FontWeight.Bold,
                                                             fontSize = with(LocalDensity.current) { fontSize.toSp() },
                                                             textAlign = TextAlign.Center,
@@ -554,7 +557,7 @@ fun BasketScreen(navController: NavHostController) {
                                                                     "%.2f",
                                                                     baskets.price.toFloat() * sepetSayisi.value
                                                                 ) + "₺",
-                                                                color = MaterialTheme.colorScheme.secondary,
+                                                                color = MaterialTheme.colorScheme.onSurface,
                                                                 fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                                 fontWeight = FontWeight.Bold,
                                                                 textAlign = TextAlign.Center

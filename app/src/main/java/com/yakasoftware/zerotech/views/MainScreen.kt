@@ -656,7 +656,7 @@ fun MainScreen(navController: NavHostController) {
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .clip(RoundedCornerShape(10.dp))
+                                            .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
                                     )
                                     val sizeState = remember {
                                         androidx.compose.animation.core.Animatable(
@@ -866,7 +866,7 @@ fun MainScreen(navController: NavHostController) {
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .clip(RoundedCornerShape(10.dp))
+                                                .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
                                         )
 
                                         val sizeState2 = remember {
