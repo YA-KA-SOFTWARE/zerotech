@@ -16,33 +16,38 @@
 //   response.send("Hello from Firebase!");
 // });
 
-/*
-const algoliasearch = require("algoliasearch");
-const client = algoliasearch("CHWCTDMZHO", "9d3f1d282b5ba11618222eeb901c198d");
-const index = client.initIndex("products");
 
-// Firestore'dan ürünleri alma
-const firestore = require("firebase/firestore");
-const db = firestore.getFirestore();
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp();
 
-db.collection("products").get().then((querySnapshot) => {
-  const products = [];
-  querySnapshot.forEach((doc) => {
-    const product = doc.data();
-    product.objectID = doc.id;
-    products.push(product);
-  });
+const db = admin.firestore();
 
-  // Algolia'ya ürünleri indexleme
-  index.saveObjects(products, {autoGenerateObjectIDIfNotExist: true})
-      .then(() => {
-        console.log("Products indexed in Algolia");
-      }).catch((error) => {
-        console.error("Error indexing products in Algolia", error);
-      });
-}).catch((error) => {
-  console.error("Error fetching products from Firestore", error);
+exports.aramaUygula = functions.https.onRequest(async (req, res) => {
+  const {kategori, aramaTerimi} = req.query;
+
+  if (!kategori || !aramaTerimi) {
+    return res.status(400).send("Kategori ve arama terimi gereklidir.");
+  }
+
+  try {
+    // Firestore'da belirli koleksiyonları hedefle
+    const koleksiyonRef = db.collection("products").doc(kategori)
+        .collection(kategori);
+
+    // Verileri sorgula ve sonuçları al
+    const snapshot = await koleksiyonRef
+        .where("title", "==", aramaTerimi).get();
+
+    const sonuclar = [];
+    snapshot.forEach((doc) => {
+      sonuclar.push(doc.data());
+    });
+
+    // Sonuçları JSON olarak dön
+    res.status(200).json(sonuclar);
+  } catch (error) {
+    console.error("Hata:", error);
+    res.status(500).send("Arama işlemi sırasında bir hata oluştu.");
+  }
 });
-*/
-
-

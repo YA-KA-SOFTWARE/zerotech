@@ -394,7 +394,9 @@ fun MainScreen(navController: NavHostController) {
                 contentAlignment = Alignment.Center) {
                 OutlinedTextField(value = searchBar.value , onValueChange = {
                     searchBar.value = it
-                }, modifier = Modifier.fillMaxWidth(0.9f), label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
+                }, modifier = Modifier.fillMaxWidth(0.9f).clickable {
+                        navController.navigate("search_screen")
+                }, label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedLabelColor = MaterialTheme.colorScheme.secondary,
                     focusedBorderColor = MaterialTheme.colorScheme.secondary,
                     unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
