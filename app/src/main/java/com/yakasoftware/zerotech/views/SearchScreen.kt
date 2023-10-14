@@ -1,16 +1,11 @@
-@file:Suppress("DEPRECATION")
-
 package com.yakasoftware.zerotech.views
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.view.inputmethod.InputMethodManager
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -51,7 +46,6 @@ import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -60,10 +54,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -79,17 +71,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -99,6 +87,8 @@ import com.yakasoftware.zerotech.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+
+
 
 @SuppressLint("SuspiciousIndentation", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -131,10 +121,7 @@ fun SearchScreen(navController: NavHostController) {
         },
         label = "Yan menü animasyonu"
     )
-    val lazyWidth by animateDpAsState(
-        targetValue = 250.dp, // Değiştirmek istediğiniz genişlik değeri
-        animationSpec = tween(durationMillis = 5000) // Animasyon süresi
-    )
+
     val auth = Firebase.auth
     val currentUser = auth.currentUser
     val db = Firebase.firestore
@@ -310,12 +297,6 @@ fun SearchScreen(navController: NavHostController) {
                         )
                         Spacer(modifier = Modifier.weight(0.1f))
                         TextField(
-                            supportingText = {
-                                Text(
-                                    text = "DENEMEEE",
-                                    color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
-                                )
-                            },
                             value = searchBar.value,
                             onValueChange = { searchBar.value = it },
                             placeholder = {
@@ -327,8 +308,11 @@ fun SearchScreen(navController: NavHostController) {
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = MaterialTheme.colorScheme.onSecondary,
                                 containerColor = Color.Transparent,
-                                focusedLabelColor = MaterialTheme.colorScheme.onSecondary
-                            ),
+                                focusedLabelColor = MaterialTheme.colorScheme.onSecondary,
+                                cursorColor = MaterialTheme.colorScheme.secondary,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                                ),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 imeAction = androidx.compose.ui.text.input.ImeAction.Search
                             ),
@@ -351,6 +335,11 @@ fun SearchScreen(navController: NavHostController) {
                     SimpleLine()
                 }
             }
+            var searchQuery = remember { mutableStateOf("") }
+
+            val coroutineScope = rememberCoroutineScope()
+            val context = LocalContext.current
+            val firestore = Firebase.firestore
             Spacer(modifier = Modifier.padding(top = 20.dp))
             LazyColumn(
                 Modifier
@@ -367,7 +356,7 @@ fun SearchScreen(navController: NavHostController) {
                     // Offset animasyonu ile öğeleri animasyonlu bir şekilde görünür yapın
                     val offset by animateDpAsState(
                         targetValue = if (isVisiblee.value) 0.dp else 100.dp, // Öğelerin kaydırılacağı konum
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 500), label = ""
                     )
 
                     Spacer(modifier = Modifier.padding(top = 20.dp))

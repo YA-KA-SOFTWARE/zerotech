@@ -94,6 +94,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-storage-ktx:20.2.1")
     implementation ("com.google.firebase:firebase-appcheck:17.0.1")
     implementation ("com.google.firebase:firebase-messaging:23.2.1")
+    implementation("com.google.firebase:firebase-functions-ktx")
+
     //Hilt
     implementation ("com.google.dagger:hilt-android:2.47")
     implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
@@ -127,6 +129,7 @@ dependencies {
     //analitics
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+
 
 
 }

@@ -24,27 +24,43 @@ admin.initializeApp();
 const db = admin.firestore();
 
 exports.aramaUygula = functions.https.onRequest(async (req, res) => {
-  const {kategori, aramaTerimi} = req.query;
+  const {aramaTerimi} = req.query;
 
-  if (!kategori || !aramaTerimi) {
-    return res.status(400).send("Kategori ve arama terimi gereklidir.");
+  if (!aramaTerimi) {
+    return res.status(400).send("Arama terimi gereklidir.");
   }
 
+  // Arama terimini küçük harfe dönüştür
+  const kucukHarfliAramaTerimi = aramaTerimi.toLowerCase();
+
   try {
-    // Firestore'da belirli koleksiyonları hedefle
-    const koleksiyonRef = db.collection("products").doc(kategori)
-        .collection(kategori);
-
-    // Verileri sorgula ve sonuçları al
-    const snapshot = await koleksiyonRef
-        .where("title", "==", aramaTerimi).get();
-
     const sonuclar = [];
-    snapshot.forEach((doc) => {
-      sonuclar.push(doc.data());
-    });
 
-    // Sonuçları JSON olarak dön
+    // Firestore'da belirli bir koleksiyona erişin (örneğin, "products")
+    const productsRef = db.collection("products");
+
+    // Tüm alt belgelere erişmek için bir sorgu yapın
+    const snapshot = await productsRef.listDocuments();
+
+    // Her alt belgeyi dönün ve arama terimine göre kontrol edin
+    for (const productDoc of snapshot) {
+      const subcollectionRef = productDoc.collection(productDoc.id);
+      const subSnapshot = await subcollectionRef.get();
+
+      subSnapshot.forEach((doc) => {
+        const productData = doc.data();
+
+        // Verileri küçük harfe dönüştür
+        const kucukHarfliTitle = productData.title.toLowerCase();
+        const kucukHarfliType = productData.type.toLowerCase();
+
+        if (kucukHarfliTitle.includes(kucukHarfliAramaTerimi) ||
+        kucukHarfliType.includes(kucukHarfliAramaTerimi)) {
+          sonuclar.push(productData);
+        }
+      });
+    }
+
     res.status(200).json(sonuclar);
   } catch (error) {
     console.error("Hata:", error);
