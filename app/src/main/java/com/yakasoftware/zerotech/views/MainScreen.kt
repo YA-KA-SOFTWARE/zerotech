@@ -8,6 +8,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,7 +36,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Campaign
@@ -52,15 +54,13 @@ import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -392,28 +392,32 @@ fun MainScreen(navController: NavHostController) {
             }
             Box(modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center) {
-                OutlinedTextField(value = searchBar.value , onValueChange = {
-                    searchBar.value = it
-                }, modifier = Modifier.fillMaxWidth(0.9f).clickable {
-                        navController.navigate("search_screen")
-                }, label = { Text(text = "Ne Aramıştınız?", color = MaterialTheme.colorScheme.secondary)},colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                    focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    cursorColor = MaterialTheme.colorScheme.secondary
-                ),
-                    shape = RoundedCornerShape(16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search // "Search" işlemini yakala
-                    ),
-                    trailingIcon = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(60.dp)
+                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
+                        .border(
+                            BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable { navController.navigate("search_screen") },
+                    contentAlignment = Alignment.Center
+                ){
+                    Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                        Spacer(modifier = Modifier.weight(0.1f))
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Arama",
                             tint = MaterialTheme.colorScheme.secondary
                         )
-                    })
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Text(text = "Ne aramıştınız?", color = MaterialTheme.colorScheme.onSecondary)
+                        Spacer(modifier = Modifier.weight(1f))
+
+                    }
+
+                }
             }
             Spacer(modifier = Modifier.padding(top = 12.dp))
             LazyColumn(modifier = Modifier.wrapContentSize()) {
@@ -658,7 +662,7 @@ fun MainScreen(navController: NavHostController) {
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
+                                            .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
                                     )
                                     val sizeState = remember {
                                         androidx.compose.animation.core.Animatable(
@@ -763,7 +767,7 @@ fun MainScreen(navController: NavHostController) {
                                                         MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                     ),
                                                     startY = 0f,
-                                                    endY =650f // Yüksekliği ayarlayın
+                                                    endY = 650f // Yüksekliği ayarlayın
                                                 )
                                             ),
                                         verticalArrangement = Arrangement.Bottom,
@@ -868,7 +872,7 @@ fun MainScreen(navController: NavHostController) {
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
+                                                .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
                                         )
 
                                         val sizeState2 = remember {
@@ -890,10 +894,14 @@ fun MainScreen(navController: NavHostController) {
                                                 modifier = Modifier
                                                     .size(34.dp * sizeState2.value)
                                                     .align(alignment = Alignment.TopEnd)
-                                                    .background(Color(255, 255, 255, 255), CircleShape)
+                                                    .background(
+                                                        Color(255, 255, 255, 255),
+                                                        CircleShape
+                                                    )
                                                     .clickable {
                                                         val favDb = Firebase.firestore
-                                                        val userEmail = Firebase.auth.currentUser?.email
+                                                        val userEmail =
+                                                            Firebase.auth.currentUser?.email
                                                         if (userEmail != null) {
                                                             val docRef = favDb
                                                                 .collection("fav")
@@ -938,10 +946,14 @@ fun MainScreen(navController: NavHostController) {
                                                 modifier = Modifier
                                                     .size(34.dp * sizeState2.value)
                                                     .align(alignment = Alignment.TopEnd)
-                                                    .background(Color(255, 255, 255, 255), CircleShape)
+                                                    .background(
+                                                        Color(255, 255, 255, 255),
+                                                        CircleShape
+                                                    )
                                                     .clickable {
                                                         val favDb = Firebase.firestore
-                                                        val userEmail = Firebase.auth.currentUser?.email
+                                                        val userEmail =
+                                                            Firebase.auth.currentUser?.email
                                                         if (userEmail != null) {
                                                             val docRef = favDb
                                                                 .collection("fav")
@@ -973,7 +985,7 @@ fun MainScreen(navController: NavHostController) {
                                                             MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
                                                         ),
                                                         startY = 0f,
-                                                        endY =650f // Yüksekliği ayarlayın
+                                                        endY = 650f // Yüksekliği ayarlayın
                                                     )
                                                 ),
                                             verticalArrangement = Arrangement.Bottom,
