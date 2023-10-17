@@ -222,7 +222,8 @@ fun AdressScreen(navController: NavHostController) {
                                 modifier = Modifier
                                     .size(60.dp)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.secondary)
+                                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
+                                    .background(MaterialTheme.colorScheme.onSecondary)
                                     .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
                             ) {

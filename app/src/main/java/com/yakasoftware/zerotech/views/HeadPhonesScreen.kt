@@ -586,26 +586,7 @@ fun HeadPhonesScreen(navController: NavHostController) {
                         SimpleLineWhite()
                     }
                     Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(text = "Kampanyalar", color = MaterialTheme.colorScheme.secondary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                        Spacer(modifier = Modifier.weight(1f))
-                        Icon(
-                            imageVector = Icons.Default.Campaign,
-                            contentDescription = "Kampanylar",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier
-                                .size(26.dp)
-                        )
-                        Spacer(modifier = Modifier.padding(end = 10.dp))
-                    }
-                    Spacer(modifier = Modifier.padding(top = 6.dp))
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        SimpleLineWhite()
-                    }
+
                     Spacer(modifier = Modifier.padding(top = 40.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(),

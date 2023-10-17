@@ -1,15 +1,15 @@
 package com.yakasoftware.zerotech.views
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,32 +17,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialogDefaults.shape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,9 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.PointerInputModifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -64,7 +48,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
-import com.yakasoftware.zerotech.Lines.SimpleLineWhite
 import com.yakasoftware.zerotech.R
 
 
@@ -102,8 +85,8 @@ fun AccountDetailScreen(navController: NavHostController) {
         val firstLetter = name.value.firstOrNull()?.uppercaseChar() ?: ' '
         val gradientBrush = Brush.verticalGradient(
             colors = listOf(
-                Color(0xFFFF8500),  // Tema Reni
-                Color(0xFFFF6100)   // Tema Rengi Koyu Hali
+                MaterialTheme.colorScheme.secondary,  // Tema Reni
+                MaterialTheme.colorScheme.onSecondary  // Tema Rengi Koyu Hali
             )
         )
 
@@ -134,7 +117,8 @@ fun AccountDetailScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(60.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.secondary)
+                                .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
+                                .background(MaterialTheme.colorScheme.onSecondary)
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
@@ -222,9 +206,15 @@ fun AccountDetailScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(24.dp)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.padding(start = 10.dp))
                         Text(
-                            text = "İsim: ${name.value} ",
+                            text ="İsim: ",
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Text(
+                            text =  name.value,
                             fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
                             color = MaterialTheme.colorScheme.secondary
                         )
@@ -247,9 +237,15 @@ fun AccountDetailScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(24.dp)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.padding(start = 10.dp))
                         Text(
-                            text = "Soyisim: ${surname.value} ",
+                            text ="Soyisim: ",
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Text(
+                            text =  surname.value,
                             fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
                             color = MaterialTheme.colorScheme.secondary
                         )
@@ -271,10 +267,16 @@ fun AccountDetailScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(24.dp)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.padding(start = 10.dp))
                         Text(
-                            text = "Numara: ${phoneNumber.value}" ,
-                            fontSize = with(LocalDensity.current) { sideBarFontSize.toSp()},
+                            text ="Numara: ",
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Text(
+                            text =  phoneNumber.value,
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
                             color = MaterialTheme.colorScheme.secondary
                         )
                         Spacer(modifier = Modifier.weight(1f))
@@ -296,10 +298,16 @@ fun AccountDetailScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(24.dp)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.padding(start = 10.dp))
                         Text(
-                            text = "Mail: ${email!!}" ,
-                            fontSize = with(LocalDensity.current) { mailFontSize.toSp()},
+                            text ="Mail: ",
+                            fontSize =  with(LocalDensity.current) { sideBarFontSize.toSp() },
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Text(
+                            text =  email!!,
+                            fontSize =  with(LocalDensity.current) { mailFontSize.toSp() },
                             color = MaterialTheme.colorScheme.secondary
                         )
                         Spacer(modifier = Modifier.weight(1f))
@@ -318,17 +326,18 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "İsim: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = 20.dp)
                         )
                         OutlinedTextField(
-                            value = isim.value,
-                            onValueChange = { isim.value = it },
+                            value = name.value,
+                            onValueChange = { name.value = it },
                             label = { Text("İsim") }
                             , placeholder = {
                                             Text(text = name.value, color = Color.Gray)
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colorScheme.tertiary,
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                                 unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
@@ -342,7 +351,7 @@ fun AccountDetailScreen(navController: NavHostController) {
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
+                            SimpleLine()
                         }
                     }
                     Row(
@@ -352,18 +361,19 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "Soyisim: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = 20.dp)
 
                         )
                         OutlinedTextField(
-                            value = soyisim.value,
-                            onValueChange = { soyisim.value = it },
+                            value = surname.value,
+                            onValueChange = { surname.value = it },
                             label = { Text("Soyisim") }
                             , placeholder = {
                                             Text(text = surname.value, color = Color.Gray)
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colorScheme.tertiary,
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                                 unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
@@ -377,7 +387,7 @@ fun AccountDetailScreen(navController: NavHostController) {
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
+                            SimpleLine()
                         }
                     }
                     Row(
@@ -387,17 +397,18 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "Numara: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = 20.dp)
                         )
                         OutlinedTextField(
-                            value = numara.value,
-                            onValueChange = { numara.value = it },
+                            value = phoneNumber.value,
+                            onValueChange = { phoneNumber.value = it },
                             label = { Text("Numara") },
                             placeholder = {
                                 Text(text = phoneNumber.value, color = Color.Gray)
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colorScheme.tertiary,
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                                 unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
@@ -411,7 +422,7 @@ fun AccountDetailScreen(navController: NavHostController) {
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
+                            SimpleLine()
                         }
                     }
                     Row(
@@ -421,17 +432,18 @@ fun AccountDetailScreen(navController: NavHostController) {
                         Text(
                             text = "Mail: ",
                             fontSize = 25.sp,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = 20.dp)
                         )
                         OutlinedTextField(
                             value = mail.value,
-                            onValueChange = { mail.value = it },
-                            label = { Text("Mail") },
+                            onValueChange = {mail.value = it },
+                            label = { Text(text ="Mail (Değiştirmek istemiyorsanız boş bırakın)", fontSize = 11.sp) },
                             placeholder = {
                                 Text(text = email!!, color = Color.Gray)
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colorScheme.tertiary,
                                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                                 unfocusedLabelColor = MaterialTheme.colorScheme.secondary,

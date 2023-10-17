@@ -1,7 +1,9 @@
 package com.yakasoftware.zerotech.views
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -132,7 +134,8 @@ fun ResetPasswordScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(60.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.secondary)
+                                .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
+                                .background(MaterialTheme.colorScheme.onSecondary)
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {

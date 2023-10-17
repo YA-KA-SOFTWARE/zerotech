@@ -95,6 +95,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yakasoftware.zerotech.Lines.SheetBarLine
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import com.yakasoftware.zerotech.Lines.SimpleLineWhite
 import com.yakasoftware.zerotech.R
@@ -390,35 +391,7 @@ fun MainScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.padding(end = 4.dp))
 
             }
-            Box(modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .height(60.dp)
-                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
-                        .border(
-                            BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
-                            RoundedCornerShape(16.dp)
-                        )
-                        .clickable { navController.navigate("search_screen") },
-                    contentAlignment = Alignment.Center
-                ){
-                    Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                        Spacer(modifier = Modifier.weight(0.1f))
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Arama",
-                            tint = MaterialTheme.colorScheme.secondary
-                        )
-                        Spacer(modifier = Modifier.weight(0.1f))
-                        Text(text = "Ne aramıştınız?", color = MaterialTheme.colorScheme.onSecondary)
-                        Spacer(modifier = Modifier.weight(1f))
 
-                    }
-
-                }
-            }
             Spacer(modifier = Modifier.padding(top = 12.dp))
             LazyColumn(modifier = Modifier.wrapContentSize()) {
                 item {
@@ -1318,26 +1291,7 @@ fun MainScreen(navController: NavHostController) {
                             SimpleLineWhite()
                         }
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(text = "Kampanyalar", color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { sideBarFontSize.toSp() })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Campaign,
-                                contentDescription = "Kampanylar",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier
-                                    .size(26.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(end = 10.dp))
-                        }
-                        Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            SimpleLineWhite()
-                        }
+
                         Spacer(modifier = Modifier.padding(top = 40.dp))
 
                         Row(modifier = Modifier.fillMaxWidth(),

@@ -1,8 +1,10 @@
 package com.yakasoftware.zerotech.views
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -199,7 +201,8 @@ fun BasketScreen(navController: NavHostController) {
                                 modifier = Modifier
                                     .size(60.dp)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.secondary)
+                                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
+                                    .background(MaterialTheme.colorScheme.onSecondary)
                                     .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
                             ) {

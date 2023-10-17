@@ -1,7 +1,9 @@
 package com.yakasoftware.zerotech.views
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,6 +111,7 @@ fun ProfileScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .size(60.dp)
                                 .clip(CircleShape)
+                                .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
                                 .background(MaterialTheme.colorScheme.onSecondary)
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center

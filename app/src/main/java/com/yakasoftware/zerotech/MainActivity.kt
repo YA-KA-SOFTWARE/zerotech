@@ -32,7 +32,6 @@ import com.yakasoftware.zerotech.views.RectanglesWithLinesHeadPhones
 import com.yakasoftware.zerotech.views.RectanglesWithLinesSpeaker
 import com.yakasoftware.zerotech.views.RegisterScreen
 import com.yakasoftware.zerotech.views.ResetPasswordScreen
-import com.yakasoftware.zerotech.views.SearchScreen
 import com.yakasoftware.zerotech.views.SpeakerDetailScreen
 import com.yakasoftware.zerotech.views.SpeakerScreen
 import com.yakasoftware.zerotech.views.SplashScreen
@@ -153,9 +152,6 @@ class MainActivity : ComponentActivity() {
                     composable("adress_detail_screen/{documentId}") { backStackEntry ->
                         backStackEntry.arguments?.getString("documentId")
                             ?.let { AdressDetail(navController = navController, documentId = it) }
-                    }
-                    composable("search_screen"){
-                        SearchScreen(navController = navController)
                     }
                 }
             }
