@@ -286,40 +286,6 @@ fun SpeakerScreen(navController: NavHostController) {
                 }
                 Spacer(modifier = Modifier.padding(end = 4.dp))
             }
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                OutlinedTextField(value = searchBar.value,
-                    onValueChange = {
-                        searchBar.value = it
-                    },
-                    modifier = Modifier.fillMaxWidth(0.9f),
-                    label = {
-                        Text(
-                            text = "Ne Aramıştınız?",
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                        cursorColor = MaterialTheme.colorScheme.secondary
-                    ),
-                    shape = RoundedCornerShape(16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search // "Search" işlemini yakala
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Arama",
-                            tint = MaterialTheme.colorScheme.secondary
-                        )
-                    })
-            }
             Spacer(modifier = Modifier.padding(top = 24.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))

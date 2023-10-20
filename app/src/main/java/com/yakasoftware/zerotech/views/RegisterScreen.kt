@@ -353,7 +353,7 @@ fun RegisterScreen(navController: NavHostController) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 OutlinedButton(onClick = {
                                     if (userEmail.value.isNotEmpty() && password.value.isNotEmpty() && passwordAgain.value.isNotEmpty() && name.value.isNotEmpty()
-                                        && surName.value.isNotEmpty() && phoneNumber.value.isNotEmpty() && isChecked && isCheckedSecond) {
+                                        && surName.value.isNotEmpty() && phoneNumber.value.isNotEmpty() && isChecked) {
                                         if (userEmail.value.endsWith(".com")) {
                                             if (password.value == passwordAgain.value) {
                                                 if (password.value.length >= 7 && passwordAgain.value.length >= 7) {
