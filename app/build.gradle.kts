@@ -131,6 +131,8 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
+    //json
+    implementation("com.google.code.gson:gson:2.9.0")
 
 
 }
