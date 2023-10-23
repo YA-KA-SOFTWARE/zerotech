@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -169,6 +170,7 @@ fun WatchsScreen(navController: NavHostController) {
                 .blur(radius = if (barVisible.value) 5.dp else 0.dp)
         ) {
             Row(
+                modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {
@@ -275,37 +277,7 @@ fun WatchsScreen(navController: NavHostController) {
                 }
                 Spacer(modifier = Modifier.padding(end = 4.dp))
             }
-            Spacer(modifier = Modifier.padding(top = 24.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "Akıllı Saatler",
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 24.sp,
-                    modifier = Modifier
-                        .border(
-                            width = 2.dp,
-                            color = MaterialTheme.colorScheme.secondary,
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .padding(12.dp)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.padding(6.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Row(modifier = Modifier.fillMaxWidth(0.650f)) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    SimpleLine()
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-
-
-
-            Spacer(modifier = Modifier.padding(20.dp))
             RectanglesWithLinesWatch(navController)
-
         }
     }
     val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
@@ -750,6 +722,36 @@ fun RectanglesWithLinesWatch(navController: NavHostController) {
     }
     else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
+            item {
+                Spacer(modifier = Modifier.padding(top = 24.dp))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Akıllı Saatler",
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .padding(12.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.padding(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Row(modifier = Modifier.fillMaxWidth(0.650f)) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        SimpleLine()
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
 
             items(speakerList.size / 2) { rowIndex ->
                 val firstSpeakerIndex = rowIndex * 2

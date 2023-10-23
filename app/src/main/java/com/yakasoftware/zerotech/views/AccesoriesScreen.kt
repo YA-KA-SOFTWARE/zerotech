@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -169,6 +170,7 @@ fun AccesoiresScreen(navController: NavHostController) {
                 .blur(radius = if (barVisible.value) 5.dp else 0.dp)
         ) {
             Row(
+                modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {
@@ -275,37 +277,7 @@ fun AccesoiresScreen(navController: NavHostController) {
                 }
                 Spacer(modifier = Modifier.padding(end = 4.dp))
             }
-            Spacer(modifier = Modifier.padding(top = 24.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "Aksesuarlar",
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 24.sp,
-                    modifier = Modifier
-                        .border(
-                            width = 2.dp,
-                            color = MaterialTheme.colorScheme.secondary,
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .padding(12.dp)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.padding(6.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Row(modifier = Modifier.fillMaxWidth(0.650f)) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    SimpleLine()
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-
-
-
-
             RectanglesWithLinesAccesoires(navController = navController)
-
         }
     }
     val screenHalf: Dp = (LocalConfiguration.current.screenWidthDp * 1.5f).dp
@@ -720,7 +692,16 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                     title.value = speakerDataBigVal["title"].toString()
                     discount.value = speakerDataBigVal["discount"].toString()
                     type.value = speakerDataBigVal["type"].toString()
-                    speakerList.add(SpeakerData(photoSpeaker1.value,oldPrice.value,price.value,title.value,discount.value,type.value))
+                    speakerList.add(
+                        SpeakerData(
+                            photoSpeaker1.value,
+                            oldPrice.value,
+                            price.value,
+                            title.value,
+                            discount.value,
+                            type.value
+                        )
+                    )
 
                 }
                 isSpeakerLoading.value = false
@@ -729,20 +710,47 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
             }
     }
 
-    if (isSpeakerLoading.value){
+    if (isSpeakerLoading.value) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 70.dp)
-            ,
+                .padding(bottom = 70.dp),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
         }
-    }
-    else {
+    } else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-
+            item {
+                Spacer(modifier = Modifier.padding(top = 24.dp))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Aksesuarlar",
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .padding(12.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.padding(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Row(modifier = Modifier.fillMaxWidth(0.650f)) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        SimpleLine()
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
             items(speakerList.size / 2) { rowIndex ->
                 val firstSpeakerIndex = rowIndex * 2
                 val secondSpeakerIndex = rowIndex * 2 + 1
@@ -757,7 +765,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                 val isFavoriteSecond = remember {
                     mutableStateOf(false)
                 }
-                LaunchedEffect(isFavoriteFirst.value){
+                LaunchedEffect(isFavoriteFirst.value) {
                     if (controlEmail != null) {
                         val docRef = controlFavDbFirst.collection("fav").document(controlEmail)
                             .collection(controlEmail)
@@ -773,7 +781,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                             }
                     }
                 }
-                LaunchedEffect(isFavoriteSecond.value){
+                LaunchedEffect(isFavoriteSecond.value) {
                     if (controlEmail != null) {
                         val docRef = secondSpeakerData?.let {
                             controlFavDbFirst.collection("fav").document(controlEmail)
@@ -790,9 +798,11 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                     }
                 }
 
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primary)
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -827,9 +837,14 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                     )
                             )
                             {
-                                Image(painter = painter, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp)))
+                                Image(
+                                    painter = painter,
+                                    contentDescription = "Hoparlör",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
+                                )
                                 val sizeState = remember {
                                     androidx.compose.animation.core.Animatable(
                                         1f
@@ -883,7 +898,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
 
                                     )
 
-                                }else {
+                                } else {
                                     LaunchedEffect(isFavoriteFirst) {
                                         if (isFavoriteFirst.value) {
                                             sizeState.animateTo(1.2f)
@@ -922,19 +937,23 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                 }
 
 
-                                Column (modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                Color.Transparent,// Başlangıç rengi
-                                                MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
-                                            ),
-                                            startY = 0f,
-                                            endY = 650f // Yüksekliği ayarlayın
-                                        )
-                                    ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.Transparent,// Başlangıç rengi
+                                                    MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                ),
+                                                startY = 0f,
+                                                endY = 650f // Yüksekliği ayarlayın
+                                            )
+                                        ),
+                                    verticalArrangement = Arrangement.Bottom,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
 
                                 }
                             }
@@ -958,18 +977,25 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         modifier = Modifier.fillMaxSize(),
                                         verticalArrangement = Arrangement.Center
                                     ) {
-                                        Box(modifier = Modifier.fillMaxWidth(),
-                                            contentAlignment = Alignment.Center) {
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
                                             Text(
-                                                text = firstSpeakerData.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold,
+                                                text = firstSpeakerData.title,
+                                                color = MaterialTheme.colorScheme.onBackground,
+                                                fontWeight = FontWeight.Bold,
                                                 fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                textAlign = TextAlign.Center, lineHeight = 12.sp
+                                                textAlign = TextAlign.Center,
+                                                lineHeight = 12.sp
                                             )
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
-                                        Column(modifier = Modifier.fillMaxSize(),
+                                        Column(
+                                            modifier = Modifier.fillMaxSize(),
                                             verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.CenterHorizontally) {
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
                                             Text(
                                                 text = firstSpeakerData.oldPrice + "₺",
                                                 color = Color(100, 100, 100, 255),
@@ -996,7 +1022,8 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         if (secondSpeakerData != null) {
-                            val painter2 = rememberAsyncImagePainter(model = secondSpeakerData.photo1)
+                            val painter2 =
+                                rememberAsyncImagePainter(model = secondSpeakerData.photo1)
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
@@ -1023,9 +1050,14 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         )
                                 )
                                 {
-                                    Image(painter = painter2, contentDescription = "Hoparlör", contentScale = ContentScale.Crop, modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp)))
+                                    Image(
+                                        painter = painter2,
+                                        contentDescription = "Hoparlör",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
+                                    )
 
                                     val sizeState2 = remember {
                                         androidx.compose.animation.core.Animatable(
@@ -1079,7 +1111,7 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
 
                                         )
 
-                                    }else {
+                                    } else {
                                         LaunchedEffect(isFavoriteSecond.value) {
                                             if (isFavoriteSecond.value) {
                                                 sizeState2.animateTo(1.2f)
@@ -1118,19 +1150,23 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                         )
                                     }
 
-                                    Column (modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(
-                                            brush = Brush.verticalGradient(
-                                                colors = listOf(
-                                                    Color.Transparent,
-                                                    Color.Transparent,// Başlangıç rengi
-                                                    MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
-                                                ),
-                                                startY = 0f,
-                                                endY = 650f // Yüksekliği ayarlayın
-                                            )
-                                        ), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally){
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        Color.Transparent,// Başlangıç rengi
+                                                        MaterialTheme.colorScheme.onPrimary    // Bitiş rengi
+                                                    ),
+                                                    startY = 0f,
+                                                    endY = 650f // Yüksekliği ayarlayın
+                                                )
+                                            ),
+                                        verticalArrangement = Arrangement.Bottom,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
 
                                     }
                                 }
@@ -1154,18 +1190,25 @@ fun RectanglesWithLinesAccesoires(navController: NavHostController) {
                                             modifier = Modifier.fillMaxSize(),
                                             verticalArrangement = Arrangement.Center
                                         ) {
-                                            Box(modifier = Modifier.fillMaxWidth(),
-                                                contentAlignment = Alignment.Center) {
+                                            Box(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
                                                 Text(
-                                                    text = secondSpeakerData.title, color =MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold,
+                                                    text = secondSpeakerData.title,
+                                                    color = MaterialTheme.colorScheme.onBackground,
+                                                    fontWeight = FontWeight.Bold,
                                                     fontSize = with(LocalDensity.current) { fontSize.toSp() },
-                                                    textAlign = TextAlign.Center, lineHeight = 12.sp
+                                                    textAlign = TextAlign.Center,
+                                                    lineHeight = 12.sp
                                                 )
                                             }
                                             Spacer(modifier = Modifier.weight(1f))
-                                            Column( modifier = Modifier.fillMaxSize(),
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(),
                                                 verticalArrangement = Arrangement.Center,
-                                                horizontalAlignment = Alignment.CenterHorizontally) {
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
                                                 Text(
                                                     text = secondSpeakerData.oldPrice + "₺",
                                                     color = Color(100, 100, 100, 255),

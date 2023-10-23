@@ -295,6 +295,7 @@ fun MainScreen(navController: NavHostController) {
             .fillMaxSize()
             .blur(radius = if (barVisible.value) 5.dp else 0.dp)) {
             Row(
+                modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {
@@ -391,8 +392,6 @@ fun MainScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.padding(end = 4.dp))
 
             }
-
-            Spacer(modifier = Modifier.padding(top = 12.dp))
             LazyColumn(modifier = Modifier.wrapContentSize()) {
                 item {
                     val pagerState = rememberPagerState(pageCount = { 5 })

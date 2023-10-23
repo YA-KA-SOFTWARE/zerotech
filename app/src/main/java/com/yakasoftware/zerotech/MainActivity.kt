@@ -5,6 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -50,12 +55,10 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController,
                     startDestination = "splash_screen",
                     enterTransition = {
-                        // you can change whatever you want animation
-                        EnterTransition.None
+                        fadeIn()
                     },
                     exitTransition = {
-                        // you can change whatever you want animation
-                        ExitTransition.None
+                        fadeOut()
                     }) {
 
                     composable("splash_screen") {

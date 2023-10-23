@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -222,7 +224,12 @@ fun AdressScreen(navController: NavHostController) {
                                 modifier = Modifier
                                     .size(60.dp)
                                     .clip(CircleShape)
-                                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
+                                    .border(
+                                        BorderStroke(
+                                            2.dp,
+                                            MaterialTheme.colorScheme.onBackground
+                                        ), CircleShape
+                                    )
                                     .background(MaterialTheme.colorScheme.onSecondary)
                                     .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
@@ -385,11 +392,15 @@ fun AdressScreen(navController: NavHostController) {
                             ) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 FloatingActionButton(
+                                    containerColor = MaterialTheme.colorScheme.onBackground,
                                     onClick = {
                                         isClicked.value = true
                                         barVisible.value = true
                                     },
-                                    modifier = Modifier.clickable(enabled = !isClicked.value) {}.padding(bottom = 5.dp, end = 5.dp),
+                                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                                    modifier = Modifier
+                                        .clickable(enabled = !isClicked.value) {}
+                                        .padding(16.dp),
                                 ) {
                                     Icon(Icons.Filled.AddCircleOutline, "Localized description")
                                 }
@@ -544,11 +555,13 @@ fun AdressScreen(navController: NavHostController) {
                                             },
                                             modifier = Modifier.fillMaxWidth(),
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                MaterialTheme.colorScheme.tertiary,
                                                 focusedLabelColor = Color.Transparent,
                                                 focusedBorderColor = Color.Transparent,
                                                 unfocusedLabelColor = Color.LightGray,
                                                 unfocusedBorderColor = Color.Transparent,
-                                                cursorColor = Color.White
+                                                cursorColor = MaterialTheme.colorScheme.tertiary,
+                                                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.tertiary,backgroundColor = MaterialTheme.colorScheme.primary)
                                             ),
                                             shape = RoundedCornerShape(16.dp),
 
@@ -590,11 +603,13 @@ fun AdressScreen(navController: NavHostController) {
                                             },
                                             modifier = Modifier.fillMaxWidth(0.5f),
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                MaterialTheme.colorScheme.tertiary,
                                                 focusedLabelColor = Color.Transparent,
                                                 focusedBorderColor = Color.Transparent,
                                                 unfocusedLabelColor = Color.LightGray,
                                                 unfocusedBorderColor = Color.Transparent,
-                                                cursorColor = Color.White
+                                                cursorColor = MaterialTheme.colorScheme.tertiary,
+                                                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.tertiary,backgroundColor = MaterialTheme.colorScheme.primary)
                                             ),
                                             shape = RoundedCornerShape(16.dp),
 
@@ -627,11 +642,13 @@ fun AdressScreen(navController: NavHostController) {
                                             },
                                             modifier = Modifier.fillMaxWidth(0.5f),
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                MaterialTheme.colorScheme.tertiary,
                                                 focusedLabelColor = Color.Transparent,
                                                 focusedBorderColor = Color.Transparent,
                                                 unfocusedLabelColor = Color.LightGray,
                                                 unfocusedBorderColor = Color.Transparent,
-                                                cursorColor = Color.White
+                                                cursorColor = MaterialTheme.colorScheme.tertiary,
+                                                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.tertiary,backgroundColor = MaterialTheme.colorScheme.primary)
                                             ),
                                             shape = RoundedCornerShape(16.dp),
 
@@ -671,11 +688,13 @@ fun AdressScreen(navController: NavHostController) {
                                             },
                                             modifier = Modifier.fillMaxWidth(0.5f),
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                textColor = MaterialTheme.colorScheme.tertiary,
                                                 focusedLabelColor = Color.Transparent,
                                                 focusedBorderColor = Color.Transparent,
                                                 unfocusedLabelColor = Color.LightGray,
                                                 unfocusedBorderColor = Color.Transparent,
-                                                cursorColor = Color.White
+                                                cursorColor = MaterialTheme.colorScheme.tertiary,
+                                                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.tertiary,backgroundColor = MaterialTheme.colorScheme.primary)
                                             ),
                                             shape = RoundedCornerShape(16.dp),
 
@@ -708,11 +727,13 @@ fun AdressScreen(navController: NavHostController) {
                                             },
                                             modifier = Modifier.fillMaxWidth(0.5f),
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                MaterialTheme.colorScheme.tertiary,
                                                 focusedLabelColor = Color.Transparent,
                                                 focusedBorderColor = Color.Transparent,
                                                 unfocusedLabelColor = Color.LightGray,
                                                 unfocusedBorderColor = Color.Transparent,
-                                                cursorColor = Color.White
+                                                cursorColor = MaterialTheme.colorScheme.tertiary,
+                                                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.tertiary,backgroundColor = MaterialTheme.colorScheme.primary)
                                             ),
                                             shape = RoundedCornerShape(16.dp),
 
@@ -756,11 +777,13 @@ fun AdressScreen(navController: NavHostController) {
                                             },
                                             modifier = Modifier.fillMaxWidth(0.5f),
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                MaterialTheme.colorScheme.tertiary,
                                                 focusedLabelColor = Color.Transparent,
                                                 focusedBorderColor = Color.Transparent,
                                                 unfocusedLabelColor = Color.LightGray,
                                                 unfocusedBorderColor = Color.Transparent,
-                                                cursorColor = Color.White
+                                                cursorColor = MaterialTheme.colorScheme.tertiary,
+                                                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.tertiary,backgroundColor = MaterialTheme.colorScheme.primary)
                                             ),
                                             shape = RoundedCornerShape(16.dp),
 
