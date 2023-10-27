@@ -3,13 +3,8 @@ package com.yakasoftware.zerotech
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +19,7 @@ import com.yakasoftware.zerotech.views.AgreementScreen
 import com.yakasoftware.zerotech.views.BandDetail
 import com.yakasoftware.zerotech.views.BandsScreen
 import com.yakasoftware.zerotech.views.BasketScreen
+import com.yakasoftware.zerotech.views.ConfirmOrderScreen
 import com.yakasoftware.zerotech.views.FavoriteScreen
 import com.yakasoftware.zerotech.views.HeadPhonesDetail
 import com.yakasoftware.zerotech.views.HeadPhonesScreen
@@ -106,7 +102,9 @@ class MainActivity : ComponentActivity() {
                     composable("headphone_screen"){
                         HeadPhonesScreen(navController = navController)
                     }
-
+                    composable("confirm_screen") {
+                        ConfirmOrderScreen(navController = navController)
+                    }
                     composable("speaker_detail_screen/{title}"){backStackEntry ->
                         backStackEntry.arguments?.getString("title")
                             ?.let { SpeakerDetailScreen(navController = navController, productTitle = it) }

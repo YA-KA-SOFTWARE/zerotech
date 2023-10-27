@@ -694,7 +694,9 @@ fun BasketScreen(navController: NavHostController) {
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(onClick = {
+                        navController.navigate("confirm_screen")
+                    }) {
                         Text(text = "Siparişi Onayla", color = MaterialTheme.colorScheme.tertiary,
                             fontSize = with(LocalDensity.current) {
                                 buttonFontSize.toSp()
