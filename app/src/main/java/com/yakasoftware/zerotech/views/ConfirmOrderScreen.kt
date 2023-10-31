@@ -1,5 +1,7 @@
 package com.yakasoftware.zerotech.views
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -11,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,8 +24,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Whatsapp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,7 +48,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +56,8 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.net.URLEncoder
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 
 @Composable
@@ -245,7 +249,7 @@ fun ConfirmOrderScreen(navController: NavHostController) {
                     ) {
                         //iban
                         Column {
-                            Text(text = "IBAN",
+                            Text(text = "IBAN:",
                                 color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.8f),
                                 fontSize = with(LocalDensity.current) {
                                     fontSize.toSp()
@@ -254,28 +258,35 @@ fun ConfirmOrderScreen(navController: NavHostController) {
 
                             Spacer(modifier = Modifier.padding(top = 30.dp))
 
-                            Text(text = ibanText.value, color =
-                            MaterialTheme.colorScheme.onSecondary,
-                                fontSize = with(LocalDensity.current) {
-                                    fontSize.toSp()
-                                }
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Icon(
-                            imageVector = Icons.Default.ContentCopy,
-                            contentDescription = "Kopyala",
-                            tint = MaterialTheme.colorScheme.tertiary, // İkon rengini ayarlayın
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable {
-                                    clipboardManager.setText(annotatedIbanText)
-                                    Toast
-                                        .makeText(context, "İban kopyalandı.", Toast.LENGTH_SHORT)
-                                        .show()
+                            Row() {
+                                Text(text = ibanText.value, color =
+                                MaterialTheme.colorScheme.onSecondary,
+                                    fontSize = with(LocalDensity.current) {
+                                        fontSize.toSp()
+                                    }
+                                )
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Icon(
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = "Kopyala",
+                                    tint = MaterialTheme.colorScheme.secondary, // İkon rengini ayarlayın
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .clickable {
+                                            clipboardManager.setText(annotatedIbanText)
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "İban kopyalandı.",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
 
-                                }
-                        )
+                                        }
+                                )
+                            }
+
+                        }
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -293,7 +304,7 @@ fun ConfirmOrderScreen(navController: NavHostController) {
                         Spacer(modifier = Modifier.padding(start = 10.dp))
 
                         Column {
-                            Text(text = "Alıcı",
+                            Text(text = "Alıcı:",
                                 color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.8f),
                                 fontSize = with(LocalDensity.current) {
                                     fontSize.toSp()
@@ -335,30 +346,70 @@ fun ConfirmOrderScreen(navController: NavHostController) {
                 }
                 Spacer(modifier = Modifier.padding(top = 20.dp))
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Color(78, 255, 129, 200)),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSecondary),
                         modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(75.dp)
+                            .fillMaxWidth(0.9f)
+                            .height(200.dp)
                     ) {
 
-                        Column {
+                        Column(modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally) {
                             //icon
+                            Spacer(modifier = Modifier.padding(top = 12.dp))
                             Icon(
                                 imageVector = Icons.Default.Info,
-                                contentDescription = "Kopyala",
-                                tint = Color.Black, // İkon rengini ayarlayın
+                                contentDescription = "Bİlgi",
+                                tint = MaterialTheme.colorScheme.tertiary, // İkon rengini ayarlayın
                                 modifier = Modifier
-                                    .size(24.dp)
+                                    .size(32.dp)
                             )
-                            Spacer(modifier = Modifier.padding(top = 5.dp))
+                            Spacer(modifier = Modifier.padding(top = 8.dp))
 
-                            Text(text = "Bu kısım bilgilendirme yeridir", color =Color.Black,
+                            Text(text = "Siparişinizin onaylanabilmesi için lütfen mevcut ekran görünütüsü ve dekont bilgisini belirtilen numaraya iletiniz.", color = MaterialTheme.colorScheme.tertiary,
                                 fontSize = with(LocalDensity.current) {
                                     fontSize.toSp()
                                 },
-                                textDecoration = TextDecoration.Underline
+                                textAlign = TextAlign.Center
                             )
+                            Spacer(modifier = Modifier.padding(top = 12.dp))
+                            Button(onClick = {
+                                val confirmPhoneNumber = "+905010996541"
+                                val message = "Merhaba siparişimi onaylamak için ulaşıyorum"
+                                val url = "https://wa.me/$confirmPhoneNumber?text=${
+                                    URLEncoder.encode(
+                                        message,
+                                        "UTF-8"
+                                    )
+                                }"
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(url)
+                                intent.setPackage("com.whatsapp")
+                                context.startActivity(
+                                    // on below line we are opening the intent.
+                                    Intent(
+                                        // on below line we are calling
+                                        // uri to parse the data
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(
+                                            // on below line we are passing uri,
+                                            // message and whats app phone number.
+                                            java.lang.String.format(
+                                                "https://api.whatsapp.com/send?phone=%s&text=%s",
+                                                confirmPhoneNumber,
+                                                message
+                                            )
+                                        )
+                                    )
+                                ) }) {
+                                Icon(
+                                    imageVector = Icons.Default.Whatsapp,
+                                    contentDescription = "Whatsapp",
+                                    tint = Color(37,211,102),
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                )
+                            }
                         }
                     }
 

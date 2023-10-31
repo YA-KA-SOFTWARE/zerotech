@@ -1,6 +1,7 @@
 package com.yakasoftware.zerotech.views
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,18 +19,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.RemoveShoppingCart
+import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingBasket
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,11 +62,16 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
+import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun BasketScreen(navController: NavHostController) {
 
+    val context = LocalContext.current
+    val basketDialog = remember {
+        mutableStateOf(false)
+    }
     val db = Firebase.firestore
     val auth = Firebase.auth
     val currentUser = auth.currentUser
@@ -201,7 +215,12 @@ fun BasketScreen(navController: NavHostController) {
                                 modifier = Modifier
                                     .size(60.dp)
                                     .clip(CircleShape)
-                                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground), CircleShape)
+                                    .border(
+                                        BorderStroke(
+                                            2.dp,
+                                            MaterialTheme.colorScheme.onBackground
+                                        ), CircleShape
+                                    )
                                     .background(MaterialTheme.colorScheme.onSecondary)
                                     .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
@@ -327,6 +346,9 @@ fun BasketScreen(navController: NavHostController) {
                                         if (baskets.type == "watchs") {
                                             navController.navigate("watch_detail_screen/${baskets.title}")
                                         }
+                                        if (baskets.type == "campaign") {
+                                            navController.navigate("main_detail_screen/${baskets.title}")
+                                        }
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -366,7 +388,14 @@ fun BasketScreen(navController: NavHostController) {
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(RoundedCornerShape(10.dp,10.dp,0.dp,0.dp))
+                                                    .clip(
+                                                        RoundedCornerShape(
+                                                            10.dp,
+                                                            10.dp,
+                                                            0.dp,
+                                                            0.dp
+                                                        )
+                                                    )
                                             )
                                             Icon(
                                                 imageVector = Icons.Default.RemoveShoppingCart,
@@ -695,7 +724,7 @@ fun BasketScreen(navController: NavHostController) {
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(onClick = {
-                        navController.navigate("confirm_screen")
+                        basketDialog.value = true
                     }) {
                         Text(text = "Siparişi Onayla", color = MaterialTheme.colorScheme.tertiary,
                             fontSize = with(LocalDensity.current) {
@@ -709,52 +738,98 @@ fun BasketScreen(navController: NavHostController) {
         }
 
     }
+    val firestoreData = basList.map { basketProduct ->
+        mapOf(
+            "title" to basketProduct.title,
+            "photo1" to basketProduct.photo1,
+            "price" to basketProduct.price,
+            "oldPrice" to basketProduct.oldPrice,
+            "discount" to basketProduct.discount,
+            "type" to basketProduct.type,
+            "amount" to basketProduct.amount,
+            "date" to basketProduct.date,
+            "onay" to basketProduct.onay,
+            "docId" to basketProduct.docId,
+            "color" to basketProduct.color
+        )
+    }
+    if (basketDialog.value) {
+        val alertFontSize = 12.dp
+        AlertDialog(
+            onDismissRequest = { basketDialog.value = false },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Shop,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Sipariş Onaylama",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Spacer(modifier = Modifier.padding(top = 6.dp))
+                        Text(text = "Siparişi onaylamak istediğinize eminmisiniz?", color = Color.Gray, fontWeight = FontWeight.Bold, fontSize =
+                            with(LocalDensity.current){alertFontSize.toSp()},
+                            textAlign = TextAlign.Center)
+
+                    }
+
+
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        basketDialog.value = false
+                        if (currentUser!!.email != null) {
+                            db.collection("confirm")
+                                .document(currentUser.email!!)
+                                .collection(currentUser.email!!)
+                                .add(mapOf("basketData" to firestoreData))
+                        }
+
+
+                        navController.navigate("confirm_screen")
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
+                )
+                {
+                    Text(text = "Evet")
+                }
+            },
+            dismissButton = {
+                // Kapat düğmesi
+                Button(
+                    onClick = {
+                        basketDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
+                )
+                {
+                    Text(text = "Hayır")
+                }
+            }
+        )
+
+    }
 }
-
-
-/*
- Column() {
-                                Text(
-                                    text = baskets.title,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    text = baskets.amount,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    text = baskets.discount,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    text = baskets.oldPrice,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    text = baskets.price,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    text = baskets.type,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                val painter = rememberAsyncImagePainter(model = baskets.photo1)
-                                Image(
-                                    painter = painter,
-                                    contentDescription = null,
-                                    Modifier.size(50.dp)
-                                )
-
-                                val dateFormat =
-                                    SimpleDateFormat("dd/MM/yyyy (HH:mm)", Locale.getDefault())
-                                val date = baskets.date?.toDate()
-                                val formattedDate = date?.let { dateFormat.format(it) }
-
-
-                                Text(
-                                    text = formattedDate.toString(),
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-
-                            }
- */

@@ -259,6 +259,9 @@ fun FavoriteScreen(navController: NavHostController) {
                                             if (favListData.type == "watchs") {
                                                 navController.navigate("watch_detail_screen/${favListData.title}")
                                             }
+                                            if (favListData.type == "campaign") {
+                                                navController.navigate("main_detail_screen/${favListData.title}")
+                                            }
                                         }
                                         .padding(4.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
@@ -551,7 +554,7 @@ fun FavoriteScreen(navController: NavHostController) {
                                                         )
                                                         Text(
                                                             text = secondSpeakerData.price + "₺",
-                                                            color = MaterialTheme.colorScheme.secondary,
+                                                            color = MaterialTheme.colorScheme.onSurface,
                                                             fontSize = with(LocalDensity.current) { fontSizePrice.toSp() },
                                                             fontWeight = FontWeight.Bold,
                                                             textAlign = TextAlign.Center
