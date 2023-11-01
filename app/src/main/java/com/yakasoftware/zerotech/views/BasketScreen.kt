@@ -17,28 +17,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Comment
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingBasket
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,13 +57,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
-import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun BasketScreen(navController: NavHostController) {
 
-    val context = LocalContext.current
     val basketDialog = remember {
         mutableStateOf(false)
     }
@@ -85,6 +78,9 @@ fun BasketScreen(navController: NavHostController) {
     val phoneNumber = remember {
         mutableStateOf("")
     }
+    val adressDialog = remember {
+        mutableStateOf(false)
+    }
     data class BasketProduct(
         val title: String,
         val photo1: String,
@@ -98,6 +94,26 @@ fun BasketScreen(navController: NavHostController) {
         val docId: String,
         val color: String
     )
+//Adres kısmı
+    data class Adresses(
+        val adresstitle: String,
+        val city: String,
+        val direction: String,
+        val district: String,
+        val neighbourhood: String,
+        val documentId: String,
+        val street: String,
+    )
+    val adressList = remember { mutableStateListOf<Adresses>() }
+    val context = LocalContext.current
+    val adresstitle = remember { mutableStateOf("") }
+    val city = remember { mutableStateOf("") }
+    val direction = remember { mutableStateOf("") }
+    val district = remember { mutableStateOf("") }
+    val neighbourhood = remember { mutableStateOf("") }
+    val documentId = remember { mutableStateOf("") }
+    val street = remember { mutableStateOf("") }
+
 
     val oldPrice = remember { mutableStateOf("") }
     val price = remember { mutableStateOf("") }
@@ -164,7 +180,6 @@ fun BasketScreen(navController: NavHostController) {
         }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-        val context = LocalContext.current
 
         if (currentUser != null) {
             db.collection("users").document(email.toString())
@@ -753,6 +768,7 @@ fun BasketScreen(navController: NavHostController) {
             "color" to basketProduct.color
         )
     }
+
     if (basketDialog.value) {
         val alertFontSize = 12.dp
         AlertDialog(
@@ -788,7 +804,7 @@ fun BasketScreen(navController: NavHostController) {
                             .fillMaxWidth()
                     ) {
                         Spacer(modifier = Modifier.padding(top = 6.dp))
-                        Text(text = "Siparişi onaylamak istediğinize eminmisiniz?", color = Color.Gray, fontWeight = FontWeight.Bold, fontSize =
+                        Text(text = "Siparişi onaylamak istediğinize emin misiniz?", color = Color.Gray, fontWeight = FontWeight.Bold, fontSize =
                             with(LocalDensity.current){alertFontSize.toSp()},
                             textAlign = TextAlign.Center)
 
@@ -801,15 +817,8 @@ fun BasketScreen(navController: NavHostController) {
                 Button(
                     onClick = {
                         basketDialog.value = false
-                        if (currentUser!!.email != null) {
-                            db.collection("confirm")
-                                .document(currentUser.email!!)
-                                .collection(currentUser.email!!)
-                                .add(mapOf("basketData" to firestoreData))
-                        }
+                        adressDialog.value = true
 
-
-                        navController.navigate("confirm_screen")
                     },
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
                 )
@@ -831,5 +840,96 @@ fun BasketScreen(navController: NavHostController) {
             }
         )
 
+    }
+    if (adressDialog.value){
+        AlertDialog(onDismissRequest = { adressDialog.value = false },modifier = Modifier.wrapContentHeight() ,confirmButton = { /*TODO*/ },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Adresinizi Seçiniz",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            },
+            text = {
+
+                db.collection("adress").document(email!!).collection(email).get().addOnSuccessListener { documents ->
+                    adressList.clear()
+                    for (document in documents){
+
+                        val adressesData: Map<String, Any> = document.data
+                        adresstitle.value = adressesData["adresstitle"].toString()
+                        city.value = adressesData["city"].toString()
+                        direction.value = adressesData["direction"].toString()
+                        district.value = adressesData["district"].toString()
+                        documentId.value = adressesData["documentId"].toString()
+                        neighbourhood.value = adressesData["neighbourhood"].toString()
+                        street.value = adressesData["street"].toString()
+
+                        adressList.add(Adresses(adresstitle.value,city.value,direction.value, district.value,documentId.value,neighbourhood.value,street.value))
+
+                    }
+
+                }
+
+            LazyColumn{
+                items(adressList.size){index ->
+                    val adressData = adressList[index]
+                    val adresMap = hashMapOf(
+                        "adresstitle" to adressData.adresstitle,
+                        "city" to adressData.city,
+                        "direction" to adressData.direction,
+                        "district" to adressData.district,
+                        "neighbourhood" to adressData.neighbourhood,
+                        "street" to adressData.street
+
+                    )
+                    Row(modifier = Modifier.fillMaxWidth() ){
+                        Button(onClick = { adressDialog.value = false
+                            if (adressList.isEmpty()){
+                                Toast.makeText(context,"Lütfen Adres Bilgilerinizi Giriniz",Toast.LENGTH_SHORT).show()
+                            }else{
+                                if (currentUser!!.email != null) {
+                                    db.collection("confirm")
+                                        .document(currentUser.email!!)
+                                        .collection(currentUser.email!!)
+                                        .add(mapOf("basketData" to firestoreData,
+                                                "adressData" to adresMap)).addOnSuccessListener {
+                                                    println("veri başarı ile gönderildi")
+                                        }
+
+                                }
+
+
+                            }
+
+
+                            navController.navigate("confirm_screen")}, colors = ButtonDefaults.buttonColors(
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            containerColor =MaterialTheme.colorScheme.primary,
+                            disabledContentColor = Color.Blue ,
+                            disabledContainerColor = Color.White
+                        )) {
+                            Text(text = adressData.adresstitle)
+                        }
+
+                    }
+
+                }
+
+            }
+            }
+
+        )
     }
 }
