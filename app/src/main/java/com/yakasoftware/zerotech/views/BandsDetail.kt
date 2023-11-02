@@ -76,7 +76,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -163,7 +162,6 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
         mutableStateOf("")
     }
     val context = LocalContext.current
-    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -961,9 +959,6 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
 
-                    val commentsLoading = remember {
-                        mutableStateOf(true)
-                    }
                     if (isDialogVisible.value) {
 
                         val alertDialogFontSize = 16.dp
@@ -2894,8 +2889,4 @@ fun BandDetail(navController: NavHostController, productTitle: String) {
     }
 }
 
-private val disableScrolll = object : NestedScrollConnection {
-    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
-    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
-}
 

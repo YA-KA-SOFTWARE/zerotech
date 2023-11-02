@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +41,6 @@ import com.yakasoftware.zerotech.R
 @Composable
 fun OrdersScreen(navController: NavHostController) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
-        val context = LocalContext.current
         val db = Firebase.firestore
         val auth = Firebase.auth
         val currentUser = auth.currentUser

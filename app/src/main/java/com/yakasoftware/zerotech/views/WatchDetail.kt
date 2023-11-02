@@ -71,19 +71,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -181,7 +176,6 @@ fun WatchDetail(navController: NavHostController, productTitle: String) {
         mutableStateOf("")
     }
     val context = LocalContext.current
-    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -1086,9 +1080,6 @@ fun WatchDetail(navController: NavHostController, productTitle: String) {
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
 
-                    val commentsLoading = remember {
-                        mutableStateOf(true)
-                    }
                     if (isDialogVisible.value) {
 
                         val alertDialogFontSize = 16.dp
@@ -3015,10 +3006,5 @@ fun WatchDetail(navController: NavHostController, productTitle: String) {
             )
         }
     }
-}
-
-private val disableScrolll = object : NestedScrollConnection {
-    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
-    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
 }
 

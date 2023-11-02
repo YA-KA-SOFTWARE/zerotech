@@ -73,9 +73,9 @@ fun AccountDetailScreen(navController: NavHostController) {
             .get()
             .addOnSuccessListener {
                 val data = it.data
-                name.value = data?.get("name") as String ?: " "
-                surname.value = data?.get("surname") as String ?: ""
-                phoneNumber.value = data?.get("phoneNumber") as String ?: ""
+                name.value = data?.get("name") as String
+                surname.value = data["surname"] as String
+                phoneNumber.value = data["phoneNumber"] as String
 
             }
 

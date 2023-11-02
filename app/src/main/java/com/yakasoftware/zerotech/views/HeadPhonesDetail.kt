@@ -34,7 +34,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowDropDownCircle
@@ -73,28 +72,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.google.apphosting.datastore.testing.DatastoreTestTrace.FirestoreV1Action.ListDocuments
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yakasoftware.zerotech.Lines.SimpleLine
 import kotlinx.coroutines.launch
@@ -155,7 +147,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
         mutableStateOf("")
     }
     val context = LocalContext.current
-    val coroutineScopeComment = rememberCoroutineScope()
     val photo1 = remember { mutableStateOf("") }
     val photo2 = remember { mutableStateOf("") }
     val photo3 = remember { mutableStateOf("") }
@@ -189,9 +180,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
 
 
     Surface(Modifier.fillMaxSize()) {
-        data class Colorr(
-            val color: String,
-        )
 
         data class CommentData(
             val productTitle: String,
@@ -886,9 +874,6 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
                     Spacer(modifier = Modifier.height(24.dp))
                     //Yorumlar
 
-                    val commentsLoading = remember {
-                        mutableStateOf(true)
-                    }
                     if (isDialogVisible.value) {
 
                         val alertDialogFontSize = 16.dp
@@ -2911,8 +2896,4 @@ fun HeadPhonesDetail(navController: NavHostController, productTitle: String) {
     }
 }
 
-private val disableScrolll = object : NestedScrollConnection {
-    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
-    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
-}
 

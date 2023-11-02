@@ -366,7 +366,7 @@ fun ConfirmOrderScreen(navController: NavHostController) {
                             )
                             Spacer(modifier = Modifier.padding(top = 8.dp))
 
-                            Text(text = "Siparişinizin onaylanabilmesi için lütfen mevcut ekran görünütüsü ve dekont bilgisini belirtilen numaraya iletiniz.", color = MaterialTheme.colorScheme.tertiary,
+                            Text(text = "Siparişinizin onaylanabilmesi için lütfen mevcut ekran görünütüsü ve dekont bilgisini belirtilen numaraya whatsapp üzerinden iletiniz.", color = MaterialTheme.colorScheme.tertiary,
                                 fontSize = with(LocalDensity.current) {
                                     fontSize.toSp()
                                 },

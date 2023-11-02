@@ -769,6 +769,24 @@ fun BasketScreen(navController: NavHostController) {
         )
     }
 
+    db.collection("adress").document(email!!).collection(email).get().addOnSuccessListener { documents ->
+        adressList.clear()
+        for (document in documents){
+            val adressesData: Map<String, Any> = document.data
+            adresstitle.value = adressesData["adresstitle"].toString()
+            city.value = adressesData["city"].toString()
+            direction.value = adressesData["direction"].toString()
+            district.value = adressesData["district"].toString()
+            documentId.value = adressesData["documentId"].toString()
+            neighbourhood.value = adressesData["neighbourhood"].toString()
+            street.value = adressesData["street"].toString()
+
+            adressList.add(Adresses(adresstitle.value,city.value,direction.value, district.value,documentId.value,neighbourhood.value,street.value))
+
+        }
+
+    }
+
     if (basketDialog.value) {
         val alertFontSize = 12.dp
         AlertDialog(
@@ -817,7 +835,13 @@ fun BasketScreen(navController: NavHostController) {
                 Button(
                     onClick = {
                         basketDialog.value = false
-                        adressDialog.value = true
+                        if (adressList.isNotEmpty()) {
+                            adressDialog.value = true
+
+                        }else {
+                            Toast.makeText(context,"Siparişi tamamlayabilmek için adres bilgileri gereklidir.",Toast.LENGTH_LONG).show()
+                            navController.navigate("adress_screen")
+                        }
 
                     },
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondary)
@@ -841,10 +865,11 @@ fun BasketScreen(navController: NavHostController) {
         )
 
     }
+
     if (adressDialog.value){
         AlertDialog(onDismissRequest = { adressDialog.value = false },modifier = Modifier.wrapContentHeight() ,confirmButton = { /*TODO*/ },
             title = {
-                Row(
+                Row(modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -862,27 +887,9 @@ fun BasketScreen(navController: NavHostController) {
                 }
             },
             text = {
-
-                db.collection("adress").document(email!!).collection(email).get().addOnSuccessListener { documents ->
-                    adressList.clear()
-                    for (document in documents){
-
-                        val adressesData: Map<String, Any> = document.data
-                        adresstitle.value = adressesData["adresstitle"].toString()
-                        city.value = adressesData["city"].toString()
-                        direction.value = adressesData["direction"].toString()
-                        district.value = adressesData["district"].toString()
-                        documentId.value = adressesData["documentId"].toString()
-                        neighbourhood.value = adressesData["neighbourhood"].toString()
-                        street.value = adressesData["street"].toString()
-
-                        adressList.add(Adresses(adresstitle.value,city.value,direction.value, district.value,documentId.value,neighbourhood.value,street.value))
-
-                    }
-
-                }
-
             LazyColumn{
+                val adressFontSize = 16.dp
+                val directionFontSize = 12.dp
                 items(adressList.size){index ->
                     val adressData = adressList[index]
                     val adresMap = hashMapOf(
@@ -896,10 +903,7 @@ fun BasketScreen(navController: NavHostController) {
                     )
                     Row(modifier = Modifier.fillMaxWidth() ){
                         Button(onClick = { adressDialog.value = false
-                            if (adressList.isEmpty()){
-                                Toast.makeText(context,"Lütfen Adres Bilgilerinizi Giriniz",Toast.LENGTH_SHORT).show()
-                            }else{
-                                if (currentUser!!.email != null) {
+                                if (currentUser.email != null) {
                                     db.collection("confirm")
                                         .document(currentUser.email!!)
                                         .collection(currentUser.email!!)
@@ -909,22 +913,33 @@ fun BasketScreen(navController: NavHostController) {
                                         }
 
                                 }
-
-
-                            }
-
-
-                            navController.navigate("confirm_screen")}, colors = ButtonDefaults.buttonColors(
+                            navController.navigate("confirm_screen")}, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
                             contentColor = MaterialTheme.colorScheme.onSecondary,
-                            containerColor =MaterialTheme.colorScheme.primary,
+                            containerColor =MaterialTheme.colorScheme.onTertiary,
                             disabledContentColor = Color.Blue ,
                             disabledContainerColor = Color.White
                         )) {
-                            Text(text = adressData.adresstitle)
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                Row(modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text = adressData.adresstitle, fontSize = with(LocalDensity.current){
+                                        adressFontSize.toSp()
+                                    })
+                                }
+                            Row(modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically) {
+                                Text(text = adressData.direction, fontSize = with(LocalDensity.current){
+                                    directionFontSize.toSp()
+                                })
+                            }
+
+                            }
+
                         }
 
                     }
-
+                    Spacer(modifier = Modifier.height(6.dp))
                 }
 
             }

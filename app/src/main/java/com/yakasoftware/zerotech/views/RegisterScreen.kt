@@ -304,7 +304,6 @@ fun RegisterScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.padding(4.dp))
                             //Sözleşmeler
                             var isChecked by remember { mutableStateOf(false) }
-                            var isCheckedSecond by remember { mutableStateOf(false) }
                             Row(modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
