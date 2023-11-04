@@ -254,7 +254,21 @@ fun WatchsScreen(navController: NavHostController) {
                             .size(32.dp)
                             .clickable {
                                 if (!isMenuVisible.value) {
-                                    navController.navigate("basket_screen")
+                                    if (currentUser == null) {
+                                        val popBackStackDestinationId = navController.previousBackStackEntry?.destination?.route
+                                        navController.navigate("login_screen") {
+                                            // "login_screen" sayfasına geçerken geriye gitme işlemini yapılandırın
+                                            if (popBackStackDestinationId == "main_screen") {
+                                                // Eğer önceki sayfa "main_screen" ise geriye gitme işlemini devre dışı bırak
+                                                popUpTo("login_screen") {
+                                                    saveState = false
+                                                    inclusive = false
+                                                }
+                                            }
+                                        }
+                                    }else {
+                                        navController.navigate("basket_screen")
+                                    }
                                 }
                                 //Sepet işlemleri
                             }
